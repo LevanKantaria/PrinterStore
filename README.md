@@ -11,8 +11,8 @@
 
 
 
- <h3> Live Preview :  www.gamiyole.me </h3>
- <img src="/public/gamiyole_1.jpg" alt="preview" />
+ <h3> Live Preview :  https://factory-l.netlify.app/ </h3>
+ 
  
    <img src="https://i.ibb.co/PtWLLn9/factory-l-scr1.jpg" />
   <img src="https://i.ibb.co/tQMcCXd/factory-l-scr2.jpg" />
