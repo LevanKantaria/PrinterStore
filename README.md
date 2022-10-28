@@ -17,7 +17,7 @@
    <img src="https://i.ibb.co/PtWLLn9/factory-l-scr1.jpg" />
   <img src="https://i.ibb.co/tQMcCXd/factory-l-scr2.jpg" />
    <img src="https://i.ibb.co/QCh15nq/factory-l-scr3.jpg" />
-      <img src="https://i.ibb.co/QCh15nq/factory-l-scr3.jpg" />
+      <img src=https://i.ibb.co/C8dvqjZ/mobile-1.jpg" />
 
    
 
