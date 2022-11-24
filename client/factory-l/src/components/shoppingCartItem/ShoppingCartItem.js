@@ -1,10 +1,18 @@
 import React from "react";
 import classes from "./ShoppingCartItem.module.css";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { cartActions } from "../../features/cart/cartSlice";
 
 const ShoppingCartItem = (props) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const onClickHandler = () =>{
+
+    dispatch(cartActions.removeItem(props.id))
+    navigate("/cart")
+  }
 
   return (
     <div className={classes.wrapper} >
@@ -34,7 +42,7 @@ const ShoppingCartItem = (props) => {
       </div>
       <div className={classes.removeButton}>
         <button
-          onClick={() => {dispatch(cartActions.removeItem(props.id))}}>Remove</button>
+          onClick={onClickHandler}>Remove</button>
       </div>
     </div>
   );
