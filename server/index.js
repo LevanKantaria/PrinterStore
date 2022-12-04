@@ -22,7 +22,7 @@ app.get('/api/test', (req,res) =>{
 })
 
 app.get('/', (req,res)=>{
-  res.send('Hello To Memories API')
+  res.send('Hello To Factory L  API')
 })
 
 const PORT = process.env.PORT || 5000;
