@@ -8,9 +8,9 @@ const initialState = {
   total: 0,
 };
 
-// if(localStorage.getItem('cart')){
-//   cartItems=JSON.parse(localStorage.getItem('cart'))
-// }
+if(localStorage.getItem('cart')){
+  initialState.cartItems=JSON.parse(localStorage.getItem('cart'))
+}
 
 const cartSlice = createSlice({
   name: "cart",

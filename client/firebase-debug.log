@@ -1,0 +1,107 @@
+[debug] [2022-11-25T15:10:45.416Z] ----------------------------------------------------------------------
+[debug] [2022-11-25T15:10:45.418Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\pilla\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2022-11-25T15:10:45.418Z] CLI Version:   11.4.2
+[debug] [2022-11-25T15:10:45.418Z] Platform:      win32
+[debug] [2022-11-25T15:10:45.418Z] Node Version:  v18.12.0
+[debug] [2022-11-25T15:10:45.419Z] Time:          Fri Nov 25 2022 19:10:45 GMT+0400 (Georgia Standard Time)
+[debug] [2022-11-25T15:10:45.419Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-11-25T15:10:45.424Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2022-11-25T15:10:45.460Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-11-25T15:10:45.460Z] > authorizing via signed-in user (l.kantaria1999@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\pilla\Desktop\factory-l\client
+
+[debug] [2022-11-25T15:10:46.021Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2022-11-25T15:10:46.021Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2022-11-25T15:11:04.619Z] > refreshing access token with scopes: []
+[debug] [2022-11-25T15:11:04.619Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2022-11-25T15:11:04.620Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2022-11-25T15:11:04.916Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2022-11-25T15:11:04.916Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2022-11-25T15:11:04.927Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2022-11-25T15:11:04.927Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"factory","name":"factory"}
+[debug] [2022-11-25T15:11:05.536Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 409
+[debug] [2022-11-25T15:11:05.536Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"error":{"code":409,"message":"Requested entity already exists","status":"ALREADY_EXISTS"}}
+[debug] [2022-11-25T15:11:05.779Z] FirebaseError: HTTP Error: 409, Requested entity already exists
+    at responseToError (C:\Users\pilla\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:49:12)
+    at RetryOperation._fn (C:\Users\pilla\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:288:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to create project because there is already a project with ID factory. Please try again with a unique project ID.
+[debug] [2022-11-25T15:11:21.648Z] ----------------------------------------------------------------------
+[debug] [2022-11-25T15:11:21.649Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\pilla\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2022-11-25T15:11:21.650Z] CLI Version:   11.4.2
+[debug] [2022-11-25T15:11:21.650Z] Platform:      win32
+[debug] [2022-11-25T15:11:21.650Z] Node Version:  v18.12.0
+[debug] [2022-11-25T15:11:21.651Z] Time:          Fri Nov 25 2022 19:11:21 GMT+0400 (Georgia Standard Time)
+[debug] [2022-11-25T15:11:21.651Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-11-25T15:11:21.657Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-11-25T15:11:21.657Z] > authorizing via signed-in user (l.kantaria1999@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\pilla\Desktop\factory-l\client
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2022-11-25T15:11:25.740Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2022-11-25T15:11:26.470Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2022-11-25T15:11:26.470Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project factory-l (factory-l) 
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[debug] [2022-11-25T15:11:47.219Z] ----------------------------------------------------------------------
+[debug] [2022-11-25T15:11:47.221Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\pilla\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2022-11-25T15:11:47.221Z] CLI Version:   11.4.2
+[debug] [2022-11-25T15:11:47.221Z] Platform:      win32
+[debug] [2022-11-25T15:11:47.222Z] Node Version:  v18.12.0
+[debug] [2022-11-25T15:11:47.222Z] Time:          Fri Nov 25 2022 19:11:47 GMT+0400 (Georgia Standard Time)
+[debug] [2022-11-25T15:11:47.222Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-11-25T15:11:47.228Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-11-25T15:11:47.229Z] > authorizing via signed-in user (l.kantaria1999@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\pilla\Desktop\factory-l\client
+

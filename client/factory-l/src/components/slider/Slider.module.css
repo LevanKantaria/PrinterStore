@@ -1,0 +1,13 @@
+.scale{
+    position: relative;
+    margin: 0;
+    bottom: 0px;
+    right: 10px;
+}
+
+.box{
+margin-top: 20px;    
+display: flex;
+align-items: center;
+
+}

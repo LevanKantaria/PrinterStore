@@ -1,4 +1,5 @@
 import "./App.css";
+import React, { Suspense } from 'react';
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
@@ -9,8 +10,9 @@ import Footer from "./components/footer/Footer";
 import UploadItem from "./components/uploadItem/UploadItem";
 import ProductPage from "./components/productPage/ProductPage";
 import ShoppingCartExpanded from "./components/shoppingCartExpnded/ShoppingCartExpanded";
-// import StlViewerV2 from "./components/stlViewer/StlViewerV2";
 import MarketplaceItemsList from "./components/marketplaceItemsList/MarketplaceItemsList";
+
+const StlViewerV2 = React.lazy(() => import('./components/stlViewer/StlViewerV2'));
 
 
 function App() {
@@ -19,7 +21,7 @@ function App() {
       <Navbar />  
       <Routes>
         <Route path="/" element={<Home />} />        
-        <Route path="/materials" element={<Materials />} />
+        <Route path="/materials" element={<Materials />} />        
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/about" element={<About />} />
         <Route path="/upload" element={<UploadItem />} />
@@ -28,8 +30,11 @@ function App() {
         <Route path="/products/:id" element={<ProductPage />} />
         <Route path="/cart" element={<ShoppingCartExpanded />} />
         <Route path="/cart/:id" element={<ShoppingCartExpanded />} />        
-        {/* <Route path="/quote" element={<StlViewerV2 />} />  */}
-        </Routes>
+        <Route path="/quote" element={
+           <Suspense fallback={<div>Loading...</div>}>
+              <StlViewerV2 />
+            </Suspense>} /> 
+      </Routes>
         <Footer />
       
     </div>

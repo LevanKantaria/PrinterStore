@@ -2,6 +2,8 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+  max-width: 1600px;
+  margin: auto;
 }
 
 .head{
@@ -24,8 +26,10 @@
 .sectionsDiv {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
+  max-width: 1600px;
+  margin: auto;
 }
 
 .image {

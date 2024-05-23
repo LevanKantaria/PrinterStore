@@ -1,8 +1,15 @@
-/* .canvas{
+.canvas{
+    box-sizing: border-box;
     background-color: rgba(37, 37, 37, 0.082);
-    width: 50%;
-    position: relative;
-    top: 200px;
+    width: 90%;
+    max-width: 860px;
+    max-height: 500px;
+    margin: 10px auto;
+    border: solid 3px #ff4b5a4b;
+    
+    margin-bottom: 20px;
+    overflow: hidden;
+   
    
 
 }
@@ -13,4 +20,4 @@ width: 80%;
 margin: auto;
 
 }
- */
+

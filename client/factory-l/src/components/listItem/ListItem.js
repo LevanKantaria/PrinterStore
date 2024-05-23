@@ -14,7 +14,7 @@ function ListItem(props) {
   return (
     <section className={classes.sections}>
     <div className={classes.image}>
-      <img src={props.image} width={props.width} height={props.height} loading='lazy' />
+      <img src={props.image} width={props.width} style={{objectFit:'cover'}} height={props.height} alt={props.title} />
       </div>
       <span>{props.title}</span>
       <p>

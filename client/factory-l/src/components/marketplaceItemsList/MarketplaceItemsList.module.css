@@ -20,14 +20,40 @@
     width: 100%;
 }
 .category h3{
-    margin: 20px;
-    font-size: 24px;
+    margin:  20px 0;
+    font-size: 20px;
     font-family: "Archivo Black", sans-serif;
+    display: flex;
+    justify-content: start;
+    text-align: left;
     color: rgb(42, 41, 48);
 }
 .category h3 a{
+    margin:auto 12px auto 0;
    color: rgb(26, 55, 150);
    
+}
+
+.marketplaceItemPlaceholder{
+  height: 185px;
+  width: 250px;
+  background-color: rgba(128, 128, 128, 0.61);
+  border-radius: 12px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+.marketplaceItemPlaceholderText{
+  height: 15px;
+  width: 200px;
+  background-color: rgba(128, 128, 128, 0.61);
+  border-radius: 12px;
+  animation: pulse 1.5s infinite ease-in-out;
+  margin-top: 10px;
+}
+
+@keyframes pulse {
+  0% {opacity: 1; }
+  50%  {opacity: 0.5;}
+  100% {opacity: 1;}
 }
 
   @media(max-width: 1024px){

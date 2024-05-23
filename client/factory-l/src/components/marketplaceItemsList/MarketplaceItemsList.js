@@ -4,10 +4,13 @@ import MarketplaceItem from "../marketplaceItem/MarketplaceItem";
 import axios from "axios";
 import { useParams } from "react-router";
 import CircularIndeterminate from "../circularProgress/CircularProgress";
+import { API_URL } from "../../API_URL";
 import { Link } from "react-router-dom";
+import Marketplace from '../../pages/Marketplace';
+import MarketplaceItemSkeleton from "./MarketplaceItemSkeleton";
 
 
-const API_URL ='https://factory-l.herokuapp.com/'
+// const API_URL ='https://factory-l.herokuapp.com/'
 
 
 
@@ -15,8 +18,6 @@ const MarketplaceItemsList = () => {
   const params = useParams();
   let category = params.category;
   let subCategory = params.subCategory;
-  console.log(category);
-  console.log(subCategory);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   let marketplaceItems = [];
@@ -36,7 +37,6 @@ const MarketplaceItemsList = () => {
         })
         .then((res) => {
           setItems(res.data);
-          console.log(res.data);
           setLoading(false);
         });
     } else if (subCategory) {
@@ -49,7 +49,6 @@ const MarketplaceItemsList = () => {
         })
         .then((res) => {
           setItems(res.data);
-          console.log(res.data);
           setLoading(false);
         });
     }
@@ -78,11 +77,14 @@ const MarketplaceItemsList = () => {
       <div className={classes.category}>
         <h3>
           {" "}
+          <Link to={'/marketplace'}>Marketplace</Link>{" "}
+
           <Link to={categoryLink}>{category}</Link>{" "}
           {subCategory}
         </h3>
       </div>
-      {loading && <CircularIndeterminate />}
+      {loading && <MarketplaceItemSkeleton/>
+}
       <div className={classes.grid}>{marketplaceItems}</div>
     </div>
   );

@@ -1,8 +1,8 @@
-/* .main{
+.main{
     width: 100%;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    /* align-items: center; */
     justify-content: space-around;
     background-color: rgb(22, 40, 80);
     border-radius: 10px;
@@ -10,13 +10,26 @@
     color: white;
     font-family: 'Karla', sans-serif;
     font-size: 20px;
+    max-width: 860px ;
+    margin: auto;
 }
 
-.materrials{
+.materials{
     display: flex;
-    flex-direction: column;     
+    flex-direction: column;
+    line-height: 40px;
+
+
+    
 }
 
+.volume__scale{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    
+    align-items: flex-start;
+}
 .materialList{
     display: flex;
     flex-direction: row;
@@ -27,6 +40,8 @@
 .orderButton{
     text-align: right;
     margin: 20px;
+    max-width: 860px ;
+    margin: 20px auto;
 }
 
 @media(max-width: 1024px){
@@ -41,4 +56,4 @@
         text-align: left;
         margin: 20px;
     }
-} */
+}

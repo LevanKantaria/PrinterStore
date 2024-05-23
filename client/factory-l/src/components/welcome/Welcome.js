@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import CustomButton from "../customButton/CustomButton";
 
 
+
 function Welcome() {
 
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function Welcome() {
           </div>
           <div className={classes.buttons}>
            <CustomButton 
-          //  onClick={()=>{navigate('/quote')}}
+           onClick={()=>{navigate('/quote')}}
            name='quote'
            text='Get a Quote'
            width='200px'/>
@@ -30,10 +31,13 @@ function Welcome() {
         </article>
 
         <div className={classes.image}>
-          
-        {/* <img src="https://i.ibb.co/QJRPZvd/welcome-logo-tra.webp" alt="welcome-logo-tra" border="0" loading="lazy"> */}
-
-          {/* </img> */}
+            <iframe width="100%" height="100%" 
+              src="https://www.youtube.com/embed/W0ERmrYaDqg?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&loop=1&playlist=W0ERmrYaDqg"
+              title="YouTube video player" 
+              frameborder="0" 
+              allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
+              style={{borderRadius: '10px'}}
+            ></iframe>
         </div>
       </div>
     </div>

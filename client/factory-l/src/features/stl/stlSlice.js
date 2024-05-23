@@ -10,7 +10,6 @@ const stlSlice = createSlice({
   reducers: {
     uploadFile: (state, action) => {
         state.file = action.payload;
-        console.log(state.file)
 
     },
   },

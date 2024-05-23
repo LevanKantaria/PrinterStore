@@ -1,0 +1,28 @@
+.main {
+    margin: 32px auto 64px;
+    width: calc(100% - 112px);
+    display: flex;
+    text-align: left;
+    flex-direction: column;
+}
+
+.header {
+    font-size: 28px;
+}
+
+.trendingContainer {
+    width: 100%;
+    border-radius: 8px;
+    height: 400px;
+}
+
+.grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 2rem;
+    row-gap: 9rem;
+     margin: auto;
+    
+    /* justify-content: center; */
+  }

@@ -16,7 +16,7 @@ export const Why3D = () => {
           title="Reduce Assembly Time"
         />
         <ListItem
-          image="https://i.ibb.co/r6MrG30/clock-drawing.webp"
+          image="https://i.ibb.co/FYMxZGN/3d-Pirnter-drawing.webp"
           width="225"
           height="200"
           text=" Working on a project for a customer that has to be just right? Get

@@ -1,12 +1,16 @@
 import { useSelector } from "react-redux";
-import { useState } from "react";
 import ShoppingCartItem from "../shoppingCartItem/ShoppingCartItem";
 import CustomButton from "../customButton/CustomButton";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import classes from "./ShoppingCartExpanded.module.css";
+import { API_URL } from "../../API_URL";
+import axios from "axios";
+
 
 let total = 0;
+// const API_URL = 'http://localhost:5000/'
+
 const ShoppingCartExpanded = () => {
   const params = useParams();
   const id = params.id;
@@ -60,6 +64,16 @@ const ShoppingCartExpanded = () => {
     );
   }
 
+  const checkoutHandler = () =>{
+console.log(cartItems)
+axios.post(`${API_URL}checkout`, cartItems).then(res =>{
+  console.log(res.data.url)
+  if(res.data.url){
+    window.location.assign(res.data.url)
+  }
+  
+})
+  }
   return (
     <div className={classes.main}>
       <div className={classes.items}>
@@ -69,7 +83,7 @@ const ShoppingCartExpanded = () => {
       </div>
       <div className={classes.checkout}>
         <h2>Subtotal:${sum.toFixed(2)}</h2>
-        <CustomButton text="Checkout" width="90%" />
+        <CustomButton text="Checkout" width="90%" onClick={checkoutHandler} />
       </div>
     </div>
   );

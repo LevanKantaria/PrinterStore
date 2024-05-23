@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { cartActions } from "../../features/cart/cartSlice";
 import { useNavigate } from "react-router";
+import ProductSkeleton from "./ProductSkeleton";
 
 const API_URL = "https://factory-l.herokuapp.com/";
 
@@ -15,6 +16,7 @@ const ProductPage = () => {
   const dispatch = useDispatch();
   const params = useParams();
   let id = params.id;
+  const [loading, setLoading] = useState(true)
   const [item, setItem] = useState({});
   const [quantity, setQuantity] = useState(1);
 
@@ -26,6 +28,7 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
+    setLoading(true)
     axios
       .get(API_URL + "api/products", {
         params: {
@@ -34,9 +37,8 @@ const ProductPage = () => {
       })
       .then((res) => {
         setItem(res.data[0]);
-        console.log(res.data[0]);
+        setLoading(false);
 
-        //   setLoading(false);
       });
   }, []);
 
@@ -44,11 +46,14 @@ const ProductPage = () => {
 let linkToSubCategory=`/marketplace/${item.category +'/'+item.subCategory}`;
 
 
+
   return (
     <div className={classes.main}>
       <div className={classes.breadCrumbs}>
+        <Link to='/marketplace'>Marketplace </Link>
         <Link to={linkToSubCategory}>{item.subCategory} </Link>
       </div>
+      {loading && <ProductSkeleton />}
       <div className={classes.imageAndDescription}>
         <div className={classes.image}>
           <img src={item.image} />

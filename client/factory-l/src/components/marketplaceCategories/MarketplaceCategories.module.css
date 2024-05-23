@@ -11,17 +11,17 @@
     text-align: left;
     position: relative;
     font-size: 28px;
-    left: 52px;
     font-weight: 600;
     font-family: "Archivo Black", sans-serif;
     color: #0E1A41;
 }
 .title h2{
     margin-top: -20px;
+    font-size: 25px;
 }
 .categoriesList a{
     color: rgb(4, 30, 63);
-    margin: 0px;
+    margin: 0;
 }
 .categoriesList a:hover{
     color: #FF4B5A;
@@ -30,17 +30,22 @@
 .content{
     width: 100%;
     padding: 20px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 .categoriesList{
     font-weight: 600;
     width: 215px ;
-    margin: 0px 0px 10px;
+    margin: 6px 0px 12px 56px;
 }
 .categoriesList h6{
+    text-align: left;
     color:#5e656b;
     margin: 0px 0px 10px;
-    font-size: 20px;
+    font-size: 0.87rem;
 
 }
 .categoriesList ul{
@@ -49,8 +54,7 @@
      list-style-type: none; 
      display: flex;
      flex-direction: column;
-     margin-left: 35px;
-     font-size: 18px;
+     font-size: 15px;
 
 }
 
@@ -74,7 +78,7 @@
   .categoriesWithImages{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     width: 100%;
 
   }
@@ -94,7 +98,7 @@
     .categoriesWithImages{
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
+        justify-content: space-between;
         width: 100%;
     
       }
@@ -103,7 +107,7 @@
         text-align: center;
         position: relative;
         font-size: 18px;
-        left: 0px;
+        margin: auto;
         font-weight: 400;
         
     }

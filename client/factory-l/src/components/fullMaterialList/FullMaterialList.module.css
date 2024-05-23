@@ -2,6 +2,8 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+  max-width: 1600px;
+  margin: auto;
 }
 
 .head{

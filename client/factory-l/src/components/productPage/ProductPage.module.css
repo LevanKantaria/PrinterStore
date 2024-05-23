@@ -1,18 +1,17 @@
 .main{
     width: 100%;
-    max-width: 980px ;
+    max-width: calc(100% - 112px) ;
     display: flex;
     flex-direction: column;
     margin: auto;
     font-family: 'Karla', sans-serif;
-    margin-top: 50px;
+    padding-top: 75px;
 
 }
 
 
 .breadCrumbs{
     font-family: 'Archivo Black', sans-serif;
-
     width: 100%;
     height: 35px;
     text-align: left;
@@ -23,6 +22,7 @@
     color: rgb(35, 35, 99);
     font-size: 20px;
     text-align: left;
+    margin: auto 12px auto 0;
     
 }
 

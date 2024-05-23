@@ -38,7 +38,7 @@ const Footer = () => {
                 <p> <a  href=""> For Students</a></p>
               </div>
             <div className={classes.footerColumn} >
-                <h2>Shapeways</h2>
+                <h2>Factory L</h2>
                 <p> <a  href=""> About</a></p>
                 <p> <a  href=""> Blog</a></p>
                 <p> <a  href=""> Press</a></p>
