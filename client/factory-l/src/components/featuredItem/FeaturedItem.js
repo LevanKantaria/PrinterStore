@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import MarketplaceItem from "../marketplaceItem/MarketplaceItem";
 import axios from "axios";
 import { API_URL } from "../../API_URL";
-import { Link } from "react-router-dom";
-import Marketplace from '../../pages/Marketplace';
+
 
 const FeaturedItem = () => {
 
-    let category = 'tech';
+    let category = 'household';
     let subCategory = '';
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -54,7 +53,7 @@ const FeaturedItem = () => {
             category={item.category}
             subCategory={item.subCategory}
             id={item._id}
-            image={item.image}
+            images={item.images}
             price={item.price}
             creator={item.creator}
             key={Math.random()}
@@ -67,10 +66,9 @@ const FeaturedItem = () => {
     
   return (
     <div className={classes.main}>
-        <h2 className={classes.header}>Check out trending products </h2>
+        <h2 className={classes.header}>Trending </h2>
         <div className={classes.trendingContainer}>
         <div className={classes.grid}>{marketplaceItems}</div>
-
         </div>
     </div>
   )

@@ -1,6 +1,79 @@
 .App {
   text-align: center;
-  font-family: 'Roboto Flex', sans-serif;
+  font-family: "Raleway", sans-serif;
   margin: auto;
+  background-color: rgba(128, 128, 128, 0.144);
 }
+
+:root {
+
+  --radius-sm: 8px;
+  --radius-m: 12px;
+  --radius-l: 16px;
+
+  --color-primary: #264653;
+
+
+
+  --color-secondary: #e9c46a;
+  --color-secondary-tr-80: hsla(43, 73%, 66%, 0.315);
+
+  --color-black : #000000;
+  --color-black-tr-30 : #000000b6;
+  --color-black-tr-80 : #00000041;
+  --color-black-tr-90 : #00000018;
+
+
+  --color-white: #FFFFFF;
+
+
+
+  --color-red: #e76f51;
+  --color-primary: #264653;
+
+
+
+  --color-secondary: #e9c46a;
+  --color-secondary-tr-80: hsla(43, 73%, 66%, 0.315);
+
+  --color-black : #000000;
+  --color-black-tr-30 : #000000b6;
+  --color-black-tr-80 : #00000041;
+
+
+  --color-white: #FFFFFF;
+  --color-white-tr-20: #ffffffda;
+  --color-white-tr-30: #ffffffb4;
+  --color-white-tr-80: #ffffff44;
+
+
+
+  --color-red: #e76f51;
+
+  --app-max-width : 1302px
+
+  
+}
+
+@media (max-width: 1550px) {
+  :root  {
+    --app-max-width : calc(100vw - 64px);
+  }
+}
+@media (max-width: 1200px) {
+  :root  {
+    --app-max-width : calc(100vw - 48px);
+  }
+}
+@media (max-width: 768px) {
+  :root  {
+    --app-max-width : calc(100vw - 48px);
+  }
+}
+@media (max-width: 440px) {
+  :root  {
+    /* --app-max-width : 100vw; */
+  }
+}
+
 

@@ -4,24 +4,88 @@ import CategoryItem from "./helpers/CategoryItem";
 import { Link } from "react-router-dom";
 
 const MarketplaceCategories = () => {
+  const categories = [
+    {
+      item1: "Plants",
+      item2: "Decorations",
+      item3: "Kitchen",
+      link1: "household/plants",
+      link2: "household/decorations",
+      link3: "household/kitchen",
+      title: "Household",
+      link: "household",
+      image:
+        "https://makerworld.bblmw.com/makerworld/model/USd7042754b003df/design/2023-09-26_h3xo6mywhubc.jpg?image_process:resize,w_1920/format,webp",
+    },
+    {
+      item1: "Keychains",
+      item2: "Accessories",
+      item3: "Good to haves",
+      link1: "cars/keychains",
+      link2: "cars/accessories",
+      link3: "cars/good-to-haves",
+      title: "Cars",
+      link: "cars",
+      image:
+        "https://makerworld.bblmw.com/makerworld/model/US3c7248c060c601/design/2024-05-13_709ae3a00dcb7.jpg?image_process=resize,w_1920/format,webp",
+    },
+    {
+      item1: "Organizers",
+      item2: "Decoration",
+      item3: "Fidgets",
+      link1: "office/organizers",
+      link2: "office/decoration",
+      link3: "office/fidgets",
+      title: "Office",
+      link: "office",
+      image:
+        "https://makerworld.bblmw.com/makerworld/model/USbb911d7e3d1771/design/2023-12-22_f931be163f122.jpg?image_process=resize,w_1000/format,webp",
+    },
+    {
+      item1: "Cars",
+      item2: "Cameras",
+      item3: "Drones",
+      link1: "tech/cars",
+      link2: "tech/cameras",
+      link3: "tech/drones",
+      title: "Tech",
+      link: "tech",
+      image:
+        "https://static1.sw-cdn.net/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=1920/files/cms/homepage/tech-categoryheader-rc-cars3.jpg",
+    },
+    {
+      item1: "Dice",
+      item2: "Toys",
+      item3: "Board Games",
+      link1: "games/dice",
+      link2: "games/toys",
+      link3: "games/board-games",
+      title: "Games",
+      link: "games",
+      image:
+        "https://images1.sw-cdn.net/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=1920/product/picture/625x465_11550233_2738927_1459344027.jpg",
+    },
+    {
+      item1: "Figurines",
+      item2: "Vehicles",
+      item3: "Ships",
+      link1: "miniatures/figurines",
+      link2: "miniatures/vehicles",
+      link3: "miniatures/ships",
+      title: "Miniatures",
+      link: "miniatures",
+      image:
+        "https://images1.sw-cdn.net/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=1920/product/picture/625x465_13553413_8232332_1462019511.jpg",
+    },
+  ];
+
   return (
     <div className={classes.main}>
       <section className={classes.categoriesList}>
-        <h6>Categories</h6>
         <ul>
-          <li>
-            <div className={classes.arrow}> </div>
-            <Link to="tech">Tech</Link>
-          </li>
-
-          <li>
-            <div className={classes.arrow}> </div>
-            <Link to="games">Games</Link>
-          </li>
-          <li>
-            <div className={classes.arrow}> </div>
-            <Link to="miniatures">Miniatures</Link>
-          </li>
+          {categories.map((category) => 
+            <Link to={category.link}><li>{category.title}</li></Link>
+          )}
         </ul>
       </section>
       <section className={classes.content}>
@@ -29,40 +93,18 @@ const MarketplaceCategories = () => {
           <h2>Factory L 3D Printing Marketplace</h2>
         </div>
         <div className={classes.categoriesWithImages}>
-          <CategoryItem
-            item1="Cars"
-            item2="Cameras"
-            item3="Drones"
-            link1="tech/cars"
-            link2="tech/cameras"
-            link3="tech/drones"
-            title="Tech"
-            link="tech"
-            image="https://static1.sw-cdn.net/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=1920/files/cms/homepage/tech-categoryheader-rc-cars3.jpg"
-          />
-
-          <CategoryItem
-            item1="Dice"
-            item2="Toys"
-            item3="Board Games"
-            link1="games/dice"
-            link2="games/toys"
-            link3="games/board-games"
-            title="Games"
-            link="games"
-            image="https://images1.sw-cdn.net/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=1920/product/picture/625x465_11550233_2738927_1459344027.jpg"
-          />
-          <CategoryItem
-            item1="Figurines"
-            item2="Vehicles"
-            item3="Ships"
-            link1="miniatures/figurines"
-            link2="miniatures/vehicles"
-            link3="miniatures/ships"
-            title="Miniatures"
-            link="miniatures"
-            image="https://images1.sw-cdn.net/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=1920/product/picture/625x465_13553413_8232332_1462019511.jpg"
-          />
+          {categories.map((category) => <CategoryItem 
+           item1={category.item1}
+           item2={category.item2}
+           item3={category.item3}
+           link1={category.link1}
+           link2={category.link2}
+           link3={category.link3}
+           title={category.title}
+           link={category.link}
+           image={category.image}/>
+           )}
+         
         </div>
       </section>
     </div>

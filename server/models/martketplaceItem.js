@@ -22,8 +22,8 @@ const marketplaceItemSchema = mongoose.Schema({
     trim: true,
     maxlength: 15,
   },
-  image: {
-    type: String,
+  images: {
+    type: Array,
     required: true,
     minlength: 3,
     trim: true,

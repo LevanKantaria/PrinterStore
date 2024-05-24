@@ -1,69 +1,84 @@
-.main{
-    display: flex;
-    flex-direction: row;   
-    
-    padding-top: 75px;
-    font-family: 'Montserrat', sans-serif;
-    /* padding: 20px; */
-
+.main {
+  display: flex;
+  flex-direction: row;
+  padding: 24px;
+  padding-top: 48px;
+  font-family: "Mulish", sans-serif;
+  /* padding: 20px; */
+  max-width: var(--app-max-width);
+  margin: 48px auto;
+  border-radius: 24px;
+  background-color: var(--color-white);
+  box-sizing: border-box;
 }
-.title{
-    text-align: left;
-    position: relative;
-    font-size: 28px;
-    font-weight: 600;
-    font-family: "Archivo Black", sans-serif;
-    color: #0E1A41;
+.title {
+  text-align: left;
+  position: relative;
+  font-size: 28px;
+  font-weight: 600;
+  font-family: "Mulish", sans-serif;
+  color: #0e1a41;
 }
-.title h2{
-    margin-top: -20px;
-    font-size: 25px;
-}
-.categoriesList a{
-    color: rgb(4, 30, 63);
-    margin: 0;
-}
-.categoriesList a:hover{
-    color: #FF4B5A;
-    margin: 0px;
-}
-.content{
-    width: 100%;
-    padding: 20px 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+.title h2 {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: -20px;
+  margin-left: 12%;
+  margin-bottom: 48px;
+  font-size: 25px;
 }
 
-.categoriesList{
-    font-weight: 600;
-    width: 215px ;
-    margin: 6px 0px 12px 56px;
-}
-.categoriesList h6{
-    text-align: left;
-    color:#5e656b;
-    margin: 0px 0px 10px;
-    font-size: 0.87rem;
-
-}
-.categoriesList ul{
-    text-align: left;
-    margin: 0px;
-     list-style-type: none; 
-     display: flex;
-     flex-direction: column;
-     font-size: 15px;
-
+.categoriesList {
+  font-weight: 400;
+  width: 200px;
+  margin: 0;
 }
 
-.categoriesList li{
-   margin:10px -15px;
-
+.categoriesList a {
+  color: var(--color-primary);
+  margin: 0;
 }
 
-.arrow {
+.content {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.categoriesList h6 {
+  text-align: left;
+  color: #5e656b;
+  margin: 0px 0px 10px;
+  font-size: 0.87rem;
+}
+.categoriesList ul {
+  text-align: left;
+  margin: 0px;
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  padding: 0;
+}
+
+.categoriesList li {
+  border: 1px solid var(--color-black-tr-80);
+  padding: 4px 16px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-size: large;
+  margin: 10px 0;
+}
+
+.categoriesList li:hover {
+  cursor: pointer;
+  background-color: var(--color-black-tr-90);
+}
+
+/* .arrow {
     width: 6px;
     height: 6px;
     border: 2px solid #0b2546;
@@ -73,47 +88,64 @@
     position: relative;
     top : 15px;
     left: -15px
+  } */
+
+.categoriesWithImages {
+  margin: auto;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  row-gap: 24px;
+  flex-direction: row;
+  justify-content: space-between;
+  column-gap: auto;
+  width: 90%;
+  box-sizing: border-box;
+}
+
+.categoryItem {
+  height: 500px;
+  background-color: grey;
+  width: auto;
+}
+
+@media (max-width: 1200px) {
+.main {
+    padding-top: 24px;
+}
+  .categoriesList {
+    display: none;
   }
 
-  .categoriesWithImages{
+  .categoriesWithImages {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     width: 100%;
-
   }
 
-  .categoryItem{
-    height: 500px;
-    background-color: grey;
-    width: auto;
+  .title {
+    text-align: center;
+    font-size: 18px;
+    margin: auto;
+    font-weight: 400;
   }
 
-  @media (max-width:1200px){
+  .title h2 {
+    box-sizing: border-box;
+    width: fit-content;
+    margin: auto;
+    margin-bottom: 48px;
+  }
 
-    .categoriesList{
-        display: none;
-    }
+  .content {
+    width: 100%;
+    padding: 20px 10px;
+  }
 
-    .categoriesWithImages{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        width: 100%;
-    
-      }
-
-      .title{
-        text-align: center;
-        position: relative;
-        font-size: 18px;
-        margin: auto;
-        font-weight: 400;
-        
-    }
-
-    .content{
-        width: 100%;
-        padding: 20px 10px;
+  @media (max-width: 668px) {
+    .main {
+        max-width: 100%;
+        padding: 0;
     }
   }
+}

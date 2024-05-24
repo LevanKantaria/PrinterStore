@@ -12,7 +12,8 @@ function Welcome() {
     <div className={classes.main}>
       <div className={classes.welcomeArticleAndImage}>
         <article className={classes.article}>
-          <h1>3D Printing Service</h1>
+          
+          <div className={classes.title}><h1>3D Printing Service</h1></div>
           <div className={classes.pAndBox}>
             <div className={classes.verticalBox}> </div>
             <p>

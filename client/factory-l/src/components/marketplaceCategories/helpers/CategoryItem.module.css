@@ -1,23 +1,25 @@
 .main {
-  width: 20vw;
+  max-width: 300px;
   background-color: rgba(128, 128, 128, 0.075);
   /* height: 500px; */
   display: flex;
   flex-direction: column;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Mulish", sans-serif;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .main h3 a {
-  color:rgb(4, 30, 63);
+  color: var(--color-black-tr-30);
   font-size: 35px;
   font-weight: 600;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: "Mulish", sans-serif;
 
 }
 
 .main  a:hover {
-    color:#FF4B5A;
-    border-bottom: solid 2px #FF4B5A;
+  color: var(--color-red);
+  border-bottom: solid 2px var(--color-red);
   
   
   }
@@ -47,14 +49,14 @@
 
 @media(max-width:1200px){
   .main {
-    width: 80vw;
+    max-width: 80vw;
     background-color: rgba(128, 128, 128, 0.075);
     /* height: 500px; */
     display: flex;
     margin: auto;
     margin-bottom: 50px;
     flex-direction: column;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Mulish", sans-serif;
   }
 
 }

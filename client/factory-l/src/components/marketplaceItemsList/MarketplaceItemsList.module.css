@@ -1,15 +1,16 @@
 .wrapper{
     padding: 60px;
+    max-width: var(--app-max-width);
+    margin: auto;
 }
 
 .grid {
-    max-width: 1400px;
     display: grid;
     width: 100%;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     column-gap: 2rem;
     row-gap: 9rem;
-     margin: auto;
+     margin: auto 0;
     
     /* justify-content: center; */
   }
@@ -76,9 +77,9 @@
       }
   }
 
-  @media(max-width: 450px){
+  @media(max-width: 668px){
     .grid {
-       
+      grid-template-columns:  1fr;
         row-gap: 2rem; 
       }
   } 

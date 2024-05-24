@@ -9,7 +9,8 @@ import { cartActions } from "../../features/cart/cartSlice";
 import { useNavigate } from "react-router";
 import ProductSkeleton from "./ProductSkeleton";
 
-const API_URL = "https://factory-l.herokuapp.com/";
+// const API_URL = "https://factory-l.herokuapp.com/";
+const API_URL = "http://localhost:5000/";
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ let linkToSubCategory=`/marketplace/${item.category +'/'+item.subCategory}`;
       {loading && <ProductSkeleton />}
       <div className={classes.imageAndDescription}>
         <div className={classes.image}>
-          <img src={item.image} />
+          <img src={item.images[0]} />
         </div>
         <div className={classes.rightDiv}>
           <h1 className={classes.itemName}> {item.name}</h1>

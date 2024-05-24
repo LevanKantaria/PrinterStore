@@ -62,7 +62,7 @@ const MarketplaceItemsList = () => {
         category={item.category}
         subCategory={item.subCategory}
         id={item._id}
-        image={item.image}
+        images={item.images || item.image}
         price={item.price}
         creator={item.creator}
         key={Math.random()}

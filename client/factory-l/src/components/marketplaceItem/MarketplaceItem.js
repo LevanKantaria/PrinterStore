@@ -10,27 +10,32 @@ const MarketplaceItem = (props) => {
     navigate("/products/" + id);
   };
   return (
-    // <div className={classes.itemCard} onClick={clickHandler}>
-    //   <img src={props.image} width="100%" alt={props} />
-    //   <span className={classes.itemName}>{props.name}</span>
-    //   <div>
-    //     <span className={classes.price}>${props.price}</span> by{" "}
-    //     <span className={classes.creator}>{props.creator}</span>
-    //   </div>
-    // </div>
+    <div className={classes.itemCard} onClick={clickHandler}>
+      <div class={classes.imgWrapper}>
 
-    <div className={classes.container}>
-    <div className={classes.card}>
-      <div className={classes.image}>
-        <img src={props.image} />
+        <img className={classes.image} src={props.images[0]} width="100%" alt={props.name} />
       </div>
-      <div class src={props.content}>
-        <h3>   <span className={classes.itemName}>{props.name}</span>
-</h3>
-<span className={classes.price}>${props.price}</span> by{" "}
-    <span className={classes.creator}>{props.creator}</span>      </div>
-    </div>    
-  </div>
+      <div className={classes.infoWrapper}>
+        <span className={classes.itemName}>{props.name}</span>
+        <div>
+          <span className={classes.price}>${props.price}</span> by{" "}
+          <span className={classes.creator}>{props.creator}</span>
+        </div>
+      </div>
+    </div>
+
+    //     <div className={classes.container}>
+    //     <div className={classes.card}>
+    //       <div className={classes.image}>
+    //         <img src={props.image} />
+    //       </div>
+    //       <div class src={props.content}>
+    //         <h3>   <span className={classes.itemName}>{props.name}</span>
+    // </h3>
+    // <span className={classes.price}>${props.price}</span> by{" "}
+    //     <span className={classes.creator}>{props.creator}</span>      </div>
+    //     </div>
+    //   </div>
   );
 };
 

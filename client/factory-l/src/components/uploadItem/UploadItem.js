@@ -7,7 +7,8 @@ import CustomButton from '../customButton/CustomButton';
 import DragAndDrop from '../dragAndDrop/DragAndDrop';
 
 
-const API_URL ='https://factory-l.herokuapp.com/'
+// const API_URL ='https://factory-l.herokuapp.com/'
+const API_URL ='http://localhost:5000/'
 
 const UploadItem = () => {
 
@@ -15,7 +16,7 @@ const UploadItem = () => {
     const [item,setItem] = useState({
         name:'',
         category:'',
-        image:'123456',
+        images:[],
         price:'',
         creator:'levani',
         subCategory:'',
@@ -30,7 +31,7 @@ const UploadItem = () => {
             setItem({
                 name:'',
             category:'',
-            image:'123456',
+            images:'123456',
             price:'',
             creator:'levani',
             subCategory:''
@@ -38,6 +39,7 @@ const UploadItem = () => {
         })
         
     }
+    
 
   return (
     <div className={classes.wrapper}>
@@ -52,9 +54,10 @@ const UploadItem = () => {
     <TextField margin="dense" id='subCategory'label='subCategory'onChange={(e)=>{setItem({...item, subCategory:e.target.value})}}/>
     <TextField margin="dense" id='price' label='price' onChange={(e)=>{setItem({...item, price:e.target.value})}} />
     <TextField margin="dense" id='description'label='description'onChange={(e)=>{setItem({...item, description:e.target.value})}}/>
-    <DragAndDrop onChange={(e)=>{setItem({...item, image:e})}}
-    text='Choose an Image or drag it here:'
-    />
+    <DragAndDrop
+        onChange={(images, hasFiles) => setItem({ ...item, images })}
+        text="Choose images or drag them here:"
+      />
 
     <CustomButton
     onClick={submitHandler} 
