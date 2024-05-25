@@ -84,7 +84,8 @@ const MarketplaceCategories = () => {
       <section className={classes.categoriesList}>
         <ul>
           {categories.map((category) => 
-            <Link to={category.link}><li>{category.title}</li></Link>
+            <Link           key={Math.random()}
+            to={category.link}><li>{category.title}</li></Link>
           )}
         </ul>
       </section>
@@ -94,6 +95,7 @@ const MarketplaceCategories = () => {
         </div>
         <div className={classes.categoriesWithImages}>
           {categories.map((category) => <CategoryItem 
+          key={Math.random()}
            item1={category.item1}
            item2={category.item2}
            item3={category.item3}

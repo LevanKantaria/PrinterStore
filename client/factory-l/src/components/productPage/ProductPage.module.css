@@ -28,17 +28,42 @@
 
 .imageAndDescription{
     background-color: var(--color-white);
-    padding: 48px 24px;
+    padding: 24px 36px;
     box-sizing: border-box;
     border-radius: 16px;
     display: flex;
     flex-direction: row;
 }
 
-.image img{
-   width: 100%;
-   max-width: 630px;
-}
+.image {
+    width: 100%;
+    max-width: 630px;
+  }
+  
+  .image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .slick-slider {
+    margin: 0 auto;
+    max-width: 630px;
+  }
+  
+  .slick-slide img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  
+  .slick-list {
+    overflow: hidden;
+  }
+  
+  .slick-track {
+    display: flex;
+  }
 
 .rightDiv{
     width: auto;
@@ -126,6 +151,7 @@
 font-size: 15px;
     margin: 20px;
     max-width: 250px;
+    margin-bottom: 0;
 }
 
 

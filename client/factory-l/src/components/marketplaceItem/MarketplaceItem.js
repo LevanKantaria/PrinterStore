@@ -11,8 +11,7 @@ const MarketplaceItem = (props) => {
   };
   return (
     <div className={classes.itemCard} onClick={clickHandler}>
-      <div class={classes.imgWrapper}>
-
+      <div className={classes.imgWrapper}>
         <img className={classes.image} src={props.images[0]} width="100%" alt={props.name} />
       </div>
       <div className={classes.infoWrapper}>

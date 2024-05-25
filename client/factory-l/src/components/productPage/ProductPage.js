@@ -1,15 +1,14 @@
+// ProductPage.js
+import React, { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import axios from "axios";
 import classes from "./ProductPage.module.css";
 import CustomButton from "../customButton/CustomButton";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useParams } from "react-router";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { cartActions } from "../../features/cart/cartSlice";
-import { useNavigate } from "react-router";
 import ProductSkeleton from "./ProductSkeleton";
+import SimpleSlider from "./SimpleSlider";
 
-// const API_URL = "https://factory-l.herokuapp.com/";
 const API_URL = "http://localhost:5000/";
 
 const ProductPage = () => {
@@ -17,36 +16,29 @@ const ProductPage = () => {
   const dispatch = useDispatch();
   const params = useParams();
   let id = params.id;
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const [item, setItem] = useState({});
   const [quantity, setQuantity] = useState(1);
 
   const clickHandler = (e) => {
     e.preventDefault();
-    console.log(item);
     dispatch(cartActions.addItem(item));
-    navigate(`/cart/${item._id}`)
+    navigate(`/cart/${item._id}`);
   };
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     axios
       .get(API_URL + "api/products", {
-        params: {
-          id: id,
-        },
+        params: { id: id },
       })
       .then((res) => {
         setItem(res.data[0]);
         setLoading(false);
-
       });
-  }, []);
+  }, [id]);
 
-
-let linkToSubCategory=`/marketplace/${item.category +'/'+item.subCategory}`;
-
-
+  let linkToSubCategory = `/marketplace/${item.category + '/' + item.subCategory}`;
 
   return (
     <div className={classes.main}>
@@ -57,7 +49,9 @@ let linkToSubCategory=`/marketplace/${item.category +'/'+item.subCategory}`;
       {loading && <ProductSkeleton />}
       <div className={classes.imageAndDescription}>
         <div className={classes.image}>
-          <img src={item.images[0]} />
+          {item?.images?.length > 0 && (
+            <SimpleSlider images={item.images} />
+          )}
         </div>
         <div className={classes.rightDiv}>
           <h1 className={classes.itemName}> {item.name}</h1>
@@ -69,10 +63,6 @@ let linkToSubCategory=`/marketplace/${item.category +'/'+item.subCategory}`;
               <span className={classes.shipping}> Ships as soon as 7 days</span>
             </div>
             <div className={classes.qtyAndBuy}>
-              {/* <div className={classes.qty}>
-                QTY
-                <input onChange={handleChange} type="number" />
-              </div> */}
               <CustomButton
                 onClick={clickHandler}
                 text="add To Cart"

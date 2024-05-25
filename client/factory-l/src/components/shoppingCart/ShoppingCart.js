@@ -12,11 +12,9 @@ const ShoppingCart = () => {
   const [cartClass, setCartClass] = useState(classes.shoppingCart);
 
   const cartItems = useSelector((state) => state.cart.cartItems);
-  console.log(cartItems)
   useEffect(() => {
     if (cartItems ) {
       localStorage.setItem("cart", JSON.stringify(cartItems));
-      console.log('storage updated')
     }
     let cartItem = JSON.parse(localStorage.getItem("cart"));
     if(cartItems==null){
