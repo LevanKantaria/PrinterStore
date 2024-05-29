@@ -33,7 +33,7 @@ function Welcome() {
 
         <div className={classes.image}>
             <iframe width="100%" height="100%" 
-              src="https://www.youtube.com/embed/W0ERmrYaDqg?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&loop=1&playlist=W0ERmrYaDqg"
+              src="https://www.youtube.com/embed/W0ERmrYaDqg?autoplay=0mute=1&controls=0&showinfo=0&modestbranding=1&loop=1&playlist=W0ERmrYaDqg"
               title="YouTube video player" 
               frameBorder="0" 
               allow="autoplay; clipboard-write; encrypted-media;  picture-in-picture; web-share;"

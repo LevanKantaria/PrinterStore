@@ -9,7 +9,7 @@ import axios from "axios";
 
 
 let total = 0;
-// const API_URL = 'http://localhost:5000/'
+// const API_URL = 'http://localhost:5000/';
 
 const ShoppingCartExpanded = () => {
   const params = useParams();
@@ -31,7 +31,7 @@ const ShoppingCartExpanded = () => {
     return (
       <ShoppingCartItem
         id={item._id}
-        image={item.image}
+        image={item.images[0]}
         name={item.name}
         quantity={item.quantity}
         price={item.price}
@@ -50,11 +50,11 @@ const ShoppingCartExpanded = () => {
       <div className={classes.newItem}>
         <div className={classes.newItemContent}>
           <h3>Recently Added:</h3>
-          <span><Link to='/marketplace'>Marketplace</Link> > <Link to={linkToCategory}>{cartItems[cartItems.length - 1].category}</Link>>  <Link to={linkToCategory}> {cartItems[cartItems.length - 1].subCategory}</Link>   </span>
+          <span><Link to='/marketplace'>Marketplace</Link> <Link to={linkToCategory}>{cartItems[cartItems.length - 1].category}</Link>  <Link to={linkToCategory}> {cartItems[cartItems.length - 1].subCategory}</Link>   </span>
         </div>
         <ShoppingCartItem
           id={cartItems[cartItems.length - 1]._id}
-          image={cartItems[cartItems.length - 1].image}
+          image={cartItems[cartItems.length - 1].images[0]}
           name={cartItems[cartItems.length - 1].name}
           quantity={cartItems[cartItems.length - 1].quantity}
           price={cartItems[cartItems.length - 1].price}
@@ -78,7 +78,7 @@ axios.post(`${API_URL}checkout`, cartItems).then(res =>{
     <div className={classes.main}>
       <div className={classes.items}>
         {id && newItem}
-        <h1> Your Cart</h1>
+        <h1> My Cart</h1>
         {cartItemsExpanded}
       </div>
       <div className={classes.checkout}>

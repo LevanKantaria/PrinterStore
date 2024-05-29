@@ -3,6 +3,11 @@
   display: flex;
   flex-direction: row;
   font-family: "Karla", sans-serif;
+  margin: 64px auto;
+  background-color: var(--color-white);
+padding: 16px 12px;
+border-radius: 12px;
+  max-width: var(--app-max-width);
 }
 
 .items {

@@ -29,6 +29,18 @@ const SimpleSlider = ({ images }) => {
     prevArrow: <PrevArrow />,
   };
 
+  if (images.length === 1) {
+    return (
+      <div style={{ borderRadius: "12px" }}>
+        <img
+          src={images[0]}
+          alt="single-slide"
+          style={{ width: "100%", height: "auto", borderRadius: "12px" }}
+        />
+      </div>
+    );
+  }
+
   return (
     <Slider {...settings} style={{ borderRadius: "12px" }}>
       {images.map((image, index) => (
