@@ -5,8 +5,8 @@
   font-family: "Karla", sans-serif;
   margin: 64px auto;
   background-color: var(--color-white);
-padding: 16px 12px;
-border-radius: 12px;
+  padding: 16px 12px;
+  border-radius: 12px;
   max-width: var(--app-max-width);
 }
 
@@ -24,35 +24,35 @@ border-radius: 12px;
   width: 25%;
   min-width: 250px;
   margin: auto;
- margin-top: 140px;
+  margin-top: 140px;
   border-radius: 5px;
   padding: 10px 10px;
 }
 
-.newItem{
+.newItem {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
-.newItemContent{
-  font-family: 'Karla', sans-serif;
+.newItemContent {
+  font-family: "Karla", sans-serif;
   font-size: 20px;
 
   padding: 20px;
 }
-.newItemContent a{
+.newItemContent a {
   color: rgb(16, 16, 54);
 }
 
-.newItem h3{
+.newItem h3 {
   margin-right: 20px;
 }
 
 @media (max-width: 1024px) {
-    .checkout {
-       margin-top: auto;
-      }
-      
+  .checkout {
+    margin-top: auto;
+  }
+
   .main {
     flex-direction: column-reverse;
     margin-top: 50px;
@@ -71,8 +71,7 @@ border-radius: 12px;
     font-size: 28px;
   }
 
-  .newItemContent a{
-   
+  .newItemContent a {
     margin: 0px;
   }
 }
