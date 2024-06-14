@@ -5,10 +5,9 @@ import axios from 'axios'
 import classes from './UploadItem.module.css'
 import CustomButton from '../customButton/CustomButton';
 import DragAndDrop from '../dragAndDrop/DragAndDrop';
+import { API_URL } from '../../API_URL';
 
 
-// const API_URL ='https://factory-l.herokuapp.com/'
-const API_URL ='http://localhost:5000/'
 
 const UploadItem = () => {
 

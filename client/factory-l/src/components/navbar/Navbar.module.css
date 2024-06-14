@@ -24,8 +24,10 @@ nav h1 {
   flex-direction: row;
   justify-content: space-between;
   margin-left: auto;
+  width: fit-content;
 }
 a {
+  text-wrap: nowrap;
   text-decoration: none;
   color: white;
   cursor: pointer;
@@ -34,6 +36,10 @@ a {
 
 a:hover {
   color: var(--color-red);
+}
+
+.shoppingCart {
+  text-wrap: nowrap;
 }
 
 @media (max-width: 1200px) {
@@ -55,6 +61,7 @@ a:hover {
   }
 
   .shoppingCart {
+    text-wrap: nowrap;
     display: flex;
     margin-right: 10px;
     /* color: #5e717c; */

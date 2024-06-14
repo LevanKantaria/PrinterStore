@@ -13,9 +13,15 @@ import ShoppingCartExpanded from "./components/shoppingCartExpnded/ShoppingCartE
 import MarketplaceItemsList from "./components/marketplaceItemsList/MarketplaceItemsList";
 
 const StlViewerV2 = React.lazy(() => import('./components/stlViewer/StlViewerV2'));
+const StlViewer = React.lazy(()=> import ('./components/stlViewer/STLViewer'))
 
 
 function App() {
+
+  const currentLang = localStorage.getItem('lang');
+  if(!currentLang) {
+    localStorage.setItem('lang', 'KA')
+  }
   return (
     <div className="App">
       <Navbar />  
@@ -32,7 +38,7 @@ function App() {
         <Route path="/cart/:id" element={<ShoppingCartExpanded />} />        
         <Route path="/quote" element={
            <Suspense fallback={<div>Loading...</div>}>
-              <StlViewerV2 />
+              <StlViewer />
             </Suspense>} /> 
       </Routes>
         <Footer />

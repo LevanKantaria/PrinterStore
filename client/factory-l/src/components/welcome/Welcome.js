@@ -2,6 +2,8 @@ import React from "react";
 import classes from "./Welcome.module.css";
 import { useNavigate } from "react-router";
 import CustomButton from "../customButton/CustomButton";
+import translate from './../translate';
+
 
 
 
@@ -13,20 +15,18 @@ function Welcome() {
       <div className={classes.welcomeArticleAndImage}>
         <article className={classes.article}>
           
-          <div className={classes.title}><h1>3D Printing Service</h1></div>
+          <div className={classes.title}><h1>{translate('landing.title')}</h1></div>
           <div className={classes.pAndBox}>
             <div className={classes.verticalBox}> </div>
             <p>
-              Create and customize. Streamline and save. Break down design
-              barriers and scale your business with FactoryL 3D printing
-              services
+            {translate('landing.desc')}
             </p>
           </div>
           <div className={classes.buttons}>
            <CustomButton 
            onClick={()=>{navigate('/quote')}}
            name='quote'
-           text='Get a Quote'
+           text= {translate('landing.button')}
            width='200px'/>
           </div>
         </article>

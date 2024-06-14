@@ -3,6 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import classes from "./MuiDrawer.module.css";
+import translate from "../translate";
 
 const MuiDrawer = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
@@ -43,22 +44,14 @@ const MuiDrawer = () => {
                   setDrawerIsOpen(false);
                 }}
               >
-                <Link to="/"> HOME </Link>{" "}
+                <Link to="/"> {translate('drawer.home')} </Link>{" "}
               </p>
               <p
                 onClick={() => {
                   setDrawerIsOpen(false);
                 }}
               >
-                <Link to="marketplace"> MARKETPLACE </Link>{" "}
-              </p>
-              <p
-                onClick={() => {
-                  setDrawerIsOpen(false);
-                }}
-              >
-                {" "}
-                <Link to="about"> ABOUT </Link>
+                <Link to="marketplace"> {translate('landing.marketplace')} </Link>{" "}
               </p>
               <p
                 onClick={() => {
@@ -66,7 +59,15 @@ const MuiDrawer = () => {
                 }}
               >
                 {" "}
-                <Link to="materials"> MATERIALS </Link>
+                <Link to="about"> {translate('landing.about')} </Link>
+              </p>
+              <p
+                onClick={() => {
+                  setDrawerIsOpen(false);
+                }}
+              >
+                {" "}
+                <Link to="materials"> {translate('landing.materials')} </Link>
               </p>
             </div>
             <div className={classes.close}>
@@ -75,8 +76,7 @@ const MuiDrawer = () => {
                   setDrawerIsOpen(false);
                 }}
               >
-                {" "}
-                X
+                x
               </button>
             </div>
           </Box>

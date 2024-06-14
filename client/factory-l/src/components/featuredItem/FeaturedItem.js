@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import MarketplaceItem from "../marketplaceItem/MarketplaceItem";
 import axios from "axios";
 import { API_URL } from "../../API_URL";
+import translate from './../translate';
 
 
 const FeaturedItem = () => {
@@ -66,7 +67,7 @@ const FeaturedItem = () => {
     
   return (
     <div className={classes.main}>
-        <h2 className={classes.header}>Trending </h2>
+        <h2 className={classes.header}>{translate('landing.trending')} </h2>
         <div className={classes.trendingContainer}>
         <div className={classes.grid}>{marketplaceItems}</div>
         </div>

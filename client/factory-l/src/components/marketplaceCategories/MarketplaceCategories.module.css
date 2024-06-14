@@ -1,8 +1,7 @@
 .main {
   display: flex;
   flex-direction: row;
-  padding: 24px;
-  padding-top: 48px;
+  padding: 48px 24px;
   font-family: "Mulish", sans-serif;
   /* padding: 20px; */
   max-width: var(--app-max-width);
@@ -13,19 +12,22 @@
 }
 .title {
   text-align: left;
-  position: relative;
   font-size: 28px;
   font-weight: 600;
   font-family: "Mulish", sans-serif;
-  color: #0e1a41;
+  color: var(--color-primary);
 }
+
 .title h2 {
+  margin-top: 0;
   box-sizing: border-box;
   width: 100%;
-  margin-top: -20px;
-  margin-left: 12%;
   margin-bottom: 48px;
   font-size: 25px;
+}
+
+h2 {
+  margin-top: 0;
 }
 
 .categoriesList {
@@ -39,9 +41,14 @@
   margin: 0;
 }
 
+.categoriesList ul a li:first-child {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
 .content {
   width: 100%;
-  padding: 20px;
+  padding:  0 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -99,7 +106,7 @@
   flex-direction: row;
   justify-content: space-between;
   column-gap: auto;
-  width: 90%;
+  width: 100%;
   box-sizing: border-box;
 }
 
