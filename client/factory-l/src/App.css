@@ -11,12 +11,13 @@
   --radius-m: 12px;
   --radius-l: 16px;
 
-  --color-primary: #264653;
 
 
 
   --color-secondary: #e9c46a;
   --color-secondary-tr-80: hsla(43, 73%, 66%, 0.315);
+
+  --color-title-green: #7CA41E;
 
   --color-black : #000000;
   --color-black-tr-30 : #000000b6;
@@ -29,7 +30,7 @@
 
 
   --color-red: #e76f51;
-  --color-primary: #264653;
+  --color-primary: #1E2C20;
 
 
 

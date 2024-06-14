@@ -5,6 +5,14 @@
   width: 100%;
 }
 
+.landingBg {
+  box-sizing: border-box;
+  background-position: center;
+  background-size: cover;
+  aspect-ratio: 16/9;
+  background-image: url('../../../public/assets/landing2.png');
+}
+
 .welcomeArticleAndImage {
   height: 100%;
   max-width: var(--app-max-width);

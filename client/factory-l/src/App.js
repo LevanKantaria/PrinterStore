@@ -6,7 +6,9 @@ import Navbar from "./components/navbar/Navbar";
 import Materials from "./pages/Material";
 import Marketplace from "./pages/Marketplace";
 import About from "./pages/About";
-import Footer from "./components/footer/Footer";
+// import Footer from "./components/footer/Footer";
+import FooterGame from "./components/footer/FooterGame";
+import Canvas from "./components/footer/Canvas";
 import UploadItem from "./components/uploadItem/UploadItem";
 import ProductPage from "./components/productPage/ProductPage";
 import ShoppingCartExpanded from "./components/shoppingCartExpnded/ShoppingCartExpanded";
@@ -17,6 +19,7 @@ const StlViewer = React.lazy(()=> import ('./components/stlViewer/STLViewer'))
 
 
 function App() {
+
 
   const currentLang = localStorage.getItem('lang');
   if(!currentLang) {
@@ -41,7 +44,7 @@ function App() {
               <StlViewer />
             </Suspense>} /> 
       </Routes>
-        <Footer />
+        <FooterGame />
       
     </div>
   );

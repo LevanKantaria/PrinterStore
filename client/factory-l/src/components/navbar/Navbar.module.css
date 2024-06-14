@@ -19,6 +19,7 @@ nav h1 {
 }
 
 
+
 .navLinks {
   display: flex;
   flex-direction: row;
@@ -29,7 +30,7 @@ nav h1 {
 a {
   text-wrap: nowrap;
   text-decoration: none;
-  color: white;
+  color: rgba(229, 248, 221, 0.938);
   cursor: pointer;
   margin: 2rem;
 }

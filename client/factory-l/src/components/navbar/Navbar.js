@@ -13,7 +13,7 @@ const Navbar = () => {
         <MuiDrawer />
       </div>
       <h1>
-        <Link to="/">FACTORY L</Link>
+        <Link to="/">VIGOROSO</Link>
       </h1>
       <div className={classes.navLinks}>
         <p>
