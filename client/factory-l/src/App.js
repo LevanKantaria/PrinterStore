@@ -1,34 +1,32 @@
 import "./App.css";
-import React, { Suspense } from 'react';
+import React, { Suspense } from "react";
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Materials from "./pages/Material";
 import Marketplace from "./pages/Marketplace";
 import About from "./pages/About";
-// import Footer from "./components/footer/Footer";
 import FooterGame from "./components/footer/FooterGame";
-import Canvas from "./components/footer/Canvas";
 import UploadItem from "./components/uploadItem/UploadItem";
 import ProductPage from "./components/productPage/ProductPage";
 import ShoppingCartExpanded from "./components/shoppingCartExpnded/ShoppingCartExpanded";
 import MarketplaceItemsList from "./components/marketplaceItemsList/MarketplaceItemsList";
+import Three from "./components/scene/Three";
+const StlViewerV2 = React.lazy(() =>
+  import("./components/stlViewer/StlViewerV2")
+);
 
-const StlViewerV2 = React.lazy(() => import('./components/stlViewer/StlViewerV2'));
-const StlViewer = React.lazy(()=> import ('./components/stlViewer/STLViewer'))
-
+const StlViewer = React.lazy(() => import("./components/stlViewer/STLViewer"));
 
 function App() {
-
-
-  const currentLang = localStorage.getItem('lang');
-  if(!currentLang) {
-    localStorage.setItem('lang', 'KA')
+  const currentLang = localStorage.getItem("lang");
+  if (!currentLang) {
+    localStorage.setItem("lang", "KA");
   }
   return (
     <div className="App">
-      <Navbar />  
-      <Routes>
+      <Navbar />
+      {/* <Routes>
         <Route path="/" element={<Home />} />        
         <Route path="/materials" element={<Materials />} />        
         <Route path="/marketplace" element={<Marketplace />} />
@@ -43,12 +41,12 @@ function App() {
            <Suspense fallback={<div>Loading...</div>}>
               <StlViewer />
             </Suspense>} /> 
-      </Routes>
-        <FooterGame />
-      
+      </Routes> */}
+      {/* <Three /> */}
+        <Three />
+      <FooterGame />
     </div>
   );
 }
 
 export default App;
-
