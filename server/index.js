@@ -9,7 +9,7 @@ import Stripe from "stripe";
 const stripe = Stripe(
   "sk_test_51MBe2kGLD3kAQcPcox1UOblO3WAKA44CoPbYcbrbN8YMvBuTYZhmz3CZHDMfrhcgZxpXmIXOt7COnqLaYX03d6iZ00samrl7n8"
 );
-const app = express();
+const app = express(); 
 dotenv.config();
 app.use(express.static("public"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));

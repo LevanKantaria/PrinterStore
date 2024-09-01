@@ -12,9 +12,12 @@ import ProductPage from "./components/productPage/ProductPage";
 import ShoppingCartExpanded from "./components/shoppingCartExpnded/ShoppingCartExpanded";
 import MarketplaceItemsList from "./components/marketplaceItemsList/MarketplaceItemsList";
 import Three from "./components/scene/Three";
+import Footer from "./components/footer/Footer"
+import SignIn from "./components/signIn/SignIn";
 const StlViewerV2 = React.lazy(() =>
   import("./components/stlViewer/StlViewerV2")
 );
+
 
 const StlViewer = React.lazy(() => import("./components/stlViewer/STLViewer"));
 
@@ -26,8 +29,9 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      {/* <Routes>
-        <Route path="/" element={<Home />} />        
+      <Routes>
+        <Route path="/" element={<Home />} />             
+        <Route path="/sign-in" element={<SignIn />} />             
         <Route path="/materials" element={<Materials />} />        
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/about" element={<About />} />
@@ -41,10 +45,11 @@ function App() {
            <Suspense fallback={<div>Loading...</div>}>
               <StlViewer />
             </Suspense>} /> 
-      </Routes> */}
+      </Routes>
+      <Footer />
       {/* <Three /> */}
-        <Three />
-      <FooterGame />
+        {/* <Three /> */}
+      {/* <FooterGame /> */}
     </div>
   );
 }

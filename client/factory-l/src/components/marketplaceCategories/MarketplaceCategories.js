@@ -1,7 +1,7 @@
 import React from "react";
 import classes from "./MarketplaceCategories.module.css";
 import CategoryItem from "./helpers/CategoryItem";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";``
 import translate from "../translate";
 
 const MarketplaceCategories = () => {
