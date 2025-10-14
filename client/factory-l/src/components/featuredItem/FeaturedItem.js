@@ -2,6 +2,7 @@ import React from 'react'
 import classes from './FeaturedItem.module.css'
 import { useEffect, useState } from "react";
 import MarketplaceItem from "../marketplaceItem/MarketplaceItem";
+import Skeleton from "../skeleton/Skeleton";
 import axios from "axios";
 import { API_URL } from "../../API_URL";
 import translate from './../translate';
@@ -12,7 +13,7 @@ const FeaturedItem = () => {
     let category = 'household';
     let subCategory = '';
     const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     let marketplaceItems = [];
     let categoryLink = `/marketplace/${category}`;
     let subCategoryLink = `/marketplace/${subCategory}`;
@@ -31,6 +32,10 @@ const FeaturedItem = () => {
           .then((res) => {
             setItems((res.data).splice(0,2));
             setLoading(false);
+          })
+          .catch((error) => {
+            console.error('Error fetching featured items:', error);
+            setLoading(false);
           });
       } else if (subCategory) {
         setLoading(true);
@@ -42,6 +47,10 @@ const FeaturedItem = () => {
           })
           .then((res) => {
             setItems(res.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error('Error fetching featured items:', error);
             setLoading(false);
           });
       }
@@ -69,7 +78,14 @@ const FeaturedItem = () => {
     <div className={classes.main}>
         <h2 className={classes.header}>{translate('landing.trending')} </h2>
         <div className={classes.trendingContainer}>
-        <div className={classes.grid}>{marketplaceItems}</div>
+          {loading ? (
+            <div className={classes.grid}>
+              <Skeleton name="marketplace-item" />
+              <Skeleton name="marketplace-item" />
+            </div>
+          ) : (
+            <div className={classes.grid}>{marketplaceItems}</div>
+          )}
         </div>
     </div>
   )

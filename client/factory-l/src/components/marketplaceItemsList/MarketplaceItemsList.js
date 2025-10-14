@@ -75,15 +75,10 @@ const MarketplaceItemsList = () => {
 
   return (
     <div className={classes.wrapper}>
-      <div className={classes.category}>
-        <h3>
-          {" "}
-          <Link to={'/marketplace'}>{translate('landing.marketplace')}</Link>{" "}
-
-          <Link to={categoryLink}>{translate(`categories.${category}`)}</Link>{" "}
-          {subCategory && translate(`categories.${subCategory}`) }
-        
-        </h3>
+      <div className={classes.breadCrumbs}>
+        <Link to={'/marketplace'}>{translate('landing.marketplace')}</Link>
+        {category && <Link to={categoryLink}>{translate(`categories.${category}`)}</Link>}
+        {subCategory && <Link to={`/marketplace/${category}/${subCategory}`}>{translate(`categories.${subCategory}`)}</Link>}
       </div>
       {loading && <MarketplaceItemSkeleton/>
 }

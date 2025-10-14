@@ -17,7 +17,7 @@ const MarketplaceItem = (props) => {
       <div className={classes.infoWrapper}>
         <span className={classes.itemName}>{props.name}</span>
         <div>
-          <span className={classes.price}>${props.price}</span> by{" "}
+          <span className={classes.price}>${props.price}</span> {" "}
           <span className={classes.creator}>{props.creator}</span>
         </div>
       </div>

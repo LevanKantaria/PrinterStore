@@ -1,7 +1,7 @@
 .wrapper{
-    padding: 60px;
+    padding: 0 60px 60px 60px;
     max-width: var(--app-max-width);
-    margin: auto;
+    margin: 32px auto 0 auto;
 }
 
 .grid {
@@ -19,24 +19,39 @@
     /* justify-content: center; */
   }
 
-  .category{
-    display: flex;
-    flex-direction: row;
+  .breadCrumbs{
+    font-family: 'Karla', sans-serif;
     width: 100%;
-}
-.category h3{
-    margin:  20px 0;
-    font-size: 20px;
-    font-family: "Archivo Black", sans-serif;
     display: flex;
-    justify-content: start;
-    text-align: left;
-    color: rgb(42, 41, 48);
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 0;
 }
-.category h3 a{
-    margin:auto 12px auto 0;
-   color: rgb(26, 55, 150);
-   
+
+.breadCrumbs a{
+    color: #6c757d;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-weight: 500;
+    margin: 0 4px;
+}
+
+.breadCrumbs a:hover{
+    color: var(--color-title-green);
+}
+
+.breadCrumbs a:last-child{
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-right: 0;
+}
+
+.breadCrumbs a:not(:last-child)::after{
+    content: '/';
+    margin-left: 4px;
+    color: #adb5bd;
+    font-weight: 400;
 }
 
 .marketplaceItemPlaceholder{
@@ -79,18 +94,39 @@
 
   @media(max-width: 768px){
     .wrapper{
-        padding: 10px;
+        padding: 0 16px 16px 16px;
+        margin: 16px auto 0 auto;
+    }
+    .breadCrumbs{
+        margin-bottom: 8px;
+        padding: 6px 0;
+    }
+
+    .breadCrumbs a{
+        font-size: 13px;
+        margin: 0 3px;
+    }
+
+    .breadCrumbs a:last-child{
+        margin-right: 0;
     }
     .grid {
-        grid-template-columns:  1fr 1fr ;
-        column-gap: 1rem;      
-        row-gap: 9rem;
-      }
+        grid-template-columns: 1fr 1fr;
+        column-gap: 12px;
+        row-gap: 16px;
+        padding: 16px;
+    }
   }
 
   @media(max-width: 668px){
+    .wrapper{
+        padding: 0 12px 12px 12px;
+        margin: 12px auto 0 auto;
+    }
     .grid {
-      grid-template-columns:  1fr;
-        row-gap: 2rem; 
-      }
+        grid-template-columns: 1fr;
+        column-gap: 0;
+        row-gap: 16px;
+        padding: 12px;
+    }
   } 

@@ -34,10 +34,10 @@ const ShoppingCartItem = (props) => {
           </div>
         </div>
         <div className={classes.price}>
-          <p className={classes.price}>
+          <p className={classes.priceTotal}>
              ${(props.price * props.quantity).toFixed(2)}
           </p>
-          <p className={classes.priceSmall}>${props.price}  each</p>
+          <p className={classes.priceSmall}>${props.price} each</p>
         </div>
       </div>
       <div className={classes.removeButton}>
