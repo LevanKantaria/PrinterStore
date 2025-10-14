@@ -4,7 +4,8 @@ export const translate = {
         'landing.marketplace': 'მაღაზია',
         'landing.about': 'ჩვენს შესახებ',
         'landing.materials' : 'მასალები',
-        'landing.button': 'ატვირთე STL',
+        'landing.login':"შესვლა",
+        'landing.button':  'ატვირთე STL',
         'landing.title': '3D ბეჭდვის სერვისი',
         'landing.desc': 'აქციე წარმოსახვა რეალოდბად. იდეალური დამხმარე შენი სტარტაპისთვის',
         'landing.trending':'პოპულარული პროდუქტები',
@@ -19,7 +20,7 @@ export const translate = {
         'categories.cars':'მანქანა',
         'categories.office':'ოფისი',
         'categories.organizers':'ორგანიზატორები',
-        'categories.decoration':'დეკორაციებო',
+        'categories.decoration':'დეკორაციები',
         'categories.fidgets':'გასართობები',
 
     }, 

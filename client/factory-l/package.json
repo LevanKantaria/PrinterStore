@@ -2,11 +2,16 @@
   "name": "factory-l",
   "version": "0.1.0",
   "private": true,
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@frontegg/react": "^7.0.1",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.10",
+    "@react-three/cannon": "^6.6.0",
     "@react-three/drei": "^9.106.0",
     "@react-three/fiber": "^8.16.8",
     "@reduxjs/toolkit": "^1.8.6",
@@ -21,6 +26,7 @@
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
     "react-slick": "^0.30.2",
     "react-stl-viewer": "^2.2.4",
     "slick-carousel": "^1.8.1",
@@ -35,9 +41,19 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
+    "root": true,
+    "extends": ["react-app"],
+    "rules": {},
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "ignorePatterns": [
+      "node_modules/",
+      "build/",
+      "public/",
+      "functions/"
     ]
   },
   "browserslist": {
