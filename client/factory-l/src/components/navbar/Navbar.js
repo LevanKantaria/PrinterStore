@@ -12,7 +12,7 @@ const Navbar = () => {
         <MuiDrawer />
       </div>
       <h1>
-        <Link to="/">Escanor</Link>
+        <Link to="/">PrintHub</Link>
       </h1>
       <div className={classes.navLinks}>
         <p>

@@ -6,8 +6,9 @@ import axios from "axios";
 import classes from "./ProductPage.module.css";
 import CustomButton from "../customButton/CustomButton";
 import { cartActions } from "../../features/cart/cartSlice";
-import ProductSkeleton from "./ProductSkeleton";
+import Skeleton from "../skeleton/Skeleton";
 import SimpleSlider from "./SimpleSlider";
+import translate from "../translate";
 
 const API_URL = "http://localhost:5000/";
 
@@ -22,7 +23,8 @@ const ProductPage = () => {
 
   const clickHandler = (e) => {
     e.preventDefault();
-    dispatch(cartActions.addItem(item));
+    const itemWithQuantity = { ...item, quantity };
+    dispatch(cartActions.addItem(itemWithQuantity));
     navigate(`/cart/${item._id}`);
   };
 
@@ -38,15 +40,29 @@ const ProductPage = () => {
       });
   }, [id]);
 
-  let linkToSubCategory = `/marketplace/${item.category + '/' + item.subCategory}`;
-
   return (
     <div className={classes.main}>
       <div className={classes.breadCrumbs}>
-        <Link to='/marketplace'>Marketplace </Link>
-        <Link to={linkToSubCategory}>{item.subCategory} </Link>
+        <Link to='/marketplace'>{translate('landing.marketplace')}</Link>
+        {item.category && <Link to={`/marketplace/${item.category}`}>{translate(`categories.${item.category}`)}</Link>}
+        {item.subCategory && <Link to={`/marketplace/${item.category}/${item.subCategory}`}>{translate(`categories.${item.subCategory}`)}</Link>}
       </div>
-      {loading && <ProductSkeleton />}
+      {loading && (
+        <div className={classes.skeletonContainer}>
+          <div className={classes.imageSkeleton}>
+            <Skeleton component="image" width="100%" height="470px" rounded={true} />
+          </div>
+          <div className={classes.contentSkeleton}>
+            <Skeleton name="text-single" width="80%" height="30px" />
+            <Skeleton name="text-single" width="60%" height="20px" />
+            <div className={classes.orderSkeleton}>
+              <Skeleton name="text-single" width="40%" height="25px" />
+              <Skeleton name="text-single" width="70%" height="20px" />
+              <Skeleton name="image-rectangle" width="150px" height="50px" />
+            </div>
+          </div>
+        </div>
+      )}
       <div className={classes.imageAndDescription}>
         <div className={classes.image}>
           {item?.images?.length > 0 && (
@@ -63,9 +79,22 @@ const ProductPage = () => {
               <span className={classes.shipping}> Ships as soon as 7 days</span>
             </div>
             <div className={classes.qtyAndBuy}>
+              <div className={classes.quantitySelector}>
+                <label htmlFor="quantity">Quantity:</label>
+                <select 
+                  id="quantity" 
+                  value={quantity} 
+                  onChange={(e) => setQuantity(parseInt(e.target.value))}
+                  className={classes.quantitySelect}
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+                    <option key={num} value={num}>{num}</option>
+                  ))}
+                </select>
+              </div>
               <CustomButton
                 onClick={clickHandler}
-                text="add To Cart"
+                text="Add to Cart"
                 width="150px"
                 height="50px"
                 fontSize="15px"
@@ -78,12 +107,54 @@ const ProductPage = () => {
       </div>
       <div className={classes.descriptionAndDetails}>
         <div className={classes.description}>
-          Product description
-          <p> {item.description} </p>
+          <div className={classes.sectionHeader}>
+            <h3>About This Product</h3>
+            <div className={classes.headerLine}></div>
+          </div>
+          <p className={classes.descriptionText}>{item.description || "No description available for this product."}</p>
         </div>
         <div className={classes.details}>
-          Details
-          <p> Dimensions: </p>
+          <div className={classes.sectionHeader}>
+            <h3>Product Information</h3>
+            <div className={classes.headerLine}></div>
+          </div>
+          <div className={classes.detailsList}>
+            <div className={classes.detailItem}>
+              <div className={classes.detailIcon}>📦</div>
+              <div className={classes.detailContent}>
+                <span className={classes.detailLabel}>Category</span>
+                <span className={classes.detailValue}>{item.category || "N/A"}</span>
+              </div>
+            </div>
+            <div className={classes.detailItem}>
+              <div className={classes.detailIcon}>🏷️</div>
+              <div className={classes.detailContent}>
+                <span className={classes.detailLabel}>Subcategory</span>
+                <span className={classes.detailValue}>{item.subCategory || "N/A"}</span>
+              </div>
+            </div>
+            <div className={classes.detailItem}>
+              <div className={classes.detailIcon}>👤</div>
+              <div className={classes.detailContent}>
+                <span className={classes.detailLabel}>Created By</span>
+                <span className={classes.detailValue}>{item.creator || "N/A"}</span>
+              </div>
+            </div>
+            <div className={classes.detailItem}>
+              <div className={classes.detailIcon}>💰</div>
+              <div className={classes.detailContent}>
+                <span className={classes.detailLabel}>Price</span>
+                <span className={classes.detailValue}>${item.price || "N/A"}</span>
+              </div>
+            </div>
+            <div className={classes.detailItem}>
+              <div className={classes.detailIcon}>🚚</div>
+              <div className={classes.detailContent}>
+                <span className={classes.detailLabel}>Shipping</span>
+                <span className={classes.detailValue}>7-14 business days</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

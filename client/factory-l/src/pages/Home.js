@@ -1,5 +1,4 @@
 import React from "react";
-import Welcome from "../components/welcome/Welcome";
 import Welcome2 from "../components/welcome/Welcome2";
 import Why3D from "../components/why3D/Why3D";
 import Statistics from "../components/statistics/Statistics";

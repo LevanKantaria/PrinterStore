@@ -2,6 +2,9 @@
   "name": "factory-l",
   "version": "0.1.0",
   "private": true,
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
@@ -38,9 +41,19 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
+    "root": true,
+    "extends": ["react-app"],
+    "rules": {},
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "ignorePatterns": [
+      "node_modules/",
+      "build/",
+      "public/",
+      "functions/"
     ]
   },
   "browserslist": {
