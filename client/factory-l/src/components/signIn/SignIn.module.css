@@ -1,0 +1,51 @@
+.wrapper {
+     background-color: var(--color-primary);
+     box-sizing: border-box;
+     background-image: url('../../../public/assets/cool-background.png');
+     background-size: cover;
+     height: 100vh;
+     width: 100vw;
+     z-index: 10001;
+     position: absolute;
+     top: 0;
+     display: flex;
+     align-items: center;
+}
+
+.line{
+     height: 2px;
+     width: 100%;
+     top: -12px;
+     display: flex;
+     justify-content: space-between;
+}
+
+.left{
+     height: 2px;
+     background-color: grey;
+     width: 30%;
+}
+
+.right{
+     height: 2px;
+     background-color: grey;
+     width: 30%;
+}
+
+.signInWith {
+     font-size: 12px;
+     padding: 4px;
+     width: 40%;
+     margin: auto;
+     z-index: 200;
+     position: relative;
+     top: 12px;
+     border-radius: 12px;
+}
+
+.google {
+     padding: 8px;
+     border: 1px solid grey;
+     margin-top: 24px;
+     border-radius: 8px;
+}

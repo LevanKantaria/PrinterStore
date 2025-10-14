@@ -8,6 +8,7 @@ import { API_URL } from "../../API_URL";
 import { Link } from "react-router-dom";
 import Marketplace from '../../pages/Marketplace';
 import MarketplaceItemSkeleton from "./MarketplaceItemSkeleton";
+import translate from "../translate";
 
 
 // const API_URL ='https://factory-l.herokuapp.com/'
@@ -74,14 +75,10 @@ const MarketplaceItemsList = () => {
 
   return (
     <div className={classes.wrapper}>
-      <div className={classes.category}>
-        <h3>
-          {" "}
-          <Link to={'/marketplace'}>Marketplace</Link>{" "}
-
-          <Link to={categoryLink}>{category}</Link>{" "}
-          {subCategory}
-        </h3>
+      <div className={classes.breadCrumbs}>
+        <Link to={'/marketplace'}>{translate('landing.marketplace')}</Link>
+        {category && <Link to={categoryLink}>{translate(`categories.${category}`)}</Link>}
+        {subCategory && <Link to={`/marketplace/${category}/${subCategory}`}>{translate(`categories.${subCategory}`)}</Link>}
       </div>
       {loading && <MarketplaceItemSkeleton/>
 }

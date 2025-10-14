@@ -3,7 +3,6 @@ import classes from "./Navbar.module.css";
 import { Link } from "react-router-dom";
 import MuiDrawer from "../drawer/MuiDrawer";
 import translate from "../translate";
-
 import ShoppingCart from "../shoppingCart/ShoppingCart";
 
 const Navbar = () => {
@@ -13,7 +12,7 @@ const Navbar = () => {
         <MuiDrawer />
       </div>
       <h1>
-        <Link to="/">FACTORY L</Link>
+        <Link to="/">PrintHub</Link>
       </h1>
       <div className={classes.navLinks}>
         <p>
@@ -27,6 +26,8 @@ const Navbar = () => {
         <p>
        
           <Link to="materials"> {translate('landing.materials')} </Link>
+
+          <Link to="account/login"> {translate('landing.login')} </Link>
         </p>
       </div>
       <div className={classes.shoppingCart}>
