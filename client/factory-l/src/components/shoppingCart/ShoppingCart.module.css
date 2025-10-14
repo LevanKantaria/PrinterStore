@@ -1,27 +1,57 @@
 .shoppingCart {
   margin-right: 25px;
-  /* color: #5e717c; */
-  color: white;
-  background-color: rgba(255, 255, 255, 0.199);
-  padding: 5px;
-  border-radius: 10px;
+  color: #495057;
+  background-color: transparent;
+  padding: 8px;
+  border-radius: 12px;
   cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
+
+.shoppingCart:hover {
+  background-color: #f8f9fa;
+  color: var(--color-title-green);
+  border-color: var(--color-title-green);
+}
+
 .shoppingCartAnimated {
   margin-right: 25px;
-  /* color: #5e717c; */
-  color: white;
-  background-color: rgba(255, 255, 255, 0.199);
-  padding: 5px;
-  border-radius: 10px;
+  color: #495057;
+  background-color: transparent;
+  padding: 8px;
+  border-radius: 12px;
   cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 2px solid var(--color-title-green);
   animation: jello-horizontal 0.9s both;
 }
+
 .shoppingCart sup {
-  font-size: 20px;
-  position: relative;
-  top: -5px;
-  color: #ff4b5a;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--color-title-green);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Karla", sans-serif;
+  box-shadow: 0 2px 8px rgba(124, 164, 30, 0.3);
+  transform: translate(25%, -25%);
 }
 
 @media (max-width: 768px) {
