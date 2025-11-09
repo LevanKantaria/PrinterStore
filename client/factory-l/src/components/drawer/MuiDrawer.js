@@ -64,6 +64,11 @@ const MuiDrawer = () => {
               <p onClick={closeDrawer}>
                 <Link to="/blog"> ბლოგი </Link>
               </p>
+              {status === "authenticated" && user?.isAdmin && (
+                <p onClick={closeDrawer}>
+                  <Link to="/admin/orders">Admin orders</Link>
+                </p>
+              )}
             </div>
 
             <div className={classes.accountArea}>

@@ -36,17 +36,23 @@ export const getProfile = async (req, res) => {
   const userId = req.user.uid;
 
   try {
-    let profile = await Profile.findOne({ userId });
+    let profileDoc = await Profile.findOne({ userId });
 
-    if (!profile) {
-      profile = await Profile.create({
+    if (!profileDoc) {
+      profileDoc = await Profile.create({
         userId,
         email: req.user.email || "",
         displayName: req.user.displayName || "",
       });
     }
 
-    return res.json(profile);
+    const profile =
+      typeof profileDoc.toObject === "function" ? profileDoc.toObject() : profileDoc;
+
+    return res.json({
+      ...profile,
+      isAdmin: req.user.isAdmin === true,
+    });
   } catch (error) {
     console.error("[profile] getProfile failed:", error);
     return res.status(500).json({ message: "Unable to load profile." });
@@ -62,13 +68,19 @@ export const updateProfile = async (req, res) => {
       updates.email = req.user.email;
     }
 
-    const profile = await Profile.findOneAndUpdate(
+    const profileDoc = await Profile.findOneAndUpdate(
       { userId },
       { $set: updates, $setOnInsert: { email: req.user.email || "" } },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
 
-    return res.json(profile);
+    const profile =
+      typeof profileDoc.toObject === "function" ? profileDoc.toObject() : profileDoc;
+
+    return res.json({
+      ...profile,
+      isAdmin: req.user.isAdmin === true,
+    });
   } catch (error) {
     console.error("[profile] updateProfile failed:", error);
     return res.status(500).json({ message: "Unable to update profile." });
