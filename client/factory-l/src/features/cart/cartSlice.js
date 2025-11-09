@@ -50,6 +50,10 @@ const cartSlice = createSlice({
     },
     setItemsFromCart:(state,action)=>{
       state.cartItems = action.payload;
+    },
+    clearCart: (state) => {
+      state.cartItems = [];
+      state.total = 0;
     }
   },
 });

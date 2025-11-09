@@ -1,12 +1,13 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ShoppingCartItem from "../shoppingCartItem/ShoppingCartItem";
 import CustomButton from "../customButton/CustomButton";
 import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import classes from "./ShoppingCartExpanded.module.css";
-import { API_URL } from "../../API_URL";
-import axios from "axios";
 import translate from "../translate";
+import { useState } from "react";
+import CheckoutModal from "../checkout/CheckoutModal";
+import { cartActions } from "../../features/cart/cartSlice";
 
 // const API_URL = 'http://localhost:5000/';
 
@@ -15,6 +16,9 @@ const ShoppingCartExpanded = () => {
   const navigate = useNavigate();
   const id = params.id;
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const authStatus = useSelector((state) => state.auth.status);
+  const dispatch = useDispatch();
+  const [isCheckoutOpen, setCheckoutOpen] = useState(false);
 
   const sum = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -33,43 +37,55 @@ const ShoppingCartExpanded = () => {
   });
 
   let newItem = "";
-  if (params.id) {
+  if (params.id && cartItems.length > 0) {
     const lastItem = cartItems[cartItems.length - 1];
-    let linkToCategory = `/marketplace/${lastItem.category}`;
-    let linkToSubCategory = `/marketplace/${lastItem.category}/${lastItem.subCategory}`;
+    const linkToCategory = lastItem?.category ? `/marketplace/${lastItem.category}` : null;
+    const linkToSubCategory =
+      lastItem?.category && lastItem?.subCategory ? `/marketplace/${lastItem.category}/${lastItem.subCategory}` : null;
 
-    newItem = (
-      <div className={classes.newItem}>
-        <div className={classes.newItemContent}>
-          <h3>Recently Added:</h3>
-          <div className={classes.breadCrumbs}>
-            <Link to='/marketplace'>{translate('landing.marketplace')}</Link>
-            {lastItem.category && <Link to={linkToCategory}>{translate(`categories.${lastItem.category}`)}</Link>}
-            {lastItem.subCategory && <Link to={linkToSubCategory}>{translate(`categories.${lastItem.subCategory}`)}</Link>}
+    if (lastItem) {
+      newItem = (
+        <div className={classes.newItem}>
+          <div className={classes.newItemContent}>
+            <h3>Recently Added:</h3>
+            <div className={classes.breadCrumbs}>
+              <Link to='/marketplace'>{translate('landing.marketplace')}</Link>
+              {linkToCategory && (
+                <Link to={linkToCategory}>{translate(`categories.${lastItem.category}`)}</Link>
+              )}
+              {linkToSubCategory && (
+                <Link to={linkToSubCategory}>{translate(`categories.${lastItem.subCategory}`)}</Link>
+              )}
+            </div>
           </div>
+          <ShoppingCartItem
+            id={lastItem._id}
+            image={lastItem.images?.[0]}
+            name={lastItem.name}
+            quantity={lastItem.quantity}
+            price={lastItem.price}
+            key={Math.random()}
+          />
         </div>
-        <ShoppingCartItem
-          id={cartItems[cartItems.length - 1]._id}
-          image={cartItems[cartItems.length - 1].images[0]}
-          name={cartItems[cartItems.length - 1].name}
-          quantity={cartItems[cartItems.length - 1].quantity}
-          price={cartItems[cartItems.length - 1].price}
-          key={Math.random()}
-        />
-      </div>
-    );
+      );
+    }
   }
 
   const checkoutHandler = () =>{
-console.log(cartItems)
-axios.post(`${API_URL}checkout`, cartItems).then(res =>{
-  console.log(res.data.url)
-  if(res.data.url){
-    window.location.assign(res.data.url)
-  }
-  
-})
-  }
+    if (authStatus !== "authenticated") {
+      navigate("/sign-in");
+      return;
+    }
+    setCheckoutOpen(true);
+  };
+
+  const handleOrderPlaced = () => {
+    dispatch(cartActions.clearCart());
+  };
+
+  const handleModalClose = () => {
+    setCheckoutOpen(false);
+  };
 
   const continueShoppingHandler = () => {
     navigate('/marketplace');
@@ -129,6 +145,12 @@ axios.post(`${API_URL}checkout`, cartItems).then(res =>{
           <p className={classes.shippingNote}>Free shipping on orders over $50</p>
         </div>
       </div>
+      <CheckoutModal
+        open={isCheckoutOpen}
+        onClose={handleModalClose}
+        cartItems={cartItems}
+        onOrderPlaced={handleOrderPlaced}
+      />
     </div>
   );
 };
