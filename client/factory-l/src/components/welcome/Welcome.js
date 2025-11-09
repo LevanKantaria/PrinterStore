@@ -31,7 +31,7 @@ function Welcome() {
           </div>
         </article>
 
-        <div className={classes.image}>
+        {/* <div className={classes.image}>
             <iframe width="100%" height="100%" 
               src="https://www.youtube.com/embed/W0ERmrYaDqg?autoplay=0mute=1&controls=0&showinfo=0&modestbranding=1&loop=1&playlist=W0ERmrYaDqg"
               title="YouTube video player" 
@@ -39,7 +39,9 @@ function Welcome() {
               allow="autoplay; clipboard-write; encrypted-media;  picture-in-picture; web-share;"
               style={{borderRadius: '10px'}}
             ></iframe>
-        </div>
+        </div> */}
+        <div className={classes.landingBg}>
+      </div>
       </div>
     </div>
   );

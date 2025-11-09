@@ -2,66 +2,80 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
-import itemRoutes from "./routes/items.js";
 import dotenv from "dotenv";
 import Stripe from "stripe";
+import itemRoutes from "./routes/items.js";
+import profileRoutes from "./routes/profile.js";
+import orderRoutes from "./routes/orders.js";
 
-const stripe = Stripe(
-  "sk_test_51MBe2kGLD3kAQcPcox1UOblO3WAKA44CoPbYcbrbN8YMvBuTYZhmz3CZHDMfrhcgZxpXmIXOt7COnqLaYX03d6iZ00samrl7n8"
-);
-const app = express(); 
+const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripe = stripeSecret ? new Stripe(stripeSecret) : null;
+
 dotenv.config();
+
+const app = express();
+
 app.use(express.static("public"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
+const CONNECTION_URL = process.env.MONGODB_URI || "mongodb+srv://lkantaria1999:s0d8d555@cluster0.rl2gfrm.mongodb.net/?retryWrites=true&w=majority";
 
-const CONNECTION_URL =
-  "mongodb+srv://lkantaria1999:s0d8d555@cluster0.rl2gfrm.mongodb.net/?retryWrites=true&w=majority";
+if (!CONNECTION_URL) {
+  console.warn("MONGODB_URI environment variable is not set. Database connection will fail.");
+}
 
 app.use("/api/products", itemRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.get("/api/test", (req, res) => {
   res.send("hey");
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello To Factory-l  API");
+  res.send("Hello To Factory-l API");
 });
 
 app.post("/checkout", async (req, res) => {
+  if (!stripe) {
+    return res.status(503).json({ message: "Stripe is not configured." });
+  }
+
   const items = req.body;
 
-  let line_items = [];
-  items.forEach((item) => {
-    line_items.push({
-      
-      price: item.priceId,
-      quantity: item.quantity,
-    });
-  });
-  console.log(line_items);
+  const lineItems = items.map((item) => ({
+    price: item.priceId,
+    quantity: item.quantity,
+  }));
 
-  const session = await stripe.checkout.sessions.create({
-    line_items: line_items,
-    mode: "payment",
-    success_url: "http://localhost:3000/marketplace",
-    cancel_url: "http://localhost:3000/marketplace",
-  });
-  res.send(
-    JSON.stringify({
-      url: session.url,
-    })
-  );
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: lineItems,
+      mode: "payment",
+      success_url: process.env.CHECKOUT_SUCCESS_URL || "http://localhost:3000/marketplace",
+      cancel_url: process.env.CHECKOUT_CANCEL_URL || "http://localhost:3000/marketplace",
+    });
+
+    res.send(
+      JSON.stringify({
+        url: session.url,
+      })
+    );
+  } catch (error) {
+    console.error("Stripe checkout session failed", error);
+    res.status(500).json({ message: "Unable to create checkout session." });
+  }
 });
+
 const PORT = process.env.PORT || 5000;
 
 mongoose
   .connect(CONNECTION_URL, { useUnifiedTopology: true })
   .then(() => {
     app.listen(PORT, () => {
-      console.log("server running on port" + PORT);
+      console.log(`server running on port ${PORT}`);
     });
   })
   .catch((err) => {

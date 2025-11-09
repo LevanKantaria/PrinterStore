@@ -1,12 +1,110 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import classes from "./Footer.module.css";
 import CustomButton from "../customButton/CustomButton";
 import { Link } from "react-router-dom";
-import translate from "../translate";
+
+const IVY_PATHS = [
+  "M720 480 C 704 422 646 366 608 300 C 570 234 612 168 576 110 C 548 66 564 26 562 0",
+  "M780 480 C 806 410 862 348 912 282 C 962 216 938 158 986 108 C 1022 72 1020 26 1012 0",
+  "M660 480 C 632 420 580 360 536 294 C 492 228 514 162 470 102 C 438 58 450 24 444 0"
+];
+
+const LEAF_CONFIG = [
+  { x: 640, y: 362, rotate: -18, delay: 0.6 },
+  { x: 594, y: 288, rotate: 24, delay: 0.78 },
+  { x: 560, y: 214, rotate: -32, delay: 0.96 },
+  { x: 860, y: 334, rotate: 18, delay: 0.7 },
+  { x: 920, y: 256, rotate: -10, delay: 0.88 },
+  { x: 968, y: 184, rotate: 26, delay: 1.06 },
+  { x: 520, y: 318, rotate: -12, delay: 0.82 },
+  { x: 476, y: 228, rotate: 28, delay: 1.12 },
+  { x: 1010, y: 112, rotate: -24, delay: 1.24 },
+  { x: 552, y: 148, rotate: 18, delay: 1.32 }
+];
 
 const Footer = () => {
+  const ivySvgRef = useRef(null);
+  const [ivyActive, setIvyActive] = useState(false);
+
+  useEffect(() => {
+    const svgEl = ivySvgRef.current;
+    if (!svgEl) return;
+
+    const paths = svgEl.querySelectorAll("path[data-animate='true']");
+    paths.forEach((path, index) => {
+      const length = path.getTotalLength();
+      path.style.setProperty("--path-length", `${length}`);
+      path.style.strokeDasharray = `${length}`;
+      path.style.strokeDashoffset = `${length}`;
+      path.style.transitionDelay = `${0.25 + index * 0.35}s`;
+    });
+
+    let isMounted = true;
+
+    const raf = requestAnimationFrame(() => {
+      svgEl.getBoundingClientRect(); // force reflow
+      if (isMounted) {
+        setIvyActive(true);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <footer className={classes.footer}>
+    <footer className={`${classes.footer} ${classes.footerVisible}`}>
+      <div className={classes.ivyWrapper} aria-hidden="true">
+        <svg
+          ref={ivySvgRef}
+          className={`${classes.ivy} ${ivyActive ? classes.ivyActive : ""}`}
+          viewBox="0 0 1440 480"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <linearGradient id="vineGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#1f5c37" />
+              <stop offset="50%" stopColor="#3a8a55" />
+              <stop offset="100%" stopColor="#72c27a" />
+            </linearGradient>
+            <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#57d07d" />
+              <stop offset="50%" stopColor="#3e9f65" />
+              <stop offset="100%" stopColor="#1f6137" />
+            </linearGradient>
+          </defs>
+
+          <g className={classes.vines}>
+            {IVY_PATHS.map((pathData, index) => (
+              <path
+                key={`vine-${index}`}
+                data-animate="true"
+                className={classes.ivyPath}
+                d={pathData}
+                stroke="url(#vineGradient)"
+              />
+            ))}
+          </g>
+
+          <g className={classes.leaves}>
+            {LEAF_CONFIG.map((leaf, index) => (
+              <g
+                key={`leaf-${index}`}
+                className={classes.leaf}
+                style={{
+                  "--leaf-transform": `translate(${leaf.x}px, ${leaf.y}px) rotate(${leaf.rotate}deg)`,
+                  transitionDelay: `${leaf.delay}s`,
+                }}
+              >
+                <path className={classes.leafShape} d="M0 0 C 26 -14 54 12 4 66 C -46 12 -18 -14 0 0Z" />
+              </g>
+            ))}
+          </g>
+        </svg>
+      </div>
+
       <div className={classes.container}>
         <section className={classes.mainContent}>
           <div className={classes.leftDiv}>
