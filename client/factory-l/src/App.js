@@ -2,7 +2,7 @@ import "./App.css";
 import React, { Suspense, useEffect } from "react";
 import Home from "./pages/Home";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import Navbar from "./components/navbar/Navbar";
 import Materials from "./pages/Material";
@@ -17,14 +17,18 @@ import SignIn from "./components/signIn/SignIn";
 import SignUp from "./components/signUp/SignUp";
 import Blog from "./pages/Blog";
 import Profile from "./pages/Profile";
+import AdminOrders from "./pages/AdminOrders";
 import { auth } from "./firebase";
-import { clearUser, setAuthError, setAuthStatus, setUser } from "./features/auth/authSlice";
+import { clearUser, setAuthError, setAuthStatus, setUser, setUserRole } from "./features/auth/authSlice";
+import { getProfile } from "./api/profile";
 
 const StlViewer = React.lazy(() => import("./components/stlViewer/STLViewer"));
 
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const authStatus = useSelector((state) => state.auth.status);
+  const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const currentLang = localStorage.getItem("lang");
@@ -66,6 +70,29 @@ function App() {
     return () => unsubscribe();
   }, [dispatch]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadPermissions = async () => {
+      try {
+        const profile = await getProfile();
+        if (!cancelled && profile) {
+          dispatch(setUserRole({ isAdmin: profile.isAdmin === true }));
+        }
+      } catch (error) {
+        console.warn("[app] profile fetch failed", error);
+      }
+    };
+
+    if (authStatus === "authenticated" && currentUser) {
+      loadPermissions();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authStatus, currentUser?.uid, dispatch]);
+
   const hideChrome = location.pathname.startsWith("/sign-in") || location.pathname.startsWith("/sign-up");
 
   return (
@@ -81,6 +108,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/upload" element={<UploadItem />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
         <Route path="/marketplace/:category/" element={<MarketplaceItemsList />} />
         <Route path="/marketplace/:category/:subCategory" element={<MarketplaceItemsList />} />
         <Route path="/products/:id" element={<ProductPage />} />

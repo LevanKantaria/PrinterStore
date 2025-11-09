@@ -146,6 +146,10 @@ const Profile = () => {
             <span className={classes.label}>Auth provider</span>
             <p>{provider}</p>
           </div>
+              <div>
+                <span className={classes.label}>Access level</span>
+                <p>{profileData?.isAdmin ? "Administrator" : "Customer"}</p>
+              </div>
         </div>
 
         <div className={classes.actions}>

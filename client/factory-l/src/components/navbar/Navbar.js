@@ -44,6 +44,11 @@ const Navbar = () => {
         <p>
           <Link to="/materials"> {translate("landing.materials")} </Link>
         </p>
+        {status === "authenticated" && user?.isAdmin && (
+          <p>
+            <Link to="/admin/orders">Admin</Link>
+          </p>
+        )}
       </div>
       <div className={classes.rightGroup}>
         <div className={classes.shoppingCart}>
