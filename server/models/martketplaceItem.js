@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const marketplaceItemSchema = mongoose.Schema({
+const marketplaceItemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -28,6 +28,10 @@ const marketplaceItemSchema = mongoose.Schema({
     minlength: 3,
     trim: true,
   },
+  colors: {
+    type: [String],
+    default: [],
+  },
 
   price: {
     type: String,
@@ -51,8 +55,7 @@ const marketplaceItemSchema = mongoose.Schema({
     trim: true,
     maxlength: 550,
   },
-  
-});
+}, { timestamps: true });
 
 const marketplaceItem = mongoose.model("marketplaceItem", marketplaceItemSchema);
 

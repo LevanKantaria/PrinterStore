@@ -26,6 +26,7 @@ const sanitizeItems = (items = []) =>
       productId: item.productId,
       name: item.name,
       material: item.material,
+      color: item.color,
       quantity: Number(item.quantity) || 0,
       unitPrice: item.unitPrice != null ? Number(item.unitPrice) : undefined,
       lineTotal: item.lineTotal != null ? Number(item.lineTotal) : undefined,

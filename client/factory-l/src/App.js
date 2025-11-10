@@ -17,6 +17,7 @@ import SignIn from "./components/signIn/SignIn";
 import SignUp from "./components/signUp/SignUp";
 import Blog from "./pages/Blog";
 import Profile from "./pages/Profile";
+import AdminListings from "./pages/AdminListings";
 import AdminOrders from "./pages/AdminOrders";
 import { auth } from "./firebase";
 import { clearUser, setAuthError, setAuthStatus, setUser, setUserRole } from "./features/auth/authSlice";
@@ -108,6 +109,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/upload" element={<UploadItem />} />
+        <Route path="/admin/listings" element={<AdminListings />} />
         <Route path="/admin/orders" element={<AdminOrders />} />
         <Route path="/marketplace/:category/" element={<MarketplaceItemsList />} />
         <Route path="/marketplace/:category/:subCategory" element={<MarketplaceItemsList />} />

@@ -1,24 +1,45 @@
-import React from 'react'
-import classes from './CategoryItem.module.css'
-import { Link } from 'react-router-dom'
-import translate from '../../translate'
+import React from "react";
+import PropTypes from "prop-types";
+import classes from "./CategoryItem.module.css";
+import { Link } from "react-router-dom";
+import translate from "../../translate";
 
-const CategoryItem = (props) => {
-  const handleSubcategoryClick = (e) => {
-    e.stopPropagation();
+const CategoryItem = ({ link, image, title, items }) => {
+  const handleSubcategoryClick = (event) => {
+    event.stopPropagation();
   };
 
   return (
-    <Link to={props.link} className={classes.main} >
-        <img src={props.image} alt='decorative' loading='lazy' />
-        <h3> {translate(props.title)}</h3>
-        <ul>
-            <li><Link to={props.link1} onClick={handleSubcategoryClick}> {translate(props.item1)}</Link>  </li>
-            <li><Link to={props.link2} onClick={handleSubcategoryClick}> {translate(props.item2)}</Link>  </li>
-            <li><Link to={props.link3} onClick={handleSubcategoryClick}> {translate(props.item3)}</Link>  </li>
-        </ul>
+    <Link to={link} className={classes.main}>
+      <img src={image} alt={translate(title)} loading="lazy" />
+      <h3>{translate(title)}</h3>
+      <ul>
+        {items.map((item) => (
+          <li key={item.link}>
+            <Link to={item.link} onClick={handleSubcategoryClick}>
+              {translate(item.label)}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </Link>
-  )
-}
+  );
+};
 
-export default CategoryItem
+CategoryItem.propTypes = {
+  link: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      link: PropTypes.string.isRequired,
+    })
+  ),
+};
+
+CategoryItem.defaultProps = {
+  items: [],
+};
+
+export default CategoryItem;

@@ -131,6 +131,7 @@ const OrderHistory = ({ orders }) => {
                       <p className={classes.itemName}>{item.name}</p>
                       <p className={classes.itemMeta}>
                         Qty {item.quantity}
+                        {item.color ? ` • ${item.color}` : ""}
                         {item.material ? ` • ${item.material}` : ""}
                       </p>
                     </div>
@@ -176,6 +177,7 @@ OrderHistory.propTypes = {
           productId: PropTypes.string,
           name: PropTypes.string.isRequired,
           material: PropTypes.string,
+          color: PropTypes.string,
           quantity: PropTypes.number.isRequired,
           unitPrice: PropTypes.number,
           lineTotal: PropTypes.number,

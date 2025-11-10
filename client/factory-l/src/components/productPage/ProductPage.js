@@ -20,10 +20,11 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState({});
   const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState("");
 
   const clickHandler = (e) => {
     e.preventDefault();
-    const itemWithQuantity = { ...item, quantity };
+    const itemWithQuantity = { ...item, quantity, color: selectedColor };
     dispatch(cartActions.addItem(itemWithQuantity));
     navigate(`/cart/${item._id}`);
   };
@@ -35,10 +36,20 @@ const ProductPage = () => {
         params: { id: id },
       })
       .then((res) => {
-        setItem(res.data[0]);
+        const product = res.data[0];
+        setItem(product);
+        setSelectedColor(product?.colors?.[0] || "");
         setLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (item?.colors?.length) {
+      setSelectedColor(item.colors[0]);
+    } else {
+      setSelectedColor("");
+    }
+  }, [item.colors]);
 
   return (
     <div className={classes.main}>
@@ -78,6 +89,30 @@ const ProductPage = () => {
               <span className={classes.price}>${item.price}</span>
               <span className={classes.shipping}> Ships as soon as 7 days</span>
             </div>
+              {item.colors?.length > 0 && (
+                <div className={classes.colorSelector}>
+                  <span className={classes.colorLabel}>Color:</span>
+                  <div className={classes.colorOptions}>
+                    {item.colors.map((color) => (
+                      <button
+                        type="button"
+                        key={color}
+                        className={`${classes.colorOption} ${
+                          selectedColor === color ? classes.colorOptionActive : ""
+                        }`}
+                        onClick={() => setSelectedColor(color)}
+                        aria-label={`Select ${color}`}
+                      >
+                        <span
+                          className={classes.colorDot}
+                          style={{ backgroundColor: color }}
+                        />
+                        <span>{color}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             <div className={classes.qtyAndBuy}>
               <div className={classes.quantitySelector}>
                 <label htmlFor="quantity">Quantity:</label>
@@ -98,6 +133,7 @@ const ProductPage = () => {
                 width="150px"
                 height="50px"
                 fontSize="15px"
+                disabled={item.colors?.length > 0 && !selectedColor}
               />
             </div>
           </div>

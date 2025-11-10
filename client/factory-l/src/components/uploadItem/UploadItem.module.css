@@ -11,3 +11,68 @@
 .wrapper{
     padding: 40px;
 }
+
+.colorSection {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.colorInputRow {
+    display: flex;
+    gap: 8px;
+}
+
+.colorInputRow input {
+    flex: 1;
+    border: 1px solid rgba(92, 150, 112, 0.28);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: inherit;
+}
+
+.colorInputRow button {
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #4f9c6b 0%, #2f6f46 100%);
+    color: #f5fff6;
+    padding: 10px 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.colorChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.colorChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(233, 242, 236, 0.7);
+    border: 1px solid rgba(92, 150, 112, 0.35);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.colorChip button {
+    border: none;
+    background: transparent;
+    color: rgba(33, 63, 42, 0.6);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.colorSwatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
