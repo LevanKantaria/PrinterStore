@@ -58,17 +58,26 @@ const MarketplaceItemsList = () => {
 
   marketplaceItems = items.map((item) => {
    
+    const images = Array.isArray(item.images)
+      ? item.images
+      : item.images
+      ? [item.images]
+      : item.image
+      ? [item.image]
+      : [];
+
     return (
       <MarketplaceItem
         category={item.category}
         subCategory={item.subCategory}
         id={item._id}
-        images={item.images || item.image}
+        images={images}
         price={item.price}
         creator={item.creator}
-        key={Math.random()}
+        key={item._id}
         name={item.name}
         description={item.description}
+        colors={item.colors}
       />
     );
   });

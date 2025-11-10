@@ -65,9 +65,14 @@ const MuiDrawer = () => {
                 <Link to="/blog"> ბლოგი </Link>
               </p>
               {status === "authenticated" && user?.isAdmin && (
-                <p onClick={closeDrawer}>
-                  <Link to="/admin/orders">Admin orders</Link>
-                </p>
+                <>
+                  <p onClick={closeDrawer}>
+                    <Link to="/admin/orders">Admin orders</Link>
+                  </p>
+                  <p onClick={closeDrawer}>
+                    <Link to="/admin/listings">Admin listings</Link>
+                  </p>
+                </>
               )}
             </div>
 

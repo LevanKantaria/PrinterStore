@@ -409,6 +409,7 @@ const AdminOrders = () => {
                                       <span>{item.name}</span>
                                       <span className={classes.secondaryText}>
                                         Qty {item.quantity}
+                                        {item.color ? ` • ${item.color}` : ""}
                                         {item.material ? ` • ${item.material}` : ""}
                                       </span>
                                     </li>

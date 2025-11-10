@@ -22,7 +22,7 @@ export const translate = {
         'categories.organizers':'ორგანიზატორები',
         'categories.decoration':'დეკორაციები',
         'categories.fidgets':'გასართობები',
-
+        'categories.christmas':'საშობაო',
     }, 
     EN: {
         'landing.marketplace': 'marketplace'

@@ -20,18 +20,22 @@ const ShoppingCartExpanded = () => {
   const dispatch = useDispatch();
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
 
-  const sum = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const sum = cartItems.reduce(
+    (total, item) => total + Number(item.price || 0) * Number(item.quantity || 0),
+    0
+  );
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   let cartItemsExpanded = cartItems.map((item) => {
     return (
       <ShoppingCartItem
         id={item._id}
-        image={item.images[0]}
+        color={item.color}
+        image={item.images?.[0]}
         name={item.name}
         quantity={item.quantity}
         price={item.price}
-        key={Math.random()}
+        key={`${item._id}-${item.color || "default"}`}
       />
     );
   });
@@ -60,11 +64,12 @@ const ShoppingCartExpanded = () => {
           </div>
           <ShoppingCartItem
             id={lastItem._id}
+            color={lastItem.color}
             image={lastItem.images?.[0]}
             name={lastItem.name}
             quantity={lastItem.quantity}
             price={lastItem.price}
-            key={Math.random()}
+            key={`${lastItem._id}-${lastItem.color || "default"}-recent`}
           />
         </div>
       );

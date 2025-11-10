@@ -132,10 +132,11 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
           productId: item._id || item.id || item.productId,
           name: item.name,
           material: item.material,
+          color: item.color,
           quantity: Number(item.quantity || 1),
           unitPrice: Number(item.price || 0),
           lineTotal: Number(item.price || 0) * Number(item.quantity || 0),
-           image: item.image || item.images?.[0] || item.thumbnail || "",
+          image: item.image || item.images?.[0] || item.thumbnail || "",
         })),
         shippingAddress: {
           fullName: form.fullName,
@@ -291,10 +292,13 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
                 <h3>Order summary</h3>
                 <ul className={classes.summaryItems}>
                   {cartItems.map((item) => (
-                    <li key={item._id || item.id} className={classes.summaryItem}>
+                    <li key={`${item._id || item.id}-${item.color || "default"}`} className={classes.summaryItem}>
                       <div>
                         <span className={classes.summaryName}>{item.name}</span>
-                        <span className={classes.summaryMeta}>Qty {item.quantity}</span>
+                        <span className={classes.summaryMeta}>
+                          Qty {item.quantity}
+                          {item.color ? ` • ${item.color}` : ""}
+                        </span>
                       </div>
                       <span>{formatCurrency(Number(item.price || 0) * Number(item.quantity || 0))}</span>
                     </li>

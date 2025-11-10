@@ -224,6 +224,7 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
                     <strong>{item.name}</strong>
                     <span className={classes.itemMeta}>
                       Qty {item.quantity}
+                      {item.color ? ` • ${item.color}` : ""}
                       {item.material ? ` • ${item.material}` : ""}
                     </span>
                   </div>
@@ -325,6 +326,7 @@ OrderDetailsModal.propTypes = {
         productId: PropTypes.string,
         name: PropTypes.string.isRequired,
         material: PropTypes.string,
+        color: PropTypes.string,
         image: PropTypes.string,
         quantity: PropTypes.number.isRequired,
         unitPrice: PropTypes.number,
