@@ -145,6 +145,9 @@ app.post("/checkout", async (req, res) => {
 
 const PORT = process.env.PORT || 5001;
 
+// Set strictQuery to false to prepare for Mongoose 7 (suppresses deprecation warning)
+mongoose.set('strictQuery', false);
+
 mongoose
   .connect(CONNECTION_URL, { useUnifiedTopology: true })
   .then(() => {
