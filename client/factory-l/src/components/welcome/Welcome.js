@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import classes from "./Welcome.module.css";
 import { useNavigate } from "react-router";
 import CustomButton from "../customButton/CustomButton";
@@ -8,8 +9,9 @@ import translate from './../translate';
 
 
 function Welcome() {
-
   const navigate = useNavigate();
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   return (
     <div className={classes.main}>
       <div className={classes.welcomeArticleAndImage}>

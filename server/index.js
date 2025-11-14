@@ -7,6 +7,7 @@ import Stripe from "stripe";
 import itemRoutes from "./routes/items.js";
 import profileRoutes from "./routes/profile.js";
 import orderRoutes from "./routes/orders.js";
+import { sendContactEmail, sendAutoReply } from "./utils/email.js";
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
 const stripe = stripeSecret ? new Stripe(stripeSecret) : null;
@@ -29,6 +30,69 @@ if (!CONNECTION_URL) {
 app.use("/api/products", itemRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/orders", orderRoutes);
+
+app.post("/api/contact", async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ 
+        message: "All fields are required" 
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ 
+        message: "Invalid email format" 
+      });
+    }
+
+    // Log the submission
+    console.log("Contact form submission:", {
+      name,
+      email,
+      subject,
+      message,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Send email to business owner
+    try {
+      await sendContactEmail(email, name, subject, message);
+      
+      // Send auto-reply to user (non-blocking)
+      sendAutoReply(email, name).catch(err => {
+        console.warn("Auto-reply failed (non-critical):", err);
+      });
+
+      res.status(200).json({ 
+        message: "Contact form submitted successfully",
+        success: true 
+      });
+    } catch (emailError) {
+      // If email fails but we have the data, still log it
+      console.error("Email sending failed:", emailError);
+      
+      // In development, you might want to still return success
+      // In production, you might want to return an error
+      // For now, we'll return success but log the error
+      res.status(200).json({ 
+        message: "Your message has been received. We'll get back to you soon.",
+        success: true,
+        warning: "Email notification may not have been sent. Please check server logs."
+      });
+    }
+  } catch (error) {
+    console.error("Contact form error:", error);
+    res.status(500).json({ 
+      message: "An error occurred while processing your request",
+      success: false 
+    });
+  }
+});
 
 app.get("/api/test", (req, res) => {
   res.send("hey");
@@ -69,7 +133,7 @@ app.post("/checkout", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 mongoose
   .connect(CONNECTION_URL, { useUnifiedTopology: true })

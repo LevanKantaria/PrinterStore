@@ -322,7 +322,7 @@ const AdminListings = () => {
                           )}
                         </td>
                         <td>
-                          <strong>${product.price}</strong>
+                          <strong>₾{product.price}</strong>
                         </td>
                         <td>
                           <span className={classes.muted}>

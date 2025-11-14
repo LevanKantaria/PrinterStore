@@ -524,7 +524,7 @@ function STLViewer() {
   };
 
   return (
-    <div style={{ height: '100vh', boxSizing: 'border-box' }}>
+    <div style={{ minHeight: '100vh', boxSizing: 'border-box', paddingBottom: '120px' }}>
       <div style={containerStyle}>
         <aside style={sidebarStyle}>
           <div style={infoCardStyle}>

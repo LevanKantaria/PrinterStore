@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import classes from "./MarketplaceCategories.module.css";
 import CategoryItem from "./helpers/CategoryItem";
 import { Link } from "react-router-dom";
@@ -6,6 +7,8 @@ import translate from "../translate";
 import categories from "../../data/marketplaceCategories";
 
 const MarketplaceCategories = () => {
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   return (
     <div className={classes.main}>
       <section className={classes.categoriesList}>

@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Order from "../models/order.js";
-import { sendOrderConfirmationEmail } from "../utils/email.js";
+import Profile from "../models/profile.js";
+import { sendOrderConfirmationEmail, sendNewOrderNotificationEmail, sendOrderStatusUpdateEmail } from "../utils/email.js";
 
 const VALID_STATUSES = ["awaiting_payment", "payment_received", "processing", "fulfilled", "cancelled"];
 
@@ -49,6 +50,7 @@ export const createOrder = async (req, res) => {
       shippingFee = 0,
       total,
       paymentDueBy,
+      language = "KA",
     } = req.body || {};
 
     const items = sanitizeItems(rawItems);
@@ -94,15 +96,26 @@ export const createOrder = async (req, res) => {
 
     const order = createdOrder.toObject();
 
+    // Send confirmation email to customer
     if (req.user?.email) {
       sendOrderConfirmationEmail({
         to: req.user.email,
         order,
         user: req.user,
+        language,
       }).catch((emailError) => {
         console.error("[orders] Failed to send confirmation email:", emailError);
       });
     }
+
+    // Send notification email to admin (always in English for now)
+    sendNewOrderNotificationEmail({
+      order,
+      user: req.user,
+      language: 'EN', // Admin emails in English
+    }).catch((emailError) => {
+      console.error("[orders] Failed to send admin notification email:", emailError);
+    });
 
     return res.status(201).json(order);
   } catch (error) {
@@ -179,6 +192,7 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: "Order not found." });
     }
 
+    const oldStatus = order.status;
     const historyEntry = {
       status,
       note,
@@ -195,6 +209,26 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     await order.save();
+
+    // Send status update email to customer if status changed
+    if (oldStatus !== status) {
+      try {
+        const profile = await Profile.findOne({ userId: order.userId });
+        if (profile?.email) {
+          sendOrderStatusUpdateEmail({
+            to: profile.email,
+            order: order.toObject(),
+            oldStatus,
+            newStatus: status,
+            note,
+          }).catch((emailError) => {
+            console.error("[orders] Failed to send status update email:", emailError);
+          });
+        }
+      } catch (profileError) {
+        console.error("[orders] Failed to fetch profile for status update email:", profileError);
+      }
+    }
 
     return res.json(order);
   } catch (error) {

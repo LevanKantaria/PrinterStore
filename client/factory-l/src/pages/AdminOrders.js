@@ -13,9 +13,10 @@ const STATUS_OPTIONS = [
   { value: "cancelled", label: "Cancelled" },
 ];
 
-const formatCurrency = (value, currency = "USD") => {
+const formatCurrency = (value, currency = "GEL") => {
   const amount = Number(value || 0);
-  return `${currency} ${amount.toFixed(2)}`;
+  const symbol = currency === "GEL" ? "₾" : currency;
+  return `${symbol} ${amount.toFixed(2)}`;
 };
 
 const formatDate = (value) => {
@@ -75,7 +76,7 @@ const AdminOrders = () => {
   }, [orders]);
 
   const incomeSummary = useMemo(() => {
-    const currency = orders[0]?.currency || "USD";
+    const currency = orders[0]?.currency || "GEL";
     const awaitingTotal = orders
       .filter((order) => order.status === "awaiting_payment")
       .reduce((acc, order) => acc + Number(order.total || 0), 0);

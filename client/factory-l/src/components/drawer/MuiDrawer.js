@@ -1,14 +1,22 @@
 import { Drawer, Box, Typography, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import classes from "./MuiDrawer.module.css";
 import translate from "../translate";
 
 const MuiDrawer = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const { user, status } = useSelector((state) => state.auth);
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
+
+  useEffect(() => {
+    // Reset avatar error when user changes
+    setAvatarError(false);
+  }, [user?.photoURL]);
 
   const displayName = useMemo(() => {
     if (!user) return "";
@@ -45,7 +53,7 @@ const MuiDrawer = () => {
           <Box p={0} width="85vw" maxWidth="360px" textAlign="center" role="presentation">
             <Typography variant="h6" component="div">
               <div className={classes.header} onClick={closeDrawer}>
-                Factory L
+                Makers Hub
               </div>
             </Typography>
             <div className={classes.links}>
@@ -62,15 +70,15 @@ const MuiDrawer = () => {
                 <Link to="/materials"> {translate("landing.materials")} </Link>
               </p>
               <p onClick={closeDrawer}>
-                <Link to="/blog"> ბლოგი </Link>
+                <Link to="/blog">{translate("landing.blog")}</Link>
               </p>
               {status === "authenticated" && user?.isAdmin && (
                 <>
                   <p onClick={closeDrawer}>
-                    <Link to="/admin/orders">Admin orders</Link>
+                    <Link to="/admin/orders">{translate("navbar.admin.orders")}</Link>
                   </p>
                   <p onClick={closeDrawer}>
-                    <Link to="/admin/listings">Admin listings</Link>
+                    <Link to="/admin/listings">{translate("navbar.admin.listings")}</Link>
                   </p>
                 </>
               )}
@@ -79,23 +87,28 @@ const MuiDrawer = () => {
             <div className={classes.accountArea}>
               {status === "authenticated" && user ? (
                 <Link to="/profile" className={classes.profileLink} onClick={closeDrawer}>
-                  {user.photoURL ? (
-                    <img src={user.photoURL} alt={displayName} className={classes.profileAvatarImage} />
+                  {user.photoURL && !avatarError ? (
+                    <img 
+                      src={user.photoURL} 
+                      alt="" 
+                      className={classes.profileAvatarImage}
+                      onError={() => setAvatarError(true)}
+                    />
                   ) : (
                     <span className={classes.profileAvatarFallback}>{initial}</span>
                   )}
                   <div className={classes.profileCopy}>
-                    <span className={classes.profileGreeting}>Welcome back</span>
+                    <span className={classes.profileGreeting}>{translate("drawer.welcome")}</span>
                     <span className={classes.profileName}>{displayName}</span>
                   </div>
                 </Link>
               ) : (
                 <div className={classes.authButtons}>
                   <Link to="/sign-in" className={classes.signInLink} onClick={closeDrawer}>
-                    Sign in
+                    {translate("drawer.signIn")}
                   </Link>
                   <Link to="/sign-up" className={classes.signUpLink} onClick={closeDrawer}>
-                    Create account
+                    {translate("drawer.createAccount")}
                   </Link>
                 </div>
               )}
