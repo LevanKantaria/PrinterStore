@@ -1,6 +1,7 @@
 .main {
-  background: var(--color-primary);
-
+  background-image: url('../../../public/assets/LANDING22.png');
+  background-size: cover;
+  background-position: bottom left;
   height: 530px;
   width: 100%;
 }
@@ -8,9 +9,9 @@
 .landingBg {
   box-sizing: border-box;
   background-position: center;
-  background-size: cover;
-  aspect-ratio: 16/9;
-  background-image: url('../../../public/assets/test.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  /* background-image: url('../../../public/assets/test.png'); */
 }
 
 .welcomeArticleAndImage {

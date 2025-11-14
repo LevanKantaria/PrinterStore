@@ -8,7 +8,7 @@ const MarketplaceItemSkeleton = () => {
   const marketplaceItems = items.map((item) => {
    
     return (
-      <div>
+      <div key={item}>
       <div className={classes.marketplaceItemPlaceholder}></div>
       <div className={classes.marketplaceItemPlaceholderText}></div>
       </div>

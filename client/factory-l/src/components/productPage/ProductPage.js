@@ -1,7 +1,7 @@
 // ProductPage.js
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import classes from "./ProductPage.module.css";
 import CustomButton from "../customButton/CustomButton";
@@ -9,21 +9,29 @@ import { cartActions } from "../../features/cart/cartSlice";
 import Skeleton from "../skeleton/Skeleton";
 import SimpleSlider from "./SimpleSlider";
 import translate from "../translate";
-
-const API_URL = "http://localhost:5000/";
+import { API_URL } from "../../API_URL";
 
 const ProductPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   const params = useParams();
   let id = params.id;
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState({});
   const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState("");
 
   const clickHandler = (e) => {
     e.preventDefault();
-    const itemWithQuantity = { ...item, quantity };
+    const itemWithQuantity = { 
+      ...item, 
+      quantity, 
+      color: selectedColor,
+      makerId: item.makerId,
+      makerName: item.makerName,
+    };
     dispatch(cartActions.addItem(itemWithQuantity));
     navigate(`/cart/${item._id}`);
   };
@@ -31,14 +39,24 @@ const ProductPage = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(API_URL + "api/products", {
+      .get(API_URL + "/api/products", {
         params: { id: id },
       })
       .then((res) => {
-        setItem(res.data[0]);
+        const product = res.data[0];
+        setItem(product);
+        setSelectedColor(product?.colors?.[0] || "");
         setLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (item?.colors?.length) {
+      setSelectedColor(item.colors[0]);
+    } else {
+      setSelectedColor("");
+    }
+  }, [item.colors]);
 
   return (
     <div className={classes.main}>
@@ -71,16 +89,40 @@ const ProductPage = () => {
         </div>
         <div className={classes.rightDiv}>
           <h1 className={classes.itemName}> {item.name}</h1>
-          <h5> Made By</h5>
+          <h5>{translate('product.madeBy')}</h5>
           <span>{item.creator}</span>
           <div className={classes.orderDiv}>
             <div className={classes.priceAndShipping}>
-              <span className={classes.price}>${item.price}</span>
-              <span className={classes.shipping}> Ships as soon as 7 days</span>
+              <span className={classes.price}>₾{item.price}</span>
+              <span className={classes.shipping}>{translate('product.ships')}</span>
             </div>
+              {item.colors?.length > 0 && (
+                <div className={classes.colorSelector}>
+                  <span className={classes.colorLabel}>{translate('product.color')}</span>
+                  <div className={classes.colorOptions}>
+                    {item.colors.map((color) => (
+                      <button
+                        type="button"
+                        key={color}
+                        className={`${classes.colorOption} ${
+                          selectedColor === color ? classes.colorOptionActive : ""
+                        }`}
+                        onClick={() => setSelectedColor(color)}
+                        aria-label={`Select ${color}`}
+                      >
+                        <span
+                          className={classes.colorDot}
+                          style={{ backgroundColor: color }}
+                        />
+                        <span>{color}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             <div className={classes.qtyAndBuy}>
               <div className={classes.quantitySelector}>
-                <label htmlFor="quantity">Quantity:</label>
+                <label htmlFor="quantity">{translate('product.quantity')}</label>
                 <select 
                   id="quantity" 
                   value={quantity} 
@@ -94,64 +136,66 @@ const ProductPage = () => {
               </div>
               <CustomButton
                 onClick={clickHandler}
-                text="Add to Cart"
+                text={translate('product.addToCart')}
                 width="150px"
                 height="50px"
                 fontSize="15px"
+                disabled={item.colors?.length > 0 && !selectedColor}
               />
             </div>
           </div>
-          <h2> Have a question about this Product?</h2>
-          <p>You must be logged in and verified to contact the designer.</p>
+          {/* Commented out - redundant section for now */}
+          {/* <h2>{translate('product.question')}</h2>
+          <p>{translate('product.loginRequired')}</p> */}
         </div>
       </div>
       <div className={classes.descriptionAndDetails}>
         <div className={classes.description}>
           <div className={classes.sectionHeader}>
-            <h3>About This Product</h3>
+            <h3>{translate('product.about')}</h3>
             <div className={classes.headerLine}></div>
           </div>
-          <p className={classes.descriptionText}>{item.description || "No description available for this product."}</p>
+          <p className={classes.descriptionText}>{item.description || translate('product.noDescription')}</p>
         </div>
         <div className={classes.details}>
           <div className={classes.sectionHeader}>
-            <h3>Product Information</h3>
+            <h3>{translate('product.information')}</h3>
             <div className={classes.headerLine}></div>
           </div>
           <div className={classes.detailsList}>
             <div className={classes.detailItem}>
               <div className={classes.detailIcon}>📦</div>
               <div className={classes.detailContent}>
-                <span className={classes.detailLabel}>Category</span>
-                <span className={classes.detailValue}>{item.category || "N/A"}</span>
+                <span className={classes.detailLabel}>{translate('product.category')}</span>
+                <span className={classes.detailValue}>{item.category ? translate(`categories.${item.category}`) : "N/A"}</span>
               </div>
             </div>
             <div className={classes.detailItem}>
               <div className={classes.detailIcon}>🏷️</div>
               <div className={classes.detailContent}>
-                <span className={classes.detailLabel}>Subcategory</span>
+                <span className={classes.detailLabel}>{translate('product.subcategory')}</span>
                 <span className={classes.detailValue}>{item.subCategory || "N/A"}</span>
               </div>
             </div>
             <div className={classes.detailItem}>
               <div className={classes.detailIcon}>👤</div>
               <div className={classes.detailContent}>
-                <span className={classes.detailLabel}>Created By</span>
+                <span className={classes.detailLabel}>{translate('product.createdBy')}</span>
                 <span className={classes.detailValue}>{item.creator || "N/A"}</span>
               </div>
             </div>
             <div className={classes.detailItem}>
               <div className={classes.detailIcon}>💰</div>
               <div className={classes.detailContent}>
-                <span className={classes.detailLabel}>Price</span>
-                <span className={classes.detailValue}>${item.price || "N/A"}</span>
+                <span className={classes.detailLabel}>{translate("product.price")}</span>
+                <span className={classes.detailValue}>₾{item.price || "N/A"}</span>
               </div>
             </div>
             <div className={classes.detailItem}>
               <div className={classes.detailIcon}>🚚</div>
               <div className={classes.detailContent}>
-                <span className={classes.detailLabel}>Shipping</span>
-                <span className={classes.detailValue}>7-14 business days</span>
+                <span className={classes.detailLabel}>{translate('product.shipping')}</span>
+                <span className={classes.detailValue}>{translate('product.shippingTime')}</span>
               </div>
             </div>
           </div>

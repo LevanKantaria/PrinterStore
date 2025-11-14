@@ -1,0 +1,417 @@
+.materialsPage {
+  width: 100%;
+  min-height: 100vh;
+  background: #fafafa;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #1a4d2e 0%, #2d5016 50%, #3a8a55 100%);
+  color: #ffffff;
+  padding: 100px 32px 80px;
+  text-align: center;
+}
+
+.heroContainer {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 56px;
+  font-weight: 800;
+  margin: 0 0 24px 0;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.heroDescription {
+  font-size: 22px;
+  font-weight: 400;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* Intro Section */
+.introSection {
+  padding: 80px 32px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 42px;
+  font-weight: 700;
+  color: #1a4d2e;
+  margin: 0 0 24px 0;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.introText {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #4b5563;
+  margin: 0;
+  text-align: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Materials Section */
+.materialsSection {
+  padding: 80px 32px;
+  background: #ffffff;
+}
+
+.materialsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.materialCard {
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 32px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.materialCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3a8a55, #72c27a);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.materialCard:hover {
+  border-color: #3a8a55;
+  box-shadow: 0 8px 24px rgba(58, 138, 85, 0.15);
+  transform: translateY(-4px);
+}
+
+.materialCard:hover::before {
+  transform: scaleX(1);
+}
+
+.materialBadge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+}
+
+.badgePla {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badgeAbs {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badgePetg {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badgeTpu {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.badgeNylon {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badgeSpecialty {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.materialName {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a4d2e;
+  margin: 0 0 12px 0;
+}
+
+.materialDescription {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+}
+
+.materialSpecs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.specItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.specLabel {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.specValue {
+  font-size: 14px;
+  color: #1a4d2e;
+  font-weight: 600;
+}
+
+/* Comparison Section */
+.comparisonSection {
+  padding: 80px 32px;
+  background: #f9fafb;
+}
+
+.comparisonTable {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 2fr;
+}
+
+.tableHeader {
+  display: contents;
+}
+
+.tableHeader > .tableCell {
+  background: #0f3a1f;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  text-align: start;
+}
+
+.tableHeader > .tableCell:first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.tableHeader > .tableCell:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.tableRow {
+  display: contents;
+}
+
+.tableRow > .tableCell {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s ease;
+  background: #ffffff;
+}
+
+.tableRow:hover > .tableCell {
+  background: #f9fafb;
+}
+
+.tableRow:last-of-type > .tableCell {
+  border-bottom: none;
+}
+
+.tableCell {
+  font-size: 14px;
+  color: #374151;
+  display: flex;
+  align-items: flex-start;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-height: 20px;
+  padding: 0;
+  margin: 0;
+  text-align: start;
+}
+
+.tableCell strong {
+  color: #1a4d2e;
+  font-weight: 600;
+}
+
+/* Tips Section */
+.tipsSection {
+  padding: 80px 32px;
+  background: #ffffff;
+}
+
+.tipsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.tipCard {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 32px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.tipCard:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.tipIcon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.tipTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a4d2e;
+  margin: 0 0 12px 0;
+}
+
+.tipText {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .materialsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 1.5fr;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .tipsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 80px 24px 60px;
+  }
+
+  .heroTitle {
+    font-size: 40px;
+  }
+
+  .heroDescription {
+    font-size: 18px;
+  }
+
+  .introSection,
+  .materialsSection,
+  .comparisonSection,
+  .tipsSection {
+    padding: 60px 24px;
+  }
+
+  .sectionTitle {
+    font-size: 32px;
+  }
+
+  .introText {
+    font-size: 16px;
+  }
+
+  .materialsGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .materialCard {
+    padding: 24px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .tableCell {
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tableCell:last-child {
+    border-bottom: none;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .tableRow::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #1a4d2e;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 32px;
+  }
+
+  .heroDescription {
+    font-size: 16px;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+  }
+
+  .materialName {
+    font-size: 20px;
+  }
+}

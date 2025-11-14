@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import classes from "./MarketplaceItemsList.module.css";
 import MarketplaceItem from "../marketplaceItem/MarketplaceItem";
 import axios from "axios";
 import { useParams } from "react-router";
 import CircularIndeterminate from "../circularProgress/CircularProgress";
-import { API_URL } from "../../API_URL";
 import { Link } from "react-router-dom";
 import Marketplace from '../../pages/Marketplace';
 import MarketplaceItemSkeleton from "./MarketplaceItemSkeleton";
 import translate from "../translate";
-
-
-// const API_URL ='https://factory-l.herokuapp.com/'
+import { API_URL } from "../../API_URL";
 
 
 
@@ -21,6 +19,8 @@ const MarketplaceItemsList = () => {
   let subCategory = params.subCategory;
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   let marketplaceItems = [];
   let categoryLink = `/marketplace/${category}`;
   let subCategoryLink = `/marketplace/${subCategory}`;
@@ -31,7 +31,7 @@ const MarketplaceItemsList = () => {
     if (!subCategory) {
       setLoading(true);
       axios
-        .get(API_URL+"api/products", {
+        .get(API_URL + "/api/products", {
           params: {
             category: category,
           },
@@ -43,7 +43,7 @@ const MarketplaceItemsList = () => {
     } else if (subCategory) {
       setLoading(true);
       axios
-        .get(API_URL+"api/products", {
+        .get(API_URL + "/api/products", {
           params: {
             subCategory: subCategory,
           },
@@ -58,17 +58,26 @@ const MarketplaceItemsList = () => {
 
   marketplaceItems = items.map((item) => {
    
+    const images = Array.isArray(item.images)
+      ? item.images
+      : item.images
+      ? [item.images]
+      : item.image
+      ? [item.image]
+      : [];
+
     return (
       <MarketplaceItem
         category={item.category}
         subCategory={item.subCategory}
         id={item._id}
-        images={item.images || item.image}
+        images={images}
         price={item.price}
         creator={item.creator}
-        key={Math.random()}
+        key={item._id}
         name={item.name}
         description={item.description}
+        colors={item.colors}
       />
     );
   });

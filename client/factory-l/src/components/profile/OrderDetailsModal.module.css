@@ -1,0 +1,431 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(9, 17, 13, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 32px);
+  box-sizing: border-box;
+  z-index: 2100;
+  overflow: hidden;
+}
+
+.modal {
+  position: relative;
+  width: min(960px, calc(100vw - clamp(32px, 6vw, 64px)));
+  max-height: min(85vh, calc(100vh - clamp(32px, 6vw, 64px)));
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 28px;
+  border: 1px solid rgba(104, 161, 122, 0.2);
+  box-shadow: 0 40px 70px rgba(7, 25, 14, 0.25);
+  display: flex;
+  flex-direction: column;
+  font-family: "Karla", sans-serif;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.modalBody {
+  width: 100%;
+  padding: clamp(28px, 4vw, 48px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(33, 63, 42, 0.18);
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: rgba(33, 63, 42, 0.05);
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  border: none;
+  background: rgba(33, 76, 51, 0.08);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  color: #214c33;
+}
+
+.closeButton:hover {
+  background: rgba(33, 76, 51, 0.18);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 32px);
+  color: #1c3d27;
+  font-family: "Archivo", sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.header p {
+  margin: 6px 0 0;
+  color: rgba(33, 63, 42, 0.68);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  background: rgba(33, 63, 42, 0.08);
+  color: #1c3d27;
+}
+
+.status-pending,
+.status-awaiting,
+.status-awaiting-payment,
+.status-awaiting_payment {
+  background: rgba(255, 191, 71, 0.18);
+  color: #8a5b11;
+}
+
+.status-completed,
+.status-shipped,
+.status-paid {
+  background: rgba(67, 179, 114, 0.18);
+  color: #1d6a40;
+}
+
+.status-cancelled,
+.status-failed {
+  background: rgba(215, 74, 92, 0.18);
+  color: #8c1f2f;
+}
+
+.paymentReminder {
+  background: rgba(255, 248, 235, 0.85);
+  border: 1px solid rgba(219, 182, 126, 0.45);
+}
+
+.paymentIntro {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(89, 68, 28, 0.78);
+  line-height: 1.6;
+}
+
+.referenceCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(219, 182, 126, 0.4);
+  box-sizing: border-box;
+}
+
+.referenceLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(89, 68, 28, 0.72);
+  font-weight: 600;
+}
+
+.bankList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.bankList li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: rgba(89, 68, 28, 0.75);
+}
+
+.bankList li span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+}
+
+.bankList li strong {
+  color: #5a3f11;
+}
+
+.paymentHelp {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: rgba(90, 63, 17, 0.78);
+  line-height: 1.55;
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.copyIcon {
+  color: rgba(90, 63, 17, 0.6);
+  transition: color 0.2s ease;
+}
+
+.copyHint {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%) translateX(0);
+  background: rgba(90, 63, 17, 0.85);
+  color: #fff9f0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.copyButton:hover .copyIcon {
+  color: #5a3f11;
+}
+
+.copyButton:hover .copyHint {
+  opacity: 1;
+  transform: translateY(-50%) translateX(4px);
+}
+
+.copyButton strong {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.section {
+  background: rgba(241, 248, 244, 0.6);
+  border: 1px solid rgba(177, 214, 189, 0.35);
+  border-radius: 20px;
+  padding: 20px clamp(18px, 2vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c3d27;
+  font-family: "Archivo", sans-serif;
+}
+
+.itemsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.itemRow {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.itemImage {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(17, 41, 27, 0.22);
+}
+
+.itemImagePlaceholder {
+  width: 140px;
+  height: 110px;
+  border-radius: 16px;
+  background: rgba(33, 63, 42, 0.12);
+  color: rgba(33, 63, 42, 0.8);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itemInfo strong {
+  color: #1c3d27;
+  font-size: 16px;
+}
+
+.itemMeta {
+  color: rgba(33, 63, 42, 0.68);
+  font-size: 13px;
+}
+
+.itemAmount {
+  font-weight: 600;
+  color: #1c3d27;
+}
+
+.addressBlock {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: column;
+}
+
+.infoLabel {
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(33, 63, 42, 0.58);
+  font-weight: 600;
+}
+
+.infoValue {
+  font-size: 15px;
+  color: #1c3d27;
+  margin-top: 4px;
+}
+
+.notes {
+  margin: 0;
+  color: rgba(33, 63, 42, 0.72);
+  line-height: 1.5;
+}
+
+.summary {
+  margin-top: 8px;
+  padding: 18px clamp(18px, 2vw, 24px);
+  border-radius: 20px;
+  background: rgba(233, 242, 236, 0.6);
+  border: 1px solid rgba(177, 214, 189, 0.3);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.summaryLabel {
+  color: rgba(33, 63, 42, 0.6);
+}
+
+.summaryValue {
+  font-weight: 600;
+  color: #1c3d27;
+  margin-left: 12px;
+}
+
+.summaryDivider {
+  height: 1px;
+  background: rgba(33, 63, 42, 0.15);
+  grid-column: 1 / -1;
+  margin: 8px 0;
+}
+
+.summaryTotalLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1c3d27;
+}
+
+.summaryTotalValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c3d27;
+  margin-left: 12px;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+  }
+
+  .modalBody {
+    padding: 24px 20px;
+  }
+
+  .itemRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .itemImage,
+  .itemImagePlaceholder {
+    width: 100%;
+    height: 180px;
+  }
+
+  .referenceCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .copyHint {
+    display: none;
+  }
+}
+

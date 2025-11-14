@@ -63,8 +63,10 @@
   
   .image img {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
+    object-fit: contain;
+    object-position: center center;
   }
   
   .slick-slider {
@@ -75,7 +77,9 @@
   .slick-slide img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
   }
   
   .slick-list {
@@ -147,6 +151,62 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+}
+
+.colorSelector{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.colorLabel{
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.colorOptions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.colorOption{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(92, 150, 112, 0.28);
+    background: rgba(241, 248, 244, 0.75);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1c3d27;
+    transition: all 0.2s ease;
+}
+
+.colorOption:hover{
+    border-color: rgba(92, 150, 112, 0.6);
+}
+
+.colorOptionActive{
+    border-color: rgba(79, 156, 107, 0.8);
+    background: rgba(79, 156, 107, 0.12);
+}
+
+.colorOption:disabled{
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.colorDot{
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: inline-block;
 }
 
 .quantitySelector{

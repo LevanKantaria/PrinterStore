@@ -1,0 +1,259 @@
+.main {
+  margin: 32px auto;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--app-max-width);
+  overflow: hidden;
+  background: #ffffff;
+  padding: 40px 32px;
+  border-radius: 24px;
+  box-sizing: border-box;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Subtle snow particles background */
+.main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+    radial-gradient(circle at 45% 55%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+    radial-gradient(circle at 75% 35%, rgba(255, 255, 255, 0.85) 1px, transparent 1px),
+    radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+    radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+  background-size: 200px 200px, 180px 180px, 160px 160px, 190px 190px, 170px 170px;
+  background-position: 0 0, 50px 50px, 100px 100px, 150px 150px, 200px 200px;
+  pointer-events: none;
+  opacity: 0.4;
+  animation: snowDrift 20s linear infinite;
+  z-index: 0;
+}
+
+/* Subtle decorative blue ornaments */
+.main::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(173, 216, 230, 0.15) 8px, transparent 8px),
+    radial-gradient(circle at 90% 30%, rgba(173, 216, 230, 0.12) 6px, transparent 6px),
+    radial-gradient(circle at 20% 80%, rgba(173, 216, 230, 0.1) 7px, transparent 7px),
+    radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.13) 5px, transparent 5px);
+  background-size: 100% 100%;
+  pointer-events: none;
+  opacity: 0.6;
+  z-index: 0;
+}
+
+@keyframes snowDrift {
+  0% {
+    background-position: 0 0, 50px 50px, 100px 100px, 150px 150px, 200px 200px;
+  }
+  100% {
+    background-position: 0 200px, 50px 250px, 100px 300px, 150px 350px, 200px 400px;
+  }
+}
+
+.headerContainer {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2d5016;
+  margin: 0 0 8px 0;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: rgba(45, 80, 22, 0.7);
+  margin: 0;
+  font-weight: 400;
+}
+
+.seeAllButton {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  padding: 10px 24px;
+  background: #2d5016;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(45, 80, 22, 0.2);
+  z-index: 2;
+}
+
+.seeAllButton:hover {
+  background: #3a8a55;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
+}
+
+.seeAllButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(45, 80, 22, 0.2);
+}
+
+.scrollContainer {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 16px;
+  position: relative;
+  z-index: 1;
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(173, 216, 230, 0.3) transparent;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  background: rgba(240, 248, 255, 0.5);
+  border-radius: 10px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  background: rgba(173, 216, 230, 0.4);
+  border-radius: 10px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(173, 216, 230, 0.6);
+}
+
+.itemsRow {
+  display: flex;
+  gap: 24px;
+  padding: 8px 0 24px 0;
+  width: max-content;
+  min-width: 100%;
+}
+
+.itemsRow > * {
+  flex-shrink: 0;
+}
+
+.skeletonRow {
+  display: flex;
+  gap: 24px;
+  padding: 8px 0;
+}
+
+.skeletonRow > * {
+  flex-shrink: 0;
+  width: 289px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(45, 80, 22, 0.6);
+  font-size: 16px;
+}
+
+/* Subtle blue decorative ornaments */
+.headerContainer::before {
+  content: "🔵";
+  position: absolute;
+  left: 10%;
+  top: -10px;
+  font-size: 18px;
+  opacity: 0.15;
+  filter: hue-rotate(180deg) saturate(0.8);
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.headerContainer::after {
+  content: "🔵";
+  position: absolute;
+  right: 10%;
+  top: -10px;
+  font-size: 18px;
+  opacity: 0.15;
+  filter: hue-rotate(180deg) saturate(0.8);
+  animation: twinkle 2.5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .main {
+    padding: 32px 20px;
+    margin: 24px auto;
+  }
+
+  .header {
+    font-size: 26px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .itemsRow {
+    gap: 16px;
+  }
+
+  .headerContainer::before,
+  .headerContainer::after {
+    display: none;
+  }
+}
+
+@media (max-width: 668px) {
+  .main {
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+
+  .header {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .scrollContainer {
+    padding-bottom: 12px;
+  }
+
+  .itemsRow {
+    gap: 12px;
+  }
+}
+

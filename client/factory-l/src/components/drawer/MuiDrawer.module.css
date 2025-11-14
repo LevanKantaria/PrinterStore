@@ -2,6 +2,9 @@
   text-align: left;
   padding: 30px;
   font-family: "Karla", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 .header {
   color: white;
@@ -19,11 +22,9 @@
   color: #394157;
   font-weight: 500;
   font-size: 20px;
-  
 }
 .links p {
   margin-bottom: 35px;
-  
 }
 
 .close {
@@ -32,7 +33,7 @@
   left: 20px;
 }
 .close button {
-    font-family: 'Archivo Black', sans-serif;
+  font-family: 'Archivo Black', sans-serif;
 
   font-size: 28px;
   border: none;
@@ -48,4 +49,88 @@
     
   margin-left: 10px;
   padding: 10px;
+}
+
+.accountArea {
+  padding: 24px 30px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-top: 1px solid rgba(57, 65, 87, 0.08);
+  font-family: "Karla", sans-serif;
+}
+
+.authButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signInLink,
+.signUpLink {
+  display: inline-flex;
+  justify-center: center;
+  align-items: center;
+  height: 44px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.signInLink {
+  background: rgba(57, 65, 87, 0.08);
+  color: #1b2640;
+  border: 1px solid rgba(57, 65, 87, 0.18);
+}
+
+.signUpLink {
+  background: linear-gradient(135deg, #214c33, #1d3c29);
+  color: #f2fff4;
+  border: 1px solid rgba(33, 76, 51, 0.2);
+}
+
+.profileLink {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #1b2640;
+}
+
+.profileAvatarImage,
+.profileAvatarFallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(57, 65, 87, 0.12);
+  color: #1b2640;
+  font-weight: 700;
+  font-family: "Archivo", sans-serif;
+}
+
+.profileAvatarImage {
+  object-fit: cover;
+}
+
+.profileCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.profileGreeting {
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(27, 38, 64, 0.6);
+}
+
+.profileName {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }

@@ -12,3 +12,8 @@
   font-family: 'Archivo Black', sans-serif;
 }
 
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

@@ -35,7 +35,13 @@ const SimpleSlider = ({ images }) => {
         <img
           src={images[0]}
           alt="single-slide"
-          style={{ width: "100%", height: "auto", borderRadius: "12px" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "12px",
+            objectFit: "contain",
+            objectPosition: "center center",
+          }}
         />
       </div>
     );
@@ -48,7 +54,13 @@ const SimpleSlider = ({ images }) => {
           <img
             src={image}
             alt={`slide-${index}`}
-            style={{ width: "100%", height: "auto", borderRadius: "12px" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: "12px",
+              objectFit: "contain",
+              objectPosition: "center center",
+            }}
           />
         </div>
       ))}

@@ -1,60 +1,68 @@
-// import React, { useState, useEffect } from 'react';
-// import { useLoader } from '@react-three/fiber';
-// import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
-// import { computeVolume } from './Volume.js';
+import React, { useEffect, useMemo } from 'react';
+import * as THREE from 'three';
+import { computeVolume } from './Volume';
 
-// function Model({ file, onVolumeChange }) {
-//   const [geometry, setGeometry] = useState(null);
-//   const [volume, setVolume] = useState(null);
+function Model({ geometry: sourceGeometry, onVolumeChange, onDimensionsChange, unitMultiplier = 1, userScale = 1, color = '#2c7be5' }) {
+  const geometry = useMemo(() => {
+    if (!sourceGeometry) {
+      return null;
+    }
 
-//   useEffect(() => {
-//     const loadModel = async () => {
-//       try {
-//         const loadedGeometry = await new Promise((resolve, reject) => {
-//           const loader = new STLLoader();
-//           loader.load(file, resolve, undefined, reject);
-//         });
+    if (!sourceGeometry.isBufferGeometry) {
+      console.warn('Provided geometry is not a BufferGeometry instance.');
+      return null;
+    }
 
-//         // Compute the volume
-//         const vol = computeVolume(loadedGeometry);
-//         setVolume(vol);
+    const geom = sourceGeometry.clone();
+    const scaleFactor = unitMultiplier * userScale;
+    geom.computeVertexNormals();
+    geom.scale(scaleFactor, scaleFactor, scaleFactor);
+    geom.center();
+    return geom;
+  }, [sourceGeometry, unitMultiplier, userScale]);
 
-//         // Adjust scale based on volume
-//         if (vol < 1) {
-//           loadedGeometry.scale(10, 10, 10); // Scale up by 10 times
-//         }
+  const { scale, size } = useMemo(() => {
+    if (!geometry) {
+      return { scale: 1, size: null };
+    }
 
-//         // Set the geometry state
-//         setGeometry(loadedGeometry);
-//       } catch (error) {
-//         console.error('Error loading STL file:', error);
-//       }
-//     };
+    geometry.computeBoundingBox();
+    const dimensions = new THREE.Vector3();
+    geometry.boundingBox?.getSize(dimensions);
+    const maxAxis = Math.max(dimensions.x, dimensions.y, dimensions.z);
 
-//     if (file) {
-//       loadModel();
-//     }
-//   }, [file]);
+    if (!maxAxis || maxAxis === 0) {
+      return { scale: 1, size: dimensions };
+    }
 
-//   useEffect(() => {
-//     if (geometry) {
-//       const vol = computeVolume(geometry);
-//       setVolume(vol);
-//       if (onVolumeChange) {
-//         onVolumeChange(vol); // Notify parent component about the volume
-//       }
-//     }
-//   }, [geometry]);
+    const targetSize = 6; // fit to viewport roughly
+    return { scale: targetSize / maxAxis, size: dimensions };
+  }, [geometry]);
 
-//   return (
-//     <>
-//       {geometry && (
-//         <mesh geometry={geometry}>
-//           <meshStandardMaterial color="green" />
-//         </mesh>
-//       )}
-//     </>
-//   );
-// }
+  useEffect(() => {
+    if (!geometry) {
+      return;
+    }
 
-// export default Model;
+    const volume = computeVolume(geometry);
+    onVolumeChange?.(volume);
+
+    if (size) {
+      onDimensionsChange?.({ x: size.x, y: size.y, z: size.z });
+    }
+  }, [geometry, onVolumeChange, onDimensionsChange, size]);
+
+  if (!geometry) {
+    return null;
+  }
+
+  return (
+    <group scale={scale} castShadow receiveShadow>
+      <mesh geometry={geometry} castShadow receiveShadow>
+        <meshStandardMaterial color={color} metalness={0.1} roughness={0.6} />
+      </mesh>
+    </group>
+  );
+}
+
+export default Model;

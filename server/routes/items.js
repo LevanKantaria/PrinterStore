@@ -1,14 +1,13 @@
-import express from 'express'
-import {getItems, uploadItem} from '../controllers/items.js'
-
-
+import express from "express";
+import { deleteItem, getItems, listAllItems, updateItem, uploadItem } from "../controllers/items.js";
+import { requireAdmin, requireAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
+router.get("/", getItems);
+router.get("/admin/all", requireAuth, requireAdmin, listAllItems);
+router.post("/", requireAuth, requireAdmin, uploadItem);
+router.put("/:id", requireAuth, requireAdmin, updateItem);
+router.delete("/:id", requireAuth, requireAdmin, deleteItem);
 
-router.get('/', getItems )
-router.post('/', uploadItem )
-// router.delete('/:id', deletePost)
-
-
-export default router
+export default router;

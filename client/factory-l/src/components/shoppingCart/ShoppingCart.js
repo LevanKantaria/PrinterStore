@@ -1,32 +1,25 @@
 import React, { useState } from "react";
 import classes from "./ShoppingCart.module.css";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { useSelector ,useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
-import { cartActions } from "../../features/cart/cartSlice";
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [cartClass, setCartClass] = useState(classes.shoppingCart);
 
-  const cartItems = useSelector((state) => state.cart.cartItems);
+  const cartItems = useSelector((state) => state.cart.cartItems) || [];
+  const itemCount = cartItems.reduce((total, item) => total + Number(item.quantity || 0), 0);
   useEffect(() => {
-    if (cartItems ) {
-      localStorage.setItem("cart", JSON.stringify(cartItems));
-    }
-    let cartItem = JSON.parse(localStorage.getItem("cart"));
-    if(cartItems==null){
-      dispatch(cartActions.setItemsFromCart(cartItem))
-      console.log('storage supplied from local')
-    }
-    console.log(cartItems);
+    localStorage.setItem("cart", JSON.stringify(cartItems));
 
     setCartClass(classes.shoppingCartAnimated);
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setCartClass(classes.shoppingCart);
     }, 900);
+
+    return () => clearTimeout(timer);
   }, [cartItems]);
 
   return (
@@ -38,7 +31,7 @@ const ShoppingCart = () => {
     >
       <ShoppingCartOutlinedIcon color="inherit" fontSize="medium" />
 
-     {cartItems&&<sup>{cartItems.length}</sup>}
+     {cartItems && <sup>{itemCount}</sup>}
     </div>
   );
 };

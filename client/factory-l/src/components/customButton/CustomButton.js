@@ -8,9 +8,9 @@ const CustomButton = (props) => {
         name={props.name}
         onClick={props.onClick}
         className={classes.button}
-        style={{width:`${props.width}`, height:`${props.height}`, fontSize:`${props.fontSize}`}}
-        
-        
+        style={{ width: `${props.width}`, height: `${props.height}`, fontSize: `${props.fontSize}` }}
+        type={props.type || "button"}
+        disabled={props.disabled}
       >
         {props.text}
       </button>
