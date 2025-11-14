@@ -8,6 +8,7 @@ import Navbar from "./components/navbar/Navbar";
 import Materials from "./pages/Material";
 import Marketplace from "./pages/Marketplace";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import UploadItem from "./components/uploadItem/UploadItem";
 import ProductPage from "./components/productPage/ProductPage";
 import ShoppingCartExpanded from "./components/shoppingCartExpnded/ShoppingCartExpanded";
@@ -19,6 +20,7 @@ import Blog from "./pages/Blog";
 import Profile from "./pages/Profile";
 import AdminListings from "./pages/AdminListings";
 import AdminOrders from "./pages/AdminOrders";
+import ScrollToTop from "./components/scrollToTop/ScrollToTop";
 import { auth } from "./firebase";
 import { clearUser, setAuthError, setAuthStatus, setUser, setUserRole } from "./features/auth/authSlice";
 import { getProfile } from "./api/profile";
@@ -32,6 +34,7 @@ function App() {
   const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
+    // Language initialization is handled by langSlice
     const currentLang = localStorage.getItem("lang");
     if (!currentLang) {
       localStorage.setItem("lang", "KA");
@@ -98,8 +101,9 @@ function App() {
 
   return (
     <div className="App">
-      {!hideChrome && <Navbar />}
-      <Routes>
+      <ScrollToTop>
+        {!hideChrome && <Navbar />}
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
@@ -107,6 +111,7 @@ function App() {
         <Route path="/materials" element={<Materials />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/upload" element={<UploadItem />} />
         <Route path="/admin/listings" element={<AdminListings />} />
@@ -124,8 +129,9 @@ function App() {
             </Suspense>
           }
         />
-      </Routes>
-      {!hideChrome && <Footer />}
+        </Routes>
+        {!hideChrome && <Footer />}
+      </ScrollToTop>
     </div>
   );
 }

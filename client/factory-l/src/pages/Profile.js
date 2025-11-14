@@ -11,15 +11,24 @@ import OrderHistory from "../components/profile/OrderHistory";
 import { getProfile } from "../api/profile";
 import { getOrders } from "../api/orders";
 import { ApiError } from "../api/http";
+import translate from "../components/translate";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, status } = useSelector((state) => state.auth);
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
+  const [avatarError, setAvatarError] = useState(false);
 
   const [profileData, setProfileData] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    // Reset avatar error when user changes
+    setAvatarError(false);
+  }, [user?.photoURL]);
   useEffect(() => {
     if (status !== "loading" && !user) {
       navigate("/sign-in", { replace: true });
@@ -51,7 +60,7 @@ const Profile = () => {
       }
     } catch (err) {
       console.error("[profile] loadProfileAndOrders failed", err);
-      setError(err.message || "Unable to load profile data.");
+      setError(err.message || translate('profile.loadError'));
     } finally {
       setLoading(false);
     }
@@ -95,7 +104,7 @@ const Profile = () => {
       <div className={classes.page}>
         <div className={classes.loader}>
           <CircularProgress size={36} thickness={4} />
-          <span>Loading your profile…</span>
+          <span>{translate('profile.loading')}</span>
         </div>
       </div>
     );
@@ -119,11 +128,19 @@ const Profile = () => {
       <section className={classes.card}>
         <header className={classes.header}>
           <div className={classes.avatar}>
-            {user.photoURL ? <img src={user.photoURL} alt={displayName} /> : <span>{initials}</span>}
+            {user.photoURL && !avatarError ? (
+              <img 
+                src={user.photoURL} 
+                alt="" 
+                onError={() => setAvatarError(true)}
+              />
+            ) : (
+              <span>{initials}</span>
+            )}
           </div>
           <div className={classes.headerText}>
-            <h1>Your profile</h1>
-            <p>Manage how Factory L personalizes your experience.</p>
+            <h1>{translate('profile.title')}</h1>
+            <p>{translate('profile.description')}</p>
           </div>
         </header>
 
@@ -131,33 +148,35 @@ const Profile = () => {
 
         <div className={classes.infoGroup}>
           <div>
-            <span className={classes.label}>Name</span>
+            <span className={classes.label}>{translate('profile.name')}</span>
             <p>{displayName || profileData?.displayName || "—"}</p>
           </div>
           <div>
-            <span className={classes.label}>Email</span>
+            <span className={classes.label}>{translate('profile.email')}</span>
             <p>{user.email || profileData?.email || "—"}</p>
           </div>
           <div>
-            <span className={classes.label}>Account created</span>
+            <span className={classes.label}>{translate('profile.accountCreated')}</span>
             <p>{accountCreated ? new Date(accountCreated).toLocaleString() : "—"}</p>
           </div>
           <div>
-            <span className={classes.label}>Auth provider</span>
+            <span className={classes.label}>{translate('profile.authProvider')}</span>
             <p>{provider}</p>
           </div>
               <div>
-                <span className={classes.label}>Access level</span>
-                <p>{profileData?.isAdmin ? "Administrator" : "Customer"}</p>
+                <span className={classes.label}>{translate('profile.accessLevel')}</span>
+                <p>{profileData?.isAdmin ? translate('profile.administrator') : translate('profile.customer')}</p>
               </div>
         </div>
 
         <div className={classes.actions}>
-          <Button variant="contained" color="success" disableElevation onClick={() => navigate("/upload")}>
-            Start a new project
-          </Button>
+          {profileData?.isAdmin && (
+            <Button variant="contained" color="success" disableElevation onClick={() => navigate("/upload")}>
+              {translate('profile.startProject')}
+            </Button>
+          )}
           <Button variant="outlined" color="success" onClick={handleSignOut}>
-            Sign out
+            {translate('profile.signOut')}
           </Button>
         </div>
 

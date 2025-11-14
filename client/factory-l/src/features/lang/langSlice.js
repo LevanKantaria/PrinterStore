@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Initialize from localStorage if available
+const getInitialLang = () => {
+  const savedLang = localStorage.getItem("lang");
+  return savedLang || "KA";
+};
+
 const initialState = {
-  lang: "KA",
+  lang: getInitialLang(),
 };
 
 const langSlice = createSlice({

@@ -1,20 +1,27 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import classes from "./OrderHistory.module.css";
 import OrderDetailsModal from "./OrderDetailsModal";
+import translate from "../translate";
 
-const STATUS_LABELS = {
-  awaiting_payment: "Awaiting payment",
-  payment_received: "Payment received",
-  processing: "Processing",
-  fulfilled: "Fulfilled",
-  cancelled: "Cancelled",
+const getStatusLabel = (status) => {
+  const normalized = status?.toLowerCase() || "unknown";
+  const statusMap = {
+    awaiting_payment: 'profile.status.awaitingPayment',
+    payment_received: 'profile.status.paymentReceived',
+    processing: 'profile.status.processing',
+    fulfilled: 'profile.status.fulfilled',
+    cancelled: 'profile.status.cancelled',
+  };
+  const key = statusMap[normalized] || null;
+  return key ? translate(key) : status || "Unknown";
 };
 
 const StatusBadge = ({ status }) => {
   const normalized = status?.toLowerCase() || "unknown";
-  const label = STATUS_LABELS[normalized] || status || "Unknown";
+  const label = getStatusLabel(status);
   return <span className={`${classes.status} ${classes[`status-${normalized}`]}`}>{label}</span>;
 };
 
@@ -28,13 +35,15 @@ StatusBadge.defaultProps = {
 
 const formatCurrency = (currency, amount) => {
   const value = Number(amount || 0);
+  const defaultCurrency = currency || "GEL";
   try {
     return new Intl.NumberFormat(undefined, {
       style: "currency",
-      currency: currency || "USD",
+      currency: defaultCurrency,
     }).format(value);
   } catch {
-    return `${currency || "USD"} ${value.toFixed(2)}`;
+    const symbol = defaultCurrency === "GEL" ? "₾" : defaultCurrency;
+    return `${symbol} ${value.toFixed(2)}`;
   }
 };
 
@@ -55,17 +64,18 @@ const formatDate = (isoDate) => {
 };
 
 const OrderHistory = ({ orders }) => {
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   if (!orders?.length) {
     return (
       <section className={classes.section}>
         <header className={classes.header}>
-          <span className={classes.kicker}>Recent activity</span>
-          <h2>You have no purchases yet</h2>
+          <span className={classes.kicker}>{translate('profile.recentActivity')}</span>
+          <h2>{translate('profile.noPurchases')}</h2>
           <p>
-            When you check out, your orders will appear here so you can revisit files, download invoices,
-            or reorder in a single click.
+            {translate('profile.noPurchasesDesc')}
           </p>
         </header>
       </section>
@@ -75,9 +85,9 @@ const OrderHistory = ({ orders }) => {
   return (
     <section className={classes.section}>
       <header className={classes.header}>
-        <span className={classes.kicker}>Recent activity</span>
-        <h2>Your latest purchases</h2>
-        <p>Track fulfillment progress, download deliverables, and explore recommended add-ons.</p>
+        <span className={classes.kicker}>{translate('profile.recentActivity')}</span>
+        <h2>{translate('profile.latestPurchases')}</h2>
+        <p>{translate('profile.latestPurchasesDesc')}</p>
       </header>
 
       <div className={classes.list}>
@@ -85,9 +95,9 @@ const OrderHistory = ({ orders }) => {
           <article key={order.orderId} className={classes.card}>
             <div className={classes.cardHeader}>
               <div>
-                <h3>Order {order.orderId}</h3>
+                <h3>{translate('profile.order')} {order.orderId}</h3>
                 <p className={classes.meta}>
-                  Placed on{" "}
+                  {translate('profile.placedOn')}{" "}
                   <time dateTime={order.createdAt}>
                     {formatDate(order.createdAt)}
                   </time>
@@ -130,7 +140,7 @@ const OrderHistory = ({ orders }) => {
                     <div className={classes.itemInfo}>
                       <p className={classes.itemName}>{item.name}</p>
                       <p className={classes.itemMeta}>
-                        Qty {item.quantity}
+                        {translate('profile.qty')} {item.quantity}
                         {item.color ? ` • ${item.color}` : ""}
                         {item.material ? ` • ${item.material}` : ""}
                       </p>
@@ -149,7 +159,7 @@ const OrderHistory = ({ orders }) => {
                 className={classes.secondaryAction}
                 onClick={() => setSelectedOrder(order)}
               >
-                View details
+                {translate('profile.viewDetails')}
               </button>
             </div>
           </article>

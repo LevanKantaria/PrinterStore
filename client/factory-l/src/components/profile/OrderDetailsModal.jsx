@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import classes from "./OrderDetailsModal.module.css";
+import translate from "../translate";
 
 const BANK_DETAILS = {
-  accountName: "Factory L LLC",
+  accountName: "Makers Hub LLC",
   bankName: "Mock National Bank",
   bankAddress: "12 Greenfield Ave, Tbilisi, Georgia",
   accountNumber: "01904917",
@@ -15,7 +17,18 @@ const BANK_DETAILS = {
 const StatusBadge = ({ status }) => {
   if (!status) return null;
   const normalized = status.toLowerCase().replace(/\s+/g, "-");
-  return <span className={`${classes.status} ${classes[`status-${normalized}`] || ""}`}>{status}</span>;
+  const statusMap = {
+    'awaiting_payment': 'profile.status.awaitingPayment',
+    'awaiting-payment': 'profile.status.awaitingPayment',
+    'payment_received': 'profile.status.paymentReceived',
+    'payment-received': 'profile.status.paymentReceived',
+    'processing': 'profile.status.processing',
+    'fulfilled': 'profile.status.fulfilled',
+    'cancelled': 'profile.status.cancelled',
+  };
+  const key = statusMap[normalized] || null;
+  const label = key ? translate(key) : status;
+  return <span className={`${classes.status} ${classes[`status-${normalized}`] || ""}`}>{label}</span>;
 };
 
 StatusBadge.propTypes = {
@@ -55,13 +68,17 @@ const formatDateTime = (isoDate) => {
 };
 
 const formatCurrency = (value, currency = "GEL") => {
+  const symbol = currency === "GEL" ? "₾" : currency;
   if (value == null || Number.isNaN(Number(value))) {
-    return `${currency} 0.00`;
+    return `${symbol} 0.00`;
   }
-  return `${currency} ${Number(value).toFixed(2)}`;
+  return `${symbol} ${Number(value).toFixed(2)}`;
 };
 
 const OrderDetailsModal = ({ open, order, onClose }) => {
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
+  
   useEffect(() => {
     if (!open) return undefined;
 
@@ -126,7 +143,7 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
           type="button"
           className={classes.closeButton}
           onClick={onClose}
-          aria-label="Close order details"
+          aria-label={translate('profile.orderDetails.close')}
         >
           ×
         </button>
@@ -134,11 +151,11 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
         <div className={classes.modalBody}>
           <header className={classes.header}>
             <div className={classes.headerTop}>
-              <h2 id="order-details-title">Order {order.orderId}</h2>
+              <h2 id="order-details-title">{translate('profile.order')} {order.orderId}</h2>
               <StatusBadge status={status} />
             </div>
             <p>
-              Placed on{" "}
+              {translate('profile.placedOn')}{" "}
               <time dateTime={order.createdAt}>
                 {formatDateTime(order.createdAt)}
               </time>
@@ -147,15 +164,13 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
 
           {isAwaitingPayment && (
             <section className={`${classes.section} ${classes.paymentReminder}`}>
-              <h3>Awaiting your bank transfer</h3>
+              <h3>{translate('profile.orderDetails.awaitingTransfer')}</h3>
               <p className={classes.paymentIntro}>
-                We’re holding this order until the payment arrives. Please transfer the total using the reference below so
-                we can move your project into production. Bank transfers usually show up within 30 minutes; if you’ve already
-                paid, the status will update automatically once we confirm the funds.
+                {translate('profile.orderDetails.paymentIntro')}
               </p>
 
               <div className={classes.referenceCard}>
-                <span className={classes.referenceLabel}>Payment reference</span>
+                <span className={classes.referenceLabel}>{translate('profile.orderDetails.paymentReference')}</span>
                 <button
                   type="button"
                   className={classes.copyButton}
@@ -163,25 +178,25 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
                 >
                   <strong>{order.orderId}</strong>
                   <ContentCopyIcon fontSize="small" className={classes.copyIcon} />
-                  <span className={classes.copyHint}>Copy</span>
+                  <span className={classes.copyHint}>{translate('profile.orderDetails.copy')}</span>
                 </button>
               </div>
 
               <ul className={classes.bankList}>
                 <li>
-                  <span>Payee</span>
+                  <span>{translate('profile.orderDetails.payee')}</span>
                   <strong>{BANK_DETAILS.accountName}</strong>
                 </li>
                 <li>
-                  <span>Bank</span>
+                  <span>{translate('profile.orderDetails.bank')}</span>
                   <strong>{BANK_DETAILS.bankName}</strong>
                 </li>
                 <li>
-                  <span>Bank address</span>
+                  <span>{translate('profile.orderDetails.bankAddress')}</span>
                   <strong>{BANK_DETAILS.bankAddress}</strong>
                 </li>
                 <li>
-                  <span>Account number</span>
+                  <span>{translate('profile.orderDetails.accountNumber')}</span>
                   <button
                     type="button"
                     className={classes.copyButton}
@@ -189,27 +204,26 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
                   >
                     <strong>{BANK_DETAILS.accountNumber}</strong>
                     <ContentCopyIcon fontSize="small" className={classes.copyIcon} />
-                    <span className={classes.copyHint}>Copy</span>
+                    <span className={classes.copyHint}>{translate('profile.orderDetails.copy')}</span>
                   </button>
                 </li>
                 <li>
-                  <span>SWIFT</span>
+                  <span>{translate('profile.orderDetails.swift')}</span>
                   <strong>{BANK_DETAILS.swift}</strong>
                 </li>
                 <li>
-                  <span>Amount</span>
+                  <span>{translate('profile.orderDetails.amount')}</span>
                   <strong>{formatCurrency(order.total, order.currency)}</strong>
                 </li>
               </ul>
               <p className={classes.paymentHelp}>
-                If it’s been more than 30 minutes since you transferred the funds, reply to the confirmation email and we’ll
-                prioritize the review.
+                {translate('profile.orderDetails.paymentHelp')}
               </p>
             </section>
           )}
 
           <section className={classes.section}>
-            <h3>Items</h3>
+            <h3>{translate('profile.orderDetails.items')}</h3>
             <ul className={classes.itemsList}>
               {order.items.map((item, index) => (
                 <li key={item.productId || `${order.orderId}-modal-${index}`} className={classes.itemRow}>
@@ -223,7 +237,7 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
                   <div className={classes.itemInfo}>
                     <strong>{item.name}</strong>
                     <span className={classes.itemMeta}>
-                      Qty {item.quantity}
+                      {translate('profile.qty')} {item.quantity}
                       {item.color ? ` • ${item.color}` : ""}
                       {item.material ? ` • ${item.material}` : ""}
                     </span>
@@ -242,48 +256,48 @@ const OrderDetailsModal = ({ open, order, onClose }) => {
           </section>
 
           <section className={classes.section}>
-            <h3>Shipping</h3>
+            <h3>{translate('profile.orderDetails.shipping')}</h3>
             <div className={classes.addressBlock}>
-              <InfoRow label="Recipient" value={shipping.fullName} />
-              <InfoRow label="Company" value={shipping.company} />
-              <InfoRow label="Address line 1" value={shipping.line1} />
-              <InfoRow label="Address line 2" value={shipping.line2} />
-              <InfoRow label="City" value={shipping.city} />
-              <InfoRow label="Phone" value={shipping.phone} />
+              <InfoRow label={translate('profile.orderDetails.recipient')} value={shipping.fullName} />
+              <InfoRow label={translate('profile.orderDetails.company')} value={shipping.company} />
+              <InfoRow label={translate('profile.orderDetails.addressLine1')} value={shipping.line1} />
+              <InfoRow label={translate('profile.orderDetails.addressLine2')} value={shipping.line2} />
+              <InfoRow label={translate('profile.orderDetails.city')} value={shipping.city} />
+              <InfoRow label={translate('profile.orderDetails.phone')} value={shipping.phone} />
             </div>
           </section>
 
           <section className={classes.section}>
-            <h3>Billing</h3>
+            <h3>{translate('profile.orderDetails.billing')}</h3>
             <div className={classes.addressBlock}>
-              <InfoRow label="Recipient" value={billing.fullName || shipping.fullName} />
-              <InfoRow label="Company" value={billing.company || shipping.company} />
-              <InfoRow label="Address line 1" value={billing.line1 || shipping.line1} />
-              <InfoRow label="Address line 2" value={billing.line2 || shipping.line2} />
-              <InfoRow label="City" value={billing.city || shipping.city} />
-              <InfoRow label="Phone" value={billing.phone || shipping.phone} />
+              <InfoRow label={translate('profile.orderDetails.recipient')} value={billing.fullName || shipping.fullName} />
+              <InfoRow label={translate('profile.orderDetails.company')} value={billing.company || shipping.company} />
+              <InfoRow label={translate('profile.orderDetails.addressLine1')} value={billing.line1 || shipping.line1} />
+              <InfoRow label={translate('profile.orderDetails.addressLine2')} value={billing.line2 || shipping.line2} />
+              <InfoRow label={translate('profile.orderDetails.city')} value={billing.city || shipping.city} />
+              <InfoRow label={translate('profile.orderDetails.phone')} value={billing.phone || shipping.phone} />
             </div>
           </section>
 
           {order.customerNotes && (
             <section className={classes.section}>
-              <h3>Customer notes</h3>
+              <h3>{translate('profile.orderDetails.customerNotes')}</h3>
               <p className={classes.notes}>{order.customerNotes}</p>
             </section>
           )}
 
           <section className={classes.summary}>
             <div>
-              <span className={classes.summaryLabel}>Subtotal</span>
+              <span className={classes.summaryLabel}>{translate('profile.orderDetails.subtotal')}</span>
               <span className={classes.summaryValue}>{formatCurrency(order.subtotal, order.currency)}</span>
             </div>
             <div>
-              <span className={classes.summaryLabel}>Shipping</span>
+              <span className={classes.summaryLabel}>{translate('profile.orderDetails.shipping')}</span>
               <span className={classes.summaryValue}>{formatCurrency(order.shippingFee, order.currency)}</span>
             </div>
             <div className={classes.summaryDivider} />
             <div>
-              <span className={classes.summaryTotalLabel}>Total</span>
+              <span className={classes.summaryTotalLabel}>{translate('profile.orderDetails.total')}</span>
               <span className={classes.summaryTotalValue}>{formatCurrency(order.total, order.currency)}</span>
             </div>
           </section>

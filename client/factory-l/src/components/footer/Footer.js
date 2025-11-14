@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import classes from "./Footer.module.css";
 import CustomButton from "../customButton/CustomButton";
 import { Link } from "react-router-dom";
+import translate from "../translate";
 
 const IVY_PATHS = [
   "M720 480 C 704 422 646 366 608 300 C 570 234 612 168 576 110 C 548 66 564 26 562 0",
@@ -25,6 +28,22 @@ const LEAF_CONFIG = [
 const Footer = () => {
   const ivySvgRef = useRef(null);
   const [ivyActive, setIvyActive] = useState(false);
+  const navigate = useNavigate();
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  const handleContactClick = () => {
+    scrollToTop();
+    navigate('/contact');
+  };
 
   useEffect(() => {
     const svgEl = ivySvgRef.current;
@@ -108,46 +127,30 @@ const Footer = () => {
       <div className={classes.container}>
         <section className={classes.mainContent}>
           <div className={classes.leftDiv}>
-            <h2 className={classes.ctaTitle}>Ready to get started?</h2>
+            <h2 className={classes.ctaTitle}>{translate('footer.cta.title')}</h2>
             <p className={classes.ctaDescription}>
-              From product development to industrial 3D manufacturing, we can help
-              you scale your business.
+              {translate('footer.cta.description')}
             </p>
-            <CustomButton text="Contact" name='contact' />
+            <CustomButton text={translate('footer.cta.contact')} name='contact' onClick={handleContactClick} />
           </div>
           
           <div className={classes.rightDivs}>
             <div className={classes.footerColumn}>
-              <h3>Services</h3>
+              <h3>{translate('footer.services.title')}</h3>
               <ul>
-                <li><a href="/services/3d-design">3D Design</a></li>
-                <li><a href="/services/3d-printing">3D Printing</a></li>
-                <li><a href="/services/additive-manufacturing">Additive Manufacturing</a></li>
-                <li><a href="/services/business">Business</a></li>
-                <li><Link to="/marketplace">Marketplace</Link></li>
+                <li><Link to="/marketplace" onClick={scrollToTop}>{translate('landing.marketplace')}</Link></li>
+                <li><Link to="/materials" onClick={scrollToTop}>{translate('landing.materials')}</Link></li>
+                <li><a href="/services/3d-printing" onClick={scrollToTop}>{translate('footer.services.3dPrinting')}</a></li>
+                <li><a href="/services/3d-design" onClick={scrollToTop}>{translate('footer.services.3dDesign')}</a></li>
               </ul>
             </div>
 
             <div className={classes.footerColumn}>
-              <h3>Support</h3>
+              <h3>{translate('footer.company.title')}</h3>
               <ul>
-                <li><a href="/contact">Contact Us</a></li>
-                <li><a href="/help">Help Center</a></li>
-                <li><a href="/materials">3D Materials Guide</a></li>
-                <li><a href="/students">For Students</a></li>
-              </ul>
-            </div>
-
-            <div className={classes.footerColumn}>
-              <h3>Factory L</h3>
-              <ul>
-                <li><Link to="/about">About</Link></li>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/press">Press</a></li>
-                <li><a href="/careers">Careers</a></li>
-                <li><a href="/referrals">Invite a Friend</a></li>
-                <li><a href="/gift-cards">Gift Cards</a></li>
-                <li><a href="/newsletter">Newsletter Signup</a></li>
+                <li><Link to="/about" onClick={scrollToTop}>{translate('footer.company.about')}</Link></li>
+                <li><Link to="/blog" onClick={scrollToTop}>{translate('footer.company.blog')}</Link></li>
+                <li><Link to="/contact" onClick={scrollToTop}>{translate('footer.support.contact')}</Link></li>
               </ul>
             </div>
           </div>
@@ -155,7 +158,7 @@ const Footer = () => {
 
         <div className={classes.footerBottom}>
           <div className={classes.copyright}>
-            <p>© {new Date().getFullYear()} Factory L. All rights reserved.</p>
+            <p>{translate('footer.copyright').replace('{year}', new Date().getFullYear())}</p>
           </div>
           <div className={classes.socialLinks}>
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">

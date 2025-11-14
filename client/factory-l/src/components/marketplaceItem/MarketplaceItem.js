@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import classes from "./MarketplaceItem.module.css";
 import { useNavigate } from "react-router";
 import translate from "../translate";
@@ -6,6 +7,8 @@ import translate from "../translate";
 const MarketplaceItem = (props) => {
   const navigate = useNavigate();
   let id = props.id;
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   const clickHandler = (e) => {
     e.preventDefault();
     navigate("/products/" + id);
@@ -51,7 +54,7 @@ const MarketplaceItem = (props) => {
           </div>
         ) : null}
         <div className={classes.priceRow}>
-          <span className={classes.price}>${props.price}</span>{" "}
+          <span className={classes.price}>₾{props.price}</span>{" "}
           <span className={classes.creator}>{props.creator}</span>
         </div>
       </div>

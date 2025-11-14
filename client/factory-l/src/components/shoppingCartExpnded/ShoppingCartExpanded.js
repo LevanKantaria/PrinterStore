@@ -9,7 +9,6 @@ import { useState } from "react";
 import CheckoutModal from "../checkout/CheckoutModal";
 import { cartActions } from "../../features/cart/cartSlice";
 
-// const API_URL = 'http://localhost:5000/';
 
 const ShoppingCartExpanded = () => {
   const params = useParams();
@@ -17,6 +16,8 @@ const ShoppingCartExpanded = () => {
   const id = params.id;
   const cartItems = useSelector((state) => state.cart.cartItems);
   const authStatus = useSelector((state) => state.auth.status);
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   const dispatch = useDispatch();
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
 
@@ -51,7 +52,7 @@ const ShoppingCartExpanded = () => {
       newItem = (
         <div className={classes.newItem}>
           <div className={classes.newItemContent}>
-            <h3>Recently Added:</h3>
+            <h3>{translate('cart.recentlyAdded')}</h3>
             <div className={classes.breadCrumbs}>
               <Link to='/marketplace'>{translate('landing.marketplace')}</Link>
               {linkToCategory && (
@@ -101,10 +102,10 @@ const ShoppingCartExpanded = () => {
       <div className={classes.emptyCart}>
         <div className={classes.emptyCartContent}>
           <div className={classes.emptyCartIcon}>🛒</div>
-          <h2>Your cart is empty</h2>
-          <p>Looks like you haven't added any items to your cart yet.</p>
+          <h2>{translate('cart.empty')}</h2>
+          <p>{translate('cart.emptyDesc')}</p>
           <CustomButton 
-            text="Continue Shopping" 
+            text={translate('cart.continueShopping').replace('← ', '')} 
             width="250px" 
             onClick={continueShoppingHandler} 
           />
@@ -118,36 +119,36 @@ const ShoppingCartExpanded = () => {
       <div className={classes.items}>
         {id && newItem}
         <div className={classes.cartHeader}>
-          <h1>My Cart</h1>
-          <p className={classes.itemCount}>{itemCount} {itemCount === 1 ? 'item' : 'items'}</p>
+          <h1>{translate('cart.myCart')}</h1>
+          <p className={classes.itemCount}>{itemCount} {itemCount === 1 ? translate('cart.item') : translate('cart.items')}</p>
         </div>
         <div className={classes.cartItemsList}>
           {cartItemsExpanded}
         </div>
         <div className={classes.continueShopping}>
           <Link to="/marketplace" className={classes.continueShoppingLink}>
-            ← Continue Shopping
+            {translate('cart.continueShopping')}
           </Link>
         </div>
       </div>
       <div className={classes.checkout}>
         <div className={classes.checkoutContent}>
-          <h3 className={classes.checkoutTitle}>Order Summary</h3>
+          <h3 className={classes.checkoutTitle}>{translate('cart.orderSummary')}</h3>
           <div className={classes.summaryRow}>
-            <span>Subtotal ({itemCount} {itemCount === 1 ? 'item' : 'items'})</span>
-            <span>${sum.toFixed(2)}</span>
+            <span>{translate('cart.subtotal')} ({itemCount} {itemCount === 1 ? translate('cart.item') : translate('cart.items')})</span>
+            <span>₾{sum.toFixed(2)}</span>
           </div>
           <div className={classes.summaryRow}>
-            <span>Estimated Shipping</span>
-            <span>Free</span>
+            <span>{translate('cart.estimatedShipping')}</span>
+            <span>{translate('cart.free')}</span>
           </div>
           <div className={classes.summaryDivider}></div>
           <div className={classes.summaryRow}>
-            <span className={classes.totalLabel}>Total</span>
-            <span className={classes.totalAmount}>${sum.toFixed(2)}</span>
+            <span className={classes.totalLabel}>{translate('cart.total')}</span>
+            <span className={classes.totalAmount}>₾{sum.toFixed(2)}</span>
           </div>
-          <CustomButton text="Proceed to Checkout" width="100%" onClick={checkoutHandler} />
-          <p className={classes.shippingNote}>Free shipping on orders over $50</p>
+          <CustomButton text={translate('cart.proceedToCheckout')} width="100%" onClick={checkoutHandler} />
+          <p className={classes.shippingNote}>{translate('cart.shippingNote')}</p>
         </div>
       </div>
       <CheckoutModal

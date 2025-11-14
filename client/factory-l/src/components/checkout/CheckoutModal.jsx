@@ -1,14 +1,16 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { getProfile } from "../../api/profile";
 import { createOrder } from "../../api/orders";
 import { ApiError } from "../../api/http";
 import classes from "./CheckoutModal.module.css";
+import translate from "../translate";
 
 const BANK_DETAILS = {
-  accountName: "Factory L LLC",
+  accountName: "Makers Hub LLC",
   bankName: "Mock National Bank",
   bankAddress: "12 Greenfield Ave, Tbilisi, Georgia",
   accountNumber: "01904917",
@@ -26,6 +28,8 @@ const defaultAddress = {
 
 const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
   const navigate = useNavigate();
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingOrder, setLoadingOrder] = useState(false);
   const [error, setError] = useState("");
@@ -81,7 +85,7 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
       } catch (err) {
         if (mounted) {
           console.error("[checkout] loadProfile failed", err);
-          setError(err.message || "Unable to load saved profile details.");
+          setError(err.message || translate('checkout.profileError'));
         }
       } finally {
         if (mounted) {
@@ -114,12 +118,12 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
     if (loadingOrder) return;
 
     if (!cartItems.length) {
-      setError("Your cart is empty.");
+      setError(translate('checkout.cartEmpty'));
       return;
     }
 
     if (!form.fullName || !form.line1 || !form.city || !form.phone) {
-      setError("Please fill in your full name, address and phone number.");
+      setError(translate('checkout.fillRequired'));
       return;
     }
 
@@ -149,6 +153,7 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
         customerNotes: form.customerNotes,
         currency: cartCurrency,
         shippingFee: 0,
+        language: currentLang || 'KA', // Include current language
       };
 
       const order = await createOrder(payload);
@@ -158,7 +163,7 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
       if (err instanceof ApiError) {
         setError(err.payload?.message || err.message);
       } else {
-        setError(err.message || "Unable to create order. Please try again.");
+        setError(err.message || translate('checkout.orderError'));
       }
     } finally {
       setLoadingOrder(false);
@@ -166,13 +171,15 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
   };
 
   const formatCurrency = (amount) => {
+    const currency = cartCurrency || "GEL";
     try {
       return new Intl.NumberFormat(undefined, {
         style: "currency",
-        currency: cartCurrency || "GEL",
+        currency: currency,
       }).format(Number(amount || 0));
     } catch {
-      return `${cartCurrency || "GEL"} ${Number(amount || 0).toFixed(2)}`;
+      const symbol = currency === "GEL" ? "₾" : currency;
+      return `${symbol} ${Number(amount || 0).toFixed(2)}`;
     }
   };
 
@@ -201,102 +208,102 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
         {!successOrder && (
           <>
             <header className={classes.header}>
-              <h2>Confirm your order</h2>
-              <p>Please review your shipping details and complete the manual bank transfer to finalize.</p>
+              <h2>{translate('checkout.confirmOrder')}</h2>
+              <p>{translate('checkout.confirmDescription')}</p>
             </header>
 
             <form className={classes.form} onSubmit={handleSubmit}>
               <div className={classes.formSection}>
-                <h3>Shipping details</h3>
+                <h3>{translate('checkout.shippingDetails')}</h3>
                 <div className={classes.fieldGroup}>
-                  <label htmlFor="fullName">Full name*</label>
+                  <label htmlFor="fullName">{translate('checkout.fullName')}</label>
                   <input
                     id="fullName"
                     name="fullName"
                     value={form.fullName}
                     onChange={handleChange}
-                    placeholder="Enter your full name"
+                    placeholder={translate('checkout.fullNamePlaceholder')}
                     required
                   />
                 </div>
                 <div className={classes.fieldGroup}>
-                  <label htmlFor="company">Company</label>
+                  <label htmlFor="company">{translate('checkout.company')}</label>
                   <input
                     id="company"
                     name="company"
                     value={form.company}
                     onChange={handleChange}
-                    placeholder="Company (optional)"
+                    placeholder={translate('checkout.companyPlaceholder')}
                   />
                 </div>
                 <div className={classes.fieldGroup}>
-                  <label htmlFor="line1">Address line*</label>
+                  <label htmlFor="line1">{translate('checkout.addressLine')}</label>
                   <input
                     id="line1"
                     name="line1"
                     value={form.line1}
                     onChange={handleChange}
-                    placeholder="Street and number"
+                    placeholder={translate('checkout.addressLinePlaceholder')}
                     required
                   />
                 </div>
                 <div className={classes.fieldGroup}>
-                  <label htmlFor="line2">Address line 2</label>
+                  <label htmlFor="line2">{translate('checkout.addressLine2')}</label>
                   <input
                     id="line2"
                     name="line2"
                     value={form.line2}
                     onChange={handleChange}
-                    placeholder="Apt, suite, etc. (optional)"
+                    placeholder={translate('checkout.addressLine2Placeholder')}
                   />
                 </div>
                 <div className={classes.fieldRow}>
                   <div className={classes.fieldGroup}>
-                    <label htmlFor="city">City*</label>
+                    <label htmlFor="city">{translate('checkout.city')}</label>
                     <input
                       id="city"
                       name="city"
                       value={form.city}
                       onChange={handleChange}
-                      placeholder="City"
+                      placeholder={translate('checkout.cityPlaceholder')}
                       required
                     />
                   </div>
                   <div className={classes.fieldGroup}>
-                    <label htmlFor="phone">Phone*</label>
+                    <label htmlFor="phone">{translate('checkout.phone')}</label>
                     <input
                       id="phone"
                       name="phone"
                       value={form.phone}
                       onChange={handleChange}
-                      placeholder="+995 ..."
+                      placeholder={translate('checkout.phonePlaceholder')}
                       required
                     />
                   </div>
                 </div>
 
                 <div className={classes.fieldGroup}>
-                  <label htmlFor="customerNotes">Order notes</label>
+                  <label htmlFor="customerNotes">{translate('checkout.orderNotes')}</label>
                   <textarea
                     id="customerNotes"
                     name="customerNotes"
                     value={form.customerNotes}
                     onChange={handleChange}
-                    placeholder="Add special instructions (optional)"
+                    placeholder={translate('checkout.orderNotesPlaceholder')}
                     rows={3}
                   />
                 </div>
               </div>
 
               <div className={classes.summarySection}>
-                <h3>Order summary</h3>
+                <h3>{translate('checkout.orderSummary')}</h3>
                 <ul className={classes.summaryItems}>
                   {cartItems.map((item) => (
                     <li key={`${item._id || item.id}-${item.color || "default"}`} className={classes.summaryItem}>
                       <div>
                         <span className={classes.summaryName}>{item.name}</span>
                         <span className={classes.summaryMeta}>
-                          Qty {item.quantity}
+                          {translate('checkout.qty')} {item.quantity}
                           {item.color ? ` • ${item.color}` : ""}
                         </span>
                       </div>
@@ -305,16 +312,16 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
                   ))}
                 </ul>
                 <div className={classes.summaryRow}>
-                  <span>Subtotal</span>
+                  <span>{translate('checkout.subtotal')}</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className={classes.summaryRow}>
-                  <span>Shipping</span>
+                  <span>{translate('checkout.shipping')}</span>
                   <span>{formatCurrency(0)}</span>
                 </div>
                 <div className={classes.summaryDivider} />
                 <div className={classes.summaryRow}>
-                  <span className={classes.summaryTotal}>Total</span>
+                  <span className={classes.summaryTotal}>{translate('checkout.total')}</span>
                   <span className={classes.summaryTotal}>{formatCurrency(subtotal)}</span>
                 </div>
               </div>
@@ -323,10 +330,10 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
 
               <div className={classes.actions}>
                 <button type="button" className={classes.secondaryButton} onClick={handleClose} disabled={loadingOrder}>
-                  Cancel
+                  {translate('checkout.cancel')}
                 </button>
                 <button type="submit" className={classes.primaryButton} disabled={loadingOrder || loadingProfile}>
-                  {loadingOrder ? "Placing order…" : "Place order & show bank details"}
+                  {loadingOrder ? translate('checkout.placingOrder') : translate('checkout.placeOrder')}
                 </button>
               </div>
             </form>
@@ -336,66 +343,63 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
         {successOrder && (
           <div className={classes.successState}>
             <header className={classes.header}>
-              <h2>Order created</h2>
+              <h2>{translate('checkout.orderCreated')}</h2>
               <p>
-                Include the payment reference below when you complete the bank transfer. Payments usually register within
-                30 minutes—once we confirm the funds we’ll update the order status and get production underway.
+                {translate('checkout.orderCreatedDescription')}
               </p>
             </header>
 
             <div className={classes.referenceCard}>
-              <span>Payment reference</span>
+              <span>{translate('checkout.paymentReference')}</span>
               <button
                 type="button"
                 className={classes.copyButton}
                 onClick={() => copyToClipboard(successOrder.orderId)}
-                aria-label="Copy payment reference"
+                aria-label={translate('checkout.paymentReference')}
               >
                 <strong>{successOrder.orderId}</strong>
                 <ContentCopyIcon fontSize="small" />
-                <span className={classes.copyHint}>Copy</span>
+                <span className={classes.copyHint}>{translate('checkout.copy')}</span>
               </button>
             </div>
 
             <div className={classes.bankDetails}>
-              <h3>Transfer details</h3>
+              <h3>{translate('checkout.transferDetails')}</h3>
               <p className={classes.instructions}>
-                Make a bank transfer for the total amount using the reference code above. If you’ve already paid, the status
-                will update automatically as soon as the transfer clears; feel free to reply to the confirmation email if you
-                need a hand.
+                {translate('checkout.transferInstructions')}
               </p>
               <ul>
                 <li>
-                  <span>Payee</span>
+                  <span>{translate('checkout.payee')}</span>
                   <strong>{BANK_DETAILS.accountName}</strong>
                 </li>
                 <li>
-                  <span>Bank</span>
+                  <span>{translate('checkout.bank')}</span>
                   <strong>{BANK_DETAILS.bankName}</strong>
                 </li>
                 <li>
-                  <span>Bank address</span>
+                  <span>{translate('checkout.bankAddress')}</span>
                   <strong>{BANK_DETAILS.bankAddress}</strong>
                 </li>
                 <li>
-                  <span>Account number</span>
+                  <span>{translate('checkout.accountNumber')}</span>
                   <button
                     type="button"
                     className={classes.copyButton}
                     onClick={() => copyToClipboard(BANK_DETAILS.accountNumber)}
-                    aria-label="Copy account number"
+                    aria-label={translate('checkout.accountNumber')}
                   >
                     <strong>{BANK_DETAILS.accountNumber}</strong>
                     <ContentCopyIcon fontSize="small" />
-                    <span className={classes.copyHint}>Copy</span>
+                    <span className={classes.copyHint}>{translate('checkout.copy')}</span>
                   </button>
                 </li>
                 <li>
-                  <span>SWIFT</span>
+                  <span>{translate('checkout.swift')}</span>
                   <strong>{BANK_DETAILS.swift}</strong>
                 </li>
                 <li>
-                  <span>Amount</span>
+                  <span>{translate('checkout.amount')}</span>
                   <strong>{formatCurrency(successOrder.total)}</strong>
                 </li>
               </ul>
@@ -403,10 +407,10 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
 
             <div className={classes.actions}>
               <button type="button" className={classes.secondaryButton} onClick={handleClose}>
-                Close
+                {translate('checkout.close')}
               </button>
               <button type="button" className={classes.primaryButton} onClick={handleGoToProfile}>
-                View order history
+                {translate('checkout.viewOrderHistory')}
               </button>
             </div>
           </div>
