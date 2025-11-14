@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import { emailTranslations } from './emailTranslations.js';
+import { formatCodeForDisplay } from './deliveryCode.js';
 
 dotenv.config();
 
@@ -562,10 +563,11 @@ ${order.status === 'awaiting_payment' ? '- Wait for payment confirmation' : ''}
  * @param {string} params.oldStatus - Previous order status
  * @param {string} params.newStatus - New order status
  * @param {string} params.note - Optional note about the status change
+ * @param {string} params.deliveryCode - Optional delivery code to include in email
  * @param {string} params.language - Language code (KA or EN), defaults to KA
  * @returns {Promise<Object>} - Result of email sending
  */
-export const sendOrderStatusUpdateEmail = async ({ to, order, oldStatus, newStatus, note, language = 'KA' }) => {
+export const sendOrderStatusUpdateEmail = async ({ to, order, oldStatus, newStatus, note, deliveryCode, language = 'KA' }) => {
   const transporter = createTransporter();
   
   if (!transporter) {
@@ -662,6 +664,20 @@ export const sendOrderStatusUpdateEmail = async ({ to, order, oldStatus, newStat
           </div>
         ` : ''}
 
+        ${deliveryCode && (newStatus === 'payment_received' || newStatus === 'processing') ? `
+          <div style="background: #f8faf9; padding: 20px; border-radius: 8px; border: 2px dashed #2d5016; margin: 20px 0;">
+            <h3 style="color: #2d5016; margin-top: 0;">${t.deliveryCode}</h3>
+            <p style="margin: 10px 0;"><strong>${t.deliveryCodeLabel}</strong></p>
+            <div style="background: #ffffff; border: 2px solid #2d5016; padding: 20px; text-align: center; margin: 15px 0; font-size: 28px; font-weight: bold; letter-spacing: 4px; font-family: 'Courier New', monospace; color: #2d5016;">
+              ${formatCodeForDisplay(deliveryCode, ' ')}
+            </div>
+            <p style="margin: 10px 0; color: #333;">${t.deliveryCodeInstructions}</p>
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin: 15px 0;">
+              <p style="margin: 0; color: #856404;"><strong>${t.deliveryCodeWarning}</strong></p>
+            </div>
+          </div>
+        ` : ''}
+
         <p style="margin-top: 30px;">${t.questions}</p>
         <p>${t.regards}<br><strong>${t.team}</strong></p>
         <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
@@ -690,6 +706,15 @@ ${note ? `${t.additionalInfo}:\n${note}` : ''}
 ${newStatus === 'fulfilled' ? `${t.fulfilled.onTheWay} ${t.fulfilled.soon}` : ''}
 ${newStatus === 'payment_received' || newStatus === 'processing' ? t.paymentReceivedProcessing : ''}
 
+${deliveryCode && (newStatus === 'payment_received' || newStatus === 'processing') ? `
+${t.deliveryCode}
+${t.deliveryCodeLabel} ${formatCodeForDisplay(deliveryCode, ' ')}
+
+${t.deliveryCodeInstructions}
+
+${t.deliveryCodeWarning}
+` : ''}
+
 ${t.questions}
 
 ${t.regards}
@@ -703,6 +728,404 @@ ${t.team}
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending order status update email:', error);
+    throw error;
+  }
+};
+
+/**
+ * Send order notification email to maker when payment is received
+ * @param {Object} params - Email parameters
+ * @param {string} params.to - Maker email address
+ * @param {string} params.makerName - Maker name
+ * @param {Object} params.order - Order object
+ * @param {Array} params.makerItems - Items assigned to this maker
+ * @param {number} params.expectedPayout - Expected payout amount for this maker
+ * @param {number} params.totalCommission - Total commission for this maker
+ * @param {string} params.deliveryCode - Delivery code for the order
+ * @param {string} params.language - Language code (KA or EN), defaults to KA
+ * @returns {Promise<Object>} - Result of email sending
+ */
+export const sendMakerOrderNotificationEmail = async ({ 
+  to, 
+  makerName, 
+  order, 
+  makerItems, 
+  expectedPayout, 
+  totalCommission,
+  deliveryCode,
+  language = 'KA' 
+}) => {
+  const transporter = createTransporter();
+  
+  if (!transporter) {
+    console.warn('Email service not configured, skipping maker order notification');
+    return { success: false, skipped: true };
+  }
+
+  const lang = language === 'EN' ? 'EN' : 'KA';
+  const t = emailTranslations[lang].makerNotification;
+
+  const formatCurrency = (amount, currency = 'GEL') => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency || 'GEL',
+    }).format(amount || 0);
+  };
+
+  const formatDate = (date) => {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const itemsHtml = makerItems?.map((item) => `
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; vertical-align: top;">
+        ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; margin-right: 10px; vertical-align: middle;">` : ''}
+        <strong>${item.name || 'N/A'}</strong>
+        ${item.material ? `<br><small style="color: #666;">${t.material || 'Material'}: ${item.material}</small>` : ''}
+      </td>
+      <td style="padding: 12px; text-align: center; vertical-align: top;">${item.quantity || 0}</td>
+      <td style="padding: 12px; text-align: center; vertical-align: top;">${item.color || '—'}</td>
+      <td style="padding: 12px; text-align: right; vertical-align: top;">${formatCurrency(item.unitPrice, order.currency)}</td>
+      <td style="padding: 12px; text-align: right; vertical-align: top;"><strong>${formatCurrency(item.lineTotal, order.currency)}</strong></td>
+    </tr>
+  `).join('') || '';
+
+  const shippingAddress = order.shippingAddress;
+  const addressHtml = shippingAddress ? `
+    <p style="margin: 5px 0;">
+      <strong>${shippingAddress.fullName || ''}</strong><br>
+      ${shippingAddress.company ? `${shippingAddress.company}<br>` : ''}
+      ${shippingAddress.line1 || ''}<br>
+      ${shippingAddress.line2 ? `${shippingAddress.line2}<br>` : ''}
+      ${shippingAddress.city || ''}<br>
+      ${shippingAddress.phone ? `<strong>${t.phone || 'Phone'}:</strong> ${shippingAddress.phone}` : ''}
+    </p>
+  ` : `<p>${t.noAddress || 'No shipping address provided'}</p>`;
+
+  const mailOptions = {
+    from: `"Makers Hub" <${process.env.EMAIL_USER}>`,
+    to: to,
+    subject: t.subject.replace('{orderId}', order.orderId || 'N/A'),
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #2d5016;">${t.title}</h2>
+        <p>${t.greeting.replace('{name}', makerName || 'Maker')}</p>
+        <p>${t.message}</p>
+        
+        <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; margin: 20px 0;">
+          <p style="margin: 0; color: #155724;"><strong>✅ ${t.paymentReceived || 'Payment Received'}</strong></p>
+          <p style="margin: 10px 0 0 0; color: #155724;">${t.orderReady || 'Your order is ready to be processed.'}</p>
+        </div>
+
+        <div style="background: #f8faf9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #2d5016; margin-top: 0;">${t.orderDetails}</h3>
+          <p><strong>${t.orderId}</strong> ${order.orderId || 'N/A'}</p>
+          <p><strong>${t.orderDate}</strong> ${formatDate(order.createdAt)}</p>
+        </div>
+
+        <div style="margin: 20px 0;">
+          <h3 style="color: #2d5016;">${t.yourItems}</h3>
+          <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+            <thead>
+              <tr style="background: #f8faf9; border-bottom: 2px solid #2d5016;">
+                <th style="padding: 12px; text-align: left;">${t.item}</th>
+                <th style="padding: 12px; text-align: center;">${t.qty}</th>
+                <th style="padding: 12px; text-align: center;">${t.color}</th>
+                <th style="padding: 12px; text-align: right;">${t.unitPrice}</th>
+                <th style="padding: 12px; text-align: right;">${t.lineTotal}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background: #f8faf9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #2d5016; margin-top: 0;">${t.expectedPayout}</h3>
+          <p style="margin: 5px 0;"><strong>${t.payoutAmount}</strong> <span style="font-size: 18px; color: #28a745; font-weight: bold;">${formatCurrency(expectedPayout, order.currency)}</span></p>
+          ${totalCommission > 0 ? `<p style="margin: 5px 0; color: #666;"><strong>${t.commission}</strong> ${formatCurrency(totalCommission, order.currency)}</p>` : ''}
+        </div>
+
+        <div style="margin: 20px 0;">
+          <h3 style="color: #2d5016;">${t.shippingAddress}</h3>
+          ${addressHtml}
+        </div>
+
+        ${deliveryCode ? `
+          <div style="background: #f8faf9; padding: 20px; border-radius: 8px; border: 2px dashed #2d5016; margin: 20px 0;">
+            <h3 style="color: #2d5016; margin-top: 0;">${t.deliveryCode}</h3>
+            <p style="margin: 10px 0;"><strong>${t.deliveryCodeLabel}</strong></p>
+            <div style="background: #ffffff; border: 2px solid #2d5016; padding: 20px; text-align: center; margin: 15px 0; font-size: 28px; font-weight: bold; letter-spacing: 4px; font-family: 'Courier New', monospace; color: #2d5016;">
+              ${formatCodeForDisplay(deliveryCode, ' ')}
+            </div>
+            <p style="margin: 10px 0; color: #333;">${t.deliveryCodeInstructions}</p>
+          </div>
+        ` : ''}
+
+        <div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #2d5016; margin-top: 0;">${t.nextSteps}</h3>
+          <ol style="margin: 10px 0; padding-left: 20px; color: #004085;">
+            <li style="margin: 5px 0;">${t.step1}</li>
+            <li style="margin: 5px 0;">${t.step2}</li>
+            <li style="margin: 5px 0;">${t.step3}</li>
+            <li style="margin: 5px 0;">${t.step4}</li>
+          </ol>
+        </div>
+
+        <p style="margin-top: 30px;">${t.questions}</p>
+        <p>${t.regards}<br><strong>${t.team}</strong></p>
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+        <p style="color: #666; font-size: 12px;">
+          ${t.automated}
+        </p>
+      </div>
+    `,
+    text: `
+${t.title}
+
+${t.greeting.replace('{name}', makerName || 'Maker')}
+
+${t.message}
+
+✅ Payment Received
+Your order is ready to be processed.
+
+${t.orderDetails}:
+${t.orderId} ${order.orderId || 'N/A'}
+${t.orderDate} ${formatDate(order.createdAt)}
+
+${t.yourItems}:
+${makerItems?.map((item) => 
+  `- ${item.name || 'N/A'} (${t.qty}: ${item.quantity || 0}) - ${item.color ? `Color: ${item.color}` : ''} - ${formatCurrency(item.lineTotal, order.currency)}`
+).join('\n') || 'No items'}
+
+${t.expectedPayout}:
+${t.payoutAmount} ${formatCurrency(expectedPayout, order.currency)}
+${totalCommission > 0 ? `${t.commission} ${formatCurrency(totalCommission, order.currency)}` : ''}
+
+${t.shippingAddress}:
+${shippingAddress ? `
+${shippingAddress.fullName || ''}
+${shippingAddress.company || ''}
+${shippingAddress.line1 || ''}
+${shippingAddress.line2 || ''}
+${shippingAddress.city || ''}
+${shippingAddress.phone ? `Phone: ${shippingAddress.phone}` : ''}
+` : 'No shipping address provided'}
+
+${deliveryCode ? `
+${t.deliveryCode}:
+${t.deliveryCodeLabel} ${formatCodeForDisplay(deliveryCode, ' ')}
+
+${t.deliveryCodeInstructions}
+` : ''}
+
+${t.nextSteps}:
+1. ${t.step1}
+2. ${t.step2}
+3. ${t.step3}
+4. ${t.step4}
+
+${t.questions}
+
+${t.regards}
+${t.team}
+    `.trim(),
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Maker order notification email sent successfully:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending maker order notification email:', error);
+    throw error;
+  }
+};
+
+/**
+ * Send product review notification email to admin
+ * @param {Object} params - Email parameters
+ * @param {Object} params.product - Product object
+ * @param {Object} params.makerProfile - Maker profile object
+ * @param {string} params.language - Language code (KA or EN), defaults to EN for admin emails
+ * @returns {Promise<Object>} - Result of email sending
+ */
+export const sendProductReviewNotificationEmail = async ({ product, makerProfile, language = 'EN' }) => {
+  const transporter = createTransporter();
+  
+  if (!transporter) {
+    console.warn('Email service not configured, skipping product review notification');
+    return { success: false, skipped: true };
+  }
+
+  // Collect all admin/power user emails to notify
+  const adminEmails = [];
+  
+  // Add main admin email if configured
+  const adminEmail = process.env.CONTACT_EMAIL || process.env.EMAIL_USER;
+  if (adminEmail) {
+    adminEmails.push(adminEmail);
+  }
+  
+  // Add power user email
+  const powerUserEmail = 'l.kantaria1999@gmail.com';
+  if (powerUserEmail && !adminEmails.includes(powerUserEmail)) {
+    adminEmails.push(powerUserEmail);
+  }
+  
+  if (adminEmails.length === 0) {
+    console.warn('No admin emails configured, skipping product review notification');
+    return { success: false, skipped: true };
+  }
+
+  const lang = language === 'KA' ? 'KA' : 'EN';
+  const t = emailTranslations[lang].productReviewNotification;
+
+  const formatCurrency = (amount, currency = 'GEL') => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency || 'GEL',
+    }).format(amount || 0);
+  };
+
+  const formatDate = (date) => {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const imagesHtml = product.images?.slice(0, 3).map((img, idx) => `
+    <div style="display: inline-block; margin: 5px;">
+      <img src="${img}" alt="Product image ${idx + 1}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </div>
+  `).join('') || '<p>No images</p>';
+
+  const colorsHtml = product.colors?.length > 0 
+    ? product.colors.map(color => `
+        <span style="display: inline-block; margin: 3px; padding: 5px 10px; background: #f8faf9; border-radius: 4px; border: 1px solid #e2e8f0;">
+          <span style="display: inline-block; width: 16px; height: 16px; background: ${color}; border-radius: 50%; margin-right: 5px; vertical-align: middle; border: 1px solid #ddd;"></span>
+          ${color}
+        </span>
+      `).join('')
+    : '<p>No colors specified</p>';
+
+  const mailOptions = {
+    from: `"Makers Hub Products" <${process.env.EMAIL_USER}>`,
+    to: adminEmails.join(', '),
+    subject: t.subject.replace('{productName}', product.name || 'N/A'),
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #2d5016;">${t.title}</h2>
+        <p>${t.description}</p>
+        
+        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 20px 0;">
+          <h3 style="color: #856404; margin-top: 0;">${t.actionRequired}</h3>
+          <p style="margin: 0; color: #856404;">${t.reviewProduct}</p>
+        </div>
+
+        <div style="background: #f8faf9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #2d5016; margin-top: 0;">${t.productDetails}</h3>
+          <p><strong>${t.productName}</strong> ${product.name || 'N/A'}</p>
+          <p><strong>${t.productId}</strong> ${product._id || 'N/A'}</p>
+          <p><strong>${t.category}</strong> ${product.category || 'N/A'}</p>
+          <p><strong>${t.subCategory}</strong> ${product.subCategory || 'N/A'}</p>
+          <p><strong>${t.price}</strong> <span style="font-size: 18px; color: #2d5016; font-weight: bold;">${formatCurrency(parseFloat(product.price || 0), 'GEL')}</span></p>
+          ${product.commission ? `<p><strong>${t.commission}</strong> ${formatCurrency(product.commission, 'GEL')} per unit</p>` : ''}
+          <p><strong>${t.submittedAt}</strong> ${formatDate(product.submittedForReviewAt || product.createdAt)}</p>
+        </div>
+
+        ${product.description ? `
+          <div style="background: #ffffff; padding: 15px; border-left: 4px solid #2d5016; margin: 20px 0;">
+            <h4 style="color: #2d5016; margin-top: 0;">${t.description}</h4>
+            <p style="white-space: pre-wrap; margin: 0;">${product.description}</p>
+          </div>
+        ` : ''}
+
+        ${product.images?.length > 0 ? `
+          <div style="margin: 20px 0;">
+            <h3 style="color: #2d5016;">${t.images}</h3>
+            <div style="text-align: center;">
+              ${imagesHtml}
+              ${product.images.length > 3 ? `<p style="color: #666; font-size: 12px;">+ ${product.images.length - 3} more images</p>` : ''}
+            </div>
+          </div>
+        ` : ''}
+
+        ${product.colors?.length > 0 ? `
+          <div style="margin: 20px 0;">
+            <h3 style="color: #2d5016;">${t.colors}</h3>
+            <div>
+              ${colorsHtml}
+            </div>
+          </div>
+        ` : ''}
+
+        <div style="background: #f8faf9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #2d5016; margin-top: 0;">${t.makerInformation}</h3>
+          <p><strong>${t.makerName}</strong> ${makerProfile?.displayName || product.makerName || 'N/A'}</p>
+          <p><strong>${t.makerEmail}</strong> ${makerProfile?.email || 'N/A'}</p>
+          <p><strong>${t.makerId}</strong> ${product.makerId || 'N/A'}</p>
+        </div>
+
+        <div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <p style="margin: 0; color: #004085;"><strong>${t.nextSteps}</strong></p>
+          <ul style="margin: 10px 0; padding-left: 20px; color: #004085;">
+            <li>${t.reviewProduct}</li>
+            <li>${t.approveOrReject}</li>
+            <li><a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin/products/review" style="color: #004085; text-decoration: underline;">${t.viewInAdmin}</a></li>
+          </ul>
+        </div>
+      </div>
+    `,
+    text: `
+${t.title}
+
+${t.description}
+
+⚠️ Action Required
+${t.reviewProduct}
+
+${t.productDetails}:
+${t.productName} ${product.name || 'N/A'}
+${t.productId} ${product._id || 'N/A'}
+${t.category} ${product.category || 'N/A'}
+${t.subCategory} ${product.subCategory || 'N/A'}
+${t.price} ${formatCurrency(parseFloat(product.price || 0), 'GEL')}
+${product.commission ? `${t.commission} ${formatCurrency(product.commission, 'GEL')} per unit` : ''}
+${t.submittedAt} ${formatDate(product.submittedForReviewAt || product.createdAt)}
+
+${product.description ? `${t.description}:\n${product.description}` : ''}
+
+${t.makerInformation}:
+${t.makerName} ${makerProfile?.displayName || product.makerName || 'N/A'}
+${t.makerEmail} ${makerProfile?.email || 'N/A'}
+${t.makerId} ${product.makerId || 'N/A'}
+
+${t.nextSteps}:
+- ${t.reviewProduct}
+- ${t.approveOrReject}
+- ${t.viewInAdmin}: ${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin/products/review
+    `.trim(),
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Product review notification email sent successfully:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending product review notification email:', error);
     throw error;
   }
 };

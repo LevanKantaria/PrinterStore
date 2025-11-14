@@ -10,6 +10,16 @@ export const getOrders = (params = {}) => {
   return apiRequest(`/api/orders${queryString ? `?${queryString}` : ""}`);
 };
 
+export const getMakerOrders = (params = {}) => {
+  const query = new URLSearchParams();
+  if (params.limit) {
+    query.append("limit", params.limit);
+  }
+
+  const queryString = query.toString();
+  return apiRequest(`/api/orders/maker/my${queryString ? `?${queryString}` : ""}`);
+};
+
 export const createOrder = (orderPayload) =>
   apiRequest("/api/orders", {
     method: "POST",
@@ -27,6 +37,9 @@ export const listAllOrders = (params = {}) => {
   const queryString = query.toString();
   return apiRequest(`/api/orders/admin/all${queryString ? `?${queryString}` : ""}`);
 };
+
+export const getOrderById = (id) =>
+  apiRequest(`/api/orders/${id}`);
 
 export const updateOrderStatus = (orderId, payload) =>
   apiRequest(`/api/orders/${orderId}/status`, {

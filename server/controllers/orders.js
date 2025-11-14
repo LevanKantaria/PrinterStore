@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import Order from "../models/order.js";
 import Profile from "../models/profile.js";
-import { sendOrderConfirmationEmail, sendNewOrderNotificationEmail, sendOrderStatusUpdateEmail } from "../utils/email.js";
+import { sendOrderConfirmationEmail, sendNewOrderNotificationEmail, sendOrderStatusUpdateEmail, sendMakerOrderNotificationEmail } from "../utils/email.js";
+import { generateUniqueDeliveryCode } from "../utils/deliveryCode.js";
+import { calculateCommission, calculateMakerPayout } from "../utils/commission.js";
 
 const VALID_STATUSES = ["awaiting_payment", "payment_received", "processing", "fulfilled", "cancelled"];
 
@@ -33,6 +35,8 @@ const sanitizeItems = (items = []) =>
       lineTotal: item.lineTotal != null ? Number(item.lineTotal) : undefined,
       notes: item.notes,
       image: item.image,
+      makerId: item.makerId,
+      makerName: item.makerName,
     }))
     .filter((item) => item.name && item.quantity > 0);
 
@@ -67,6 +71,47 @@ export const createOrder = async (req, res) => {
 
     const computedTotal = total != null ? Number(total) : computedSubtotal + Number(shippingFee || 0);
 
+    // Calculate commissions and maker payments for each item
+    const itemsWithCommission = items.map(item => {
+      const unitPrice = item.unitPrice || 0;
+      const quantity = item.quantity || 0;
+      const commission = calculateCommission(unitPrice);
+      const makerPayout = calculateMakerPayout(unitPrice, quantity, commission);
+      
+      // Log for debugging - remove in production
+      if (item.makerId) {
+        console.log(`[orders] Item ${item.name} has makerId: ${item.makerId}, makerName: ${item.makerName}`);
+      } else {
+        console.warn(`[orders] Item ${item.name} missing makerId!`);
+      }
+      
+      return {
+        ...item,
+        commission,
+        makerPayout,
+      };
+    });
+
+    // Group maker payments by makerId
+    const makerPaymentsMap = new Map();
+    itemsWithCommission.forEach(item => {
+      if (item.makerId) {
+        if (!makerPaymentsMap.has(item.makerId)) {
+          makerPaymentsMap.set(item.makerId, {
+            makerId: item.makerId,
+            makerName: item.makerName || 'Unknown',
+            amount: 0,
+            commission: 0,
+          });
+        }
+        const payment = makerPaymentsMap.get(item.makerId);
+        payment.amount += item.makerPayout || 0;
+        payment.commission += (item.commission || 0) * (item.quantity || 0);
+      }
+    });
+
+    const makerPayments = Array.from(makerPaymentsMap.values());
+
     const now = new Date();
     const createdOrder = await Order.create({
       orderId,
@@ -77,7 +122,8 @@ export const createOrder = async (req, res) => {
       subtotal: computedSubtotal,
       shippingFee: Number(shippingFee || 0),
       total: computedTotal,
-      items,
+      items: itemsWithCommission,
+      makerPayments: makerPayments,
       shippingAddress: normalizeAddress(shippingAddress),
       billingAddress: normalizeAddress(billingAddress),
       customerNotes,
@@ -137,18 +183,51 @@ export const getOrdersForUser = async (req, res) => {
   }
 };
 
+export const getOrdersForMaker = async (req, res) => {
+  const makerId = req.user.uid;
+  const limit = Math.min(Number(req.query.limit) || 20, 100);
+
+  try {
+    // Find orders where at least one item has this maker's makerId
+    const orders = await Order.find({
+      'items.makerId': makerId
+    })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+    
+    return res.json(orders);
+  } catch (error) {
+    console.error("[orders] getOrdersForMaker failed:", error);
+    return res.status(500).json({ message: "Unable to load maker orders." });
+  }
+};
+
 export const getOrderById = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.uid;
 
   try {
-    const order = await Order.findOne({ orderId: id });
+    // Try to find by _id first, then by orderId
+    let order = await Order.findById(id).lean();
+    if (!order) {
+      order = await Order.findOne({ orderId: id }).lean();
+    }
+
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
 
-    if (order.userId !== userId && !req.user.isAdmin) {
-      return res.status(403).json({ message: "You do not have access to this order." });
+    // Check access: user can access if:
+    // 1. They are the customer (order.userId === userId)
+    // 2. They are admin
+    // 3. They are a maker and the order contains their products
+    const isAdmin = req.user.isAdmin;
+    const isCustomer = order.userId === userId;
+    const isMaker = order.items?.some(item => item.makerId === userId);
+
+    if (!isAdmin && !isCustomer && !isMaker) {
+      return res.status(403).json({ message: "Access denied." });
     }
 
     return res.json(order);
@@ -181,15 +260,40 @@ export const listOrders = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   const { id } = req.params;
   const { status, note } = req.body || {};
+  const userId = req.user.uid;
+  const isAdmin = req.user.isAdmin;
 
   if (!status || !VALID_STATUSES.includes(status)) {
     return res.status(400).json({ message: "Invalid status value." });
   }
 
   try {
-    const order = await Order.findOne({ orderId: id });
+    // Try to find by _id first, then by orderId
+    let order = await Order.findById(id);
+    if (!order) {
+      order = await Order.findOne({ orderId: id });
+    }
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Check permissions: Admin can update any status, makers can only update to 'processing' or 'fulfilled'
+    if (!isAdmin) {
+      // Check if user is a maker for this order
+      const isMaker = order.items?.some(item => item.makerId === userId);
+      if (!isMaker) {
+        return res.status(403).json({ message: "You are not authorized to update this order." });
+      }
+      
+      // Makers can only update to 'processing' or 'fulfilled'
+      if (status !== 'processing' && status !== 'fulfilled') {
+        return res.status(403).json({ message: "Makers can only update order status to 'processing' or 'fulfilled'." });
+      }
+      
+      // Makers can only update from 'payment_received' or 'processing' to 'processing' or 'fulfilled'
+      if (order.status !== 'payment_received' && order.status !== 'processing') {
+        return res.status(403).json({ message: "You can only update orders that are in 'payment_received' or 'processing' status." });
+      }
     }
 
     const oldStatus = order.status;
@@ -210,7 +314,29 @@ export const updateOrderStatus = async (req, res) => {
 
     await order.save();
 
-    // Send status update email to customer if status changed
+    // Generate delivery code and send combined email if order is confirmed (payment_received or processing)
+    let deliveryCode = null;
+    if (oldStatus !== status && (status === 'payment_received' || status === 'processing')) {
+      try {
+        // Only generate if code doesn't exist
+        if (!order.delivery?.code) {
+          deliveryCode = await generateUniqueDeliveryCode(Order);
+          order.delivery = order.delivery || {};
+          order.delivery.code = deliveryCode;
+          order.delivery.codeGeneratedAt = new Date();
+          order.delivery.codeUsed = false;
+          await order.save();
+        } else {
+          // Use existing code
+          deliveryCode = order.delivery.code;
+        }
+      } catch (codeError) {
+        console.error("[orders] Failed to generate delivery code:", codeError);
+        // Don't fail the request if code generation fails
+      }
+    }
+
+    // Send combined status update email (with delivery code if applicable) to customer if status changed
     if (oldStatus !== status) {
       try {
         const profile = await Profile.findOne({ userId: order.userId });
@@ -221,12 +347,65 @@ export const updateOrderStatus = async (req, res) => {
             oldStatus,
             newStatus: status,
             note,
+            deliveryCode: deliveryCode || order.delivery?.code || null, // Include delivery code if available
+            language: 'KA', // Default language, can be made dynamic
           }).catch((emailError) => {
             console.error("[orders] Failed to send status update email:", emailError);
           });
         }
       } catch (profileError) {
         console.error("[orders] Failed to fetch profile for status update email:", profileError);
+      }
+    }
+
+    // Send notification emails to makers when payment is received
+    if (oldStatus !== status && (status === 'payment_received' || status === 'processing')) {
+      try {
+        // Group items by maker
+        const makerItemsMap = new Map();
+        order.items?.forEach(item => {
+          if (item.makerId) {
+            if (!makerItemsMap.has(item.makerId)) {
+              makerItemsMap.set(item.makerId, {
+                makerId: item.makerId,
+                makerName: item.makerName || 'Unknown Maker',
+                items: [],
+                totalPayout: 0,
+                totalCommission: 0,
+              });
+            }
+            const makerData = makerItemsMap.get(item.makerId);
+            makerData.items.push(item);
+            makerData.totalPayout += item.makerPayout || 0;
+            makerData.totalCommission += (item.commission || 0) * (item.quantity || 0);
+          }
+        });
+
+        // Send email to each maker
+        for (const [makerId, makerData] of makerItemsMap.entries()) {
+          try {
+            const makerProfile = await Profile.findOne({ userId: makerId });
+            if (makerProfile?.email) {
+              sendMakerOrderNotificationEmail({
+                to: makerProfile.email,
+                makerName: makerProfile.displayName || makerData.makerName,
+                order: order.toObject(),
+                makerItems: makerData.items,
+                expectedPayout: makerData.totalPayout,
+                totalCommission: makerData.totalCommission,
+                deliveryCode: deliveryCode || order.delivery?.code || null,
+                language: 'KA', // Default language, can be made dynamic
+              }).catch((emailError) => {
+                console.error(`[orders] Failed to send maker notification email to ${makerId}:`, emailError);
+              });
+            }
+          } catch (makerError) {
+            console.error(`[orders] Failed to fetch maker profile for ${makerId}:`, makerError);
+          }
+        }
+      } catch (makerNotificationError) {
+        console.error("[orders] Failed to send maker notifications:", makerNotificationError);
+        // Don't fail the request if maker notifications fail
       }
     }
 

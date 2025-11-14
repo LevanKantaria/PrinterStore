@@ -59,14 +59,9 @@ const Navbar = () => {
           <Link to="/materials"> {translate("landing.materials")} </Link>
         </p>
         {status === "authenticated" && user?.isAdmin && (
-          <>
-            <p>
-              <Link to="/admin/orders">{translate("navbar.admin.orders")}</Link>
-            </p>
-            <p>
-              <Link to="/admin/listings">{translate("navbar.admin.listings")}</Link>
-            </p>
-          </>
+          <p>
+            <Link to="/admin">{translate("navbar.admin.dashboard") || "Admin"}</Link>
+          </p>
         )}
       </div>
       <div className={classes.rightGroup}>

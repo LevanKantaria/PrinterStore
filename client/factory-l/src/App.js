@@ -18,8 +18,17 @@ import SignIn from "./components/signIn/SignIn";
 import SignUp from "./components/signUp/SignUp";
 import Blog from "./pages/Blog";
 import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/AdminDashboard";
 import AdminListings from "./pages/AdminListings";
 import AdminOrders from "./pages/AdminOrders";
+import AdminApplications from "./pages/AdminApplications";
+import AdminProductReview from "./pages/AdminProductReview";
+import AdminPayments from "./pages/AdminPayments";
+import MakerApplication from "./pages/MakerApplication";
+import MakerDashboard from "./pages/MakerDashboard";
+import MakerProducts from "./pages/MakerProducts";
+import MakerOrderDetails from "./pages/MakerOrderDetails";
+import DeliveryConfirmation from "./pages/DeliveryConfirmation";
 import ScrollToTop from "./components/scrollToTop/ScrollToTop";
 import { auth } from "./firebase";
 import { clearUser, setAuthError, setAuthStatus, setUser, setUserRole } from "./features/auth/authSlice";
@@ -108,14 +117,25 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/maker/apply" element={<MakerApplication />} />
+        <Route path="/maker/dashboard" element={<MakerDashboard />} />
+        <Route path="/maker/products" element={<MakerProducts />} />
+        <Route path="/maker/products/new" element={<UploadItem />} />
+        <Route path="/maker/products/:id/edit" element={<UploadItem />} />
+        <Route path="/maker/orders/:id" element={<MakerOrderDetails />} />
+        <Route path="/maker/orders/:id/deliver" element={<DeliveryConfirmation />} />
         <Route path="/materials" element={<Materials />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/upload" element={<UploadItem />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/listings" element={<AdminListings />} />
         <Route path="/admin/orders" element={<AdminOrders />} />
+        <Route path="/admin/applications" element={<AdminApplications />} />
+        <Route path="/admin/products/review" element={<AdminProductReview />} />
+        <Route path="/admin/payments" element={<AdminPayments />} />
         <Route path="/marketplace/:category/" element={<MarketplaceItemsList />} />
         <Route path="/marketplace/:category/:subCategory" element={<MarketplaceItemsList />} />
         <Route path="/products/:id" element={<ProductPage />} />

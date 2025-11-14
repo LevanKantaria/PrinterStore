@@ -4,8 +4,25 @@ export const getItems = async (req, res) => {
   const { category, subCategory, id } = req.query;
 
   try {
+    // For customers, only show live products
+    // For admins/makers, show all statuses
+    const isAdmin = req.user?.isAdmin;
+    
+    // For non-admins: show products with status='live' OR products without status field (backward compatibility for old admin products)
+    let statusFilter = {};
+    if (!isAdmin) {
+      statusFilter = {
+        $or: [
+          { status: 'live' },
+          { status: { $exists: false } }, // Products without status field (old admin products)
+          { status: null }, // Products with null status
+        ]
+      };
+    }
+
     if (id) {
-      const marketplaceItems = await marketplaceItem.find({ _id: id });
+      const query = { _id: id, ...statusFilter };
+      const marketplaceItems = await marketplaceItem.find(query);
       if (!marketplaceItems.length) {
         return res.status(404).json({ message: "Item not found." });
       }
@@ -13,16 +30,18 @@ export const getItems = async (req, res) => {
     }
 
     if (subCategory) {
-      const marketplaceItems = await marketplaceItem.find({ subCategory });
+      const query = { subCategory, ...statusFilter };
+      const marketplaceItems = await marketplaceItem.find(query);
       return res.status(200).json(marketplaceItems);
     }
 
     if (category) {
-      const marketplaceItems = await marketplaceItem.find({ category });
+      const query = { category, ...statusFilter };
+      const marketplaceItems = await marketplaceItem.find(query);
       return res.status(200).json(marketplaceItems);
     }
 
-    const marketplaceItems = await marketplaceItem.find({});
+    const marketplaceItems = await marketplaceItem.find(statusFilter);
     return res.status(200).json(marketplaceItems);
   } catch (error) {
     console.error("[items] getItems failed:", error);
@@ -42,7 +61,12 @@ export const listAllItems = async (_req, res) => {
 
 export const uploadItem = async (req, res) => {
   try {
-    const newItem = await marketplaceItem.create(req.body);
+    // Admin-created products should be live by default
+    const itemData = {
+      ...req.body,
+      status: req.body.status || 'live', // Default to 'live' for admin products
+    };
+    const newItem = await marketplaceItem.create(itemData);
     return res.status(201).json(newItem);
   } catch (error) {
     console.error("[items] uploadItem failed:", error);

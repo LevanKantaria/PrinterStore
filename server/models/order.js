@@ -11,6 +11,10 @@ const orderItemSchema = new mongoose.Schema(
     unitPrice: { type: Number },
     lineTotal: { type: Number },
     notes: { type: String },
+    makerId: { type: String },
+    makerName: { type: String },
+    commission: { type: Number, default: 0 }, // commission per unit
+    makerPayout: { type: Number, default: 0 }, // (unitPrice - commission) × quantity
   },
   { _id: false }
 );
@@ -33,6 +37,42 @@ const addressSnapshotSchema = new mongoose.Schema(
     line2: { type: String },
     city: { type: String },
     phone: { type: String },
+  },
+  { _id: false }
+);
+
+const makerPaymentSchema = new mongoose.Schema(
+  {
+    makerId: { type: String, required: true },
+    makerName: { type: String },
+    amount: { type: Number, required: true },
+    commission: { type: Number, default: 0 },
+    status: {
+      type: String,
+      enum: ['pending', 'paid', 'held', 'refunded'],
+      default: 'pending',
+    },
+    paidAt: { type: Date },
+    paidBy: { type: String }, // admin userId
+    paymentMethod: { type: String }, // e.g., 'bank_transfer', 'paypal'
+    transactionId: { type: String }, // for tracking
+  },
+  { _id: false }
+);
+
+const deliverySchema = new mongoose.Schema(
+  {
+    code: { type: String, sparse: true }, // Unique delivery code
+    codeGeneratedAt: { type: Date },
+    codeUsed: { type: Boolean, default: false },
+    codeUsedAt: { type: Date },
+    makerConfirmed: { type: Boolean, default: false },
+    makerConfirmedAt: { type: Date },
+    makerId: { type: String }, // Maker who confirmed delivery
+    customerConfirmed: { type: Boolean, default: false },
+    customerConfirmedAt: { type: Date },
+    deliveredAt: { type: Date },
+    notes: { type: String },
   },
   { _id: false }
 );
@@ -61,11 +101,14 @@ const orderSchema = new mongoose.Schema(
     paymentDueBy: { type: Date },
     lastStatusChangeBy: { type: String },
     lastStatusChangeAt: { type: Date },
+    makerPayments: { type: [makerPaymentSchema], default: [] },
+    delivery: { type: deliverySchema },
   },
   { timestamps: true }
 );
 
 orderSchema.index({ createdAt: -1 });
+orderSchema.index({ 'delivery.code': 1 }, { unique: true, sparse: true });
 
 export default mongoose.model("Order", orderSchema);
 

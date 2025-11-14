@@ -9,6 +9,8 @@ import translate from "../translate";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { createProduct } from "../../api/products";
+import { createMakerProduct } from "../../api/maker";
+import { getProfile } from "../../api/profile";
 
 const UploadItem = () => {
   const navigate = useNavigate();
@@ -26,6 +28,8 @@ const UploadItem = () => {
   });
   const [colorInput, setColorInput] = useState("");
 
+  const [isMaker, setIsMaker] = useState(false);
+
   useEffect(() => {
     if (authStatus === "unauthenticated") {
       navigate("/sign-in", { replace: true });
@@ -33,15 +37,36 @@ const UploadItem = () => {
   }, [authStatus, navigate]);
 
   useEffect(() => {
-    if (authStatus === "authenticated" && user && user.isAdmin === false) {
-      navigate("/", { replace: true });
-    }
+    const checkUserRole = async () => {
+      if (authStatus === "authenticated" && user) {
+        try {
+          const profile = await getProfile();
+          const userIsAdmin = profile.isAdmin === true;
+          const userIsMaker = profile.role === 'maker' && profile.makerStatus === 'approved';
+          
+          if (!userIsAdmin && !userIsMaker) {
+            navigate("/", { replace: true });
+            return;
+          }
+          
+          setIsMaker(userIsMaker);
+        } catch (err) {
+          console.error("[upload] profile check failed", err);
+        }
+      }
+    };
+    
+    checkUserRole();
   }, [authStatus, user, navigate]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      await createProduct(item);
+      if (isMaker) {
+        await createMakerProduct(item);
+      } else {
+        await createProduct(item);
+      }
       setItem({
         name: "",
         category: "",
@@ -53,6 +78,7 @@ const UploadItem = () => {
         colors: [],
       });
       setColorInput("");
+      navigate(isMaker ? "/maker/dashboard" : "/admin/listings");
     } catch (error) {
       console.error("[upload] create failed", error);
     }

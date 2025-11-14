@@ -26,7 +26,7 @@ const defaultAddress = {
   phone: "",
 };
 
-const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
+const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced = undefined }) => {
   const navigate = useNavigate();
   // Subscribe to language changes to trigger re-render
   const currentLang = useSelector((state) => state.lang.lang);
@@ -138,6 +138,8 @@ const CheckoutModal = ({ open, onClose, cartItems, onOrderPlaced }) => {
           material: item.material,
           color: item.color,
           quantity: Number(item.quantity || 1),
+          makerId: item.makerId,
+          makerName: item.makerName,
           unitPrice: Number(item.price || 0),
           lineTotal: Number(item.price || 0) * Number(item.quantity || 0),
           image: item.image || item.images?.[0] || item.thumbnail || "",
@@ -433,10 +435,6 @@ CheckoutModal.propTypes = {
     })
   ).isRequired,
   onOrderPlaced: PropTypes.func,
-};
-
-CheckoutModal.defaultProps = {
-  onOrderPlaced: undefined,
 };
 
 export default CheckoutModal;
