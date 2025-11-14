@@ -1,15 +1,15 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 import classes from './FeaturedItem.module.css'
 import { useEffect, useState } from "react";
 import MarketplaceItem from "../marketplaceItem/MarketplaceItem";
 import Skeleton from "../skeleton/Skeleton";
 import axios from "axios";
-import { API_URL } from "../../API_URL";
 import translate from './../translate';
-
-
+import { API_URL } from '../../API_URL';
 const FeaturedItem = () => {
-
+    // Subscribe to language changes to trigger re-render
+    const currentLang = useSelector((state) => state.lang.lang);
     let category = 'household';
     let subCategory = '';
     const [items, setItems] = useState([]);
@@ -24,7 +24,7 @@ const FeaturedItem = () => {
       if (!subCategory) {
         setLoading(true);
         axios
-          .get(API_URL+"api/products", {
+          .get(API_URL + "/api/products", {
             params: {
               category: category,
             },
@@ -40,7 +40,7 @@ const FeaturedItem = () => {
       } else if (subCategory) {
         setLoading(true);
         axios
-          .get(API_URL+"api/products", {
+          .get(API_URL + "/api/products", {
             params: {
               subCategory: subCategory,
             },
@@ -57,18 +57,26 @@ const FeaturedItem = () => {
     }, [subCategory]);
 
     marketplaceItems = items.map((item) => {
+        const images = Array.isArray(item.images)
+          ? item.images
+          : item.images
+          ? [item.images]
+          : item.image
+          ? [item.image]
+          : [];
    
         return (
           <MarketplaceItem
             category={item.category}
             subCategory={item.subCategory}
             id={item._id}
-            images={item.images}
+            images={images}
             price={item.price}
             creator={item.creator}
-            key={Math.random()}
+            key={item._id}
             name={item.name}
             description={item.description}
+            colors={item.colors}
           />
         );
       });

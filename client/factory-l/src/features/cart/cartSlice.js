@@ -8,8 +8,23 @@ const initialState = {
   total: 0,
 };
 
-if(localStorage.getItem('cart')){
-  initialState.cartItems=JSON.parse(localStorage.getItem('cart'))
+const findCartItem = (items, id, color) =>
+  items.find(
+    (item) =>
+      (item._id || item.id) === id &&
+      (item.color || "") === (color || "")
+  );
+
+if (localStorage.getItem("cart")) {
+  initialState.cartItems = JSON.parse(localStorage.getItem("cart")).map((item) => ({
+    ...item,
+    quantity: Number(item.quantity || 1),
+    color: item.color || "",
+  }));
+  initialState.total = initialState.cartItems.reduce(
+    (acc, item) => acc + Number(item.price || 0) * Number(item.quantity || 0),
+    0
+  );
 }
 
 const cartSlice = createSlice({
@@ -18,38 +33,68 @@ const cartSlice = createSlice({
   reducers: {
 
     addItem: (state, action) => {
-      const itemInCart = state.cartItems.find(
-        (item) => item._id === action.payload._id
-      );
+      const quantityToAdd = Number(action.payload.quantity) || 1;
+      const price = Number(action.payload.price) || 0;
+      const color = action.payload.color || "";
+      const id = action.payload._id || action.payload.id;
+
+      const itemInCart = findCartItem(state.cartItems, id, color);
       if (itemInCart) {
-        itemInCart.quantity++;
+        itemInCart.quantity += quantityToAdd;
       } else {
-        state.cartItems.push({ ...action.payload, quantity: 1 });
+        state.cartItems.push({
+          ...action.payload,
+          quantity: quantityToAdd,
+          color,
+        });
       }
-      state.total+= +action.payload.price
+      state.total += price * quantityToAdd;
     },
     incrementQuantity: (state, action) => {
-      const item = state.cartItems.find((item) => item._id === action.payload);
-      console.log(item)
-      item.quantity++;
+      const { id, color = "" } = action.payload;
+      const item = findCartItem(state.cartItems, id, color);
+      if (!item) return;
+      item.quantity += 1;
+      state.total += Number(item.price) || 0;
     },
     decrementQuantity: (state, action) => {
-      const item = state.cartItems.find((item) => item._id === action.payload);
-      if (item.quantity === 1) {
-        item.quantity = 1;
-      } else {
-        item.quantity--;
-        state.total-= +action.payload.price
+      const { id, color = "" } = action.payload;
+      const item = findCartItem(state.cartItems, id, color);
+      if (!item || item.quantity <= 1) {
+        if (item) {
+          item.quantity = 1;
+        }
+        return;
       }
+      item.quantity -= 1;
+      state.total -= Number(item.price) || 0;
     },
     removeItem: (state, action) => {
-      const removeItem = state.cartItems.filter(
-        (item) => item._id !== action.payload
+      const { id, color = "" } = action.payload;
+      const item = findCartItem(state.cartItems, id, color);
+      if (item) {
+        state.total -= (Number(item.price) || 0) * Number(item.quantity || 0);
+      }
+      state.cartItems = state.cartItems.filter(
+        (cartItem) =>
+          (cartItem._id || cartItem.id) !== id ||
+          (cartItem.color || "") !== color
       );
-      state.cartItems = removeItem;
     },
-    setItemsFromCart:(state,action)=>{
-      state.cartItems = action.payload;
+    setItemsFromCart: (state, action) => {
+      state.cartItems = (action.payload || []).map((item) => ({
+        ...item,
+        quantity: Number(item.quantity || 1),
+        color: item.color || "",
+      }));
+      state.total = state.cartItems.reduce(
+        (acc, item) => acc + Number(item.price || 0) * Number(item.quantity || 0),
+        0
+      );
+    },
+    clearCart: (state) => {
+      state.cartItems = [];
+      state.total = 0;
     }
   },
 });

@@ -31,6 +31,18 @@
   flex-shrink: 0;
 }
 
+.imagePlaceholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  background-color: #f4f7f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
 .name {
   flex: 1;
   min-width: 0;
@@ -52,6 +64,24 @@
   font-size: 15px;
   color: #6c757d;
   font-weight: 500;
+}
+
+.color {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.colorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: inline-block;
 }
 
 .incrementDecrement {

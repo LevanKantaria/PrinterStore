@@ -1,24 +1,70 @@
-import React from 'react'
-import classes from './CategoryItem.module.css'
-import { Link } from 'react-router-dom'
-import translate from '../../translate'
+import React from "react";
+import { useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import classes from "./CategoryItem.module.css";
+import translate from "../../translate";
 
-const CategoryItem = (props) => {
-  const handleSubcategoryClick = (e) => {
+const CategoryItem = ({ link, image, title, items = [] }) => {
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (e) => {
+    e.preventDefault();
+    navigate(`/marketplace/${link}`);
+  };
+
+  const handleSubcategoryClick = (e, subcategoryLink) => {
+    e.preventDefault();
     e.stopPropagation();
+    navigate(`/marketplace/${subcategoryLink}`);
   };
 
   return (
-    <Link to={props.link} className={classes.main} >
-        <img src={props.image} alt='decorative' loading='lazy' />
-        <h3> {translate(props.title)}</h3>
-        <ul>
-            <li><Link to={props.link1} onClick={handleSubcategoryClick}> {translate(props.item1)}</Link>  </li>
-            <li><Link to={props.link2} onClick={handleSubcategoryClick}> {translate(props.item2)}</Link>  </li>
-            <li><Link to={props.link3} onClick={handleSubcategoryClick}> {translate(props.item3)}</Link>  </li>
-        </ul>
-    </Link>
-  )
-}
+    <div className={classes.main}>
+      <div 
+        onClick={handleCategoryClick}
+        style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCategoryClick(e);
+          }
+        }}
+      >
+        <img src={image} alt={translate(title)} loading="lazy" />
+        <h3>{translate(title)}</h3>
+      </div>
+      <ul>
+        {items.map((item) => (
+          <li key={item.link}>
+            <a 
+              href={`/marketplace/${item.link}`}
+              onClick={(e) => handleSubcategoryClick(e, item.link)}
+              style={{ textDecoration: 'none' }}
+            >
+              {translate(item.label)}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-export default CategoryItem
+CategoryItem.propTypes = {
+  link: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      link: PropTypes.string.isRequired,
+    })
+  ),
+};
+
+export default CategoryItem;

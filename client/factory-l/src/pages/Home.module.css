@@ -1,0 +1,396 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  background: linear-gradient(180deg, #f4f7f5 0%, #eef3f0 45%, #f7faf8 100%);
+}
+
+.section {
+  width: 100%;
+  padding: 0 clamp(24px, 6vw, 96px);
+  box-sizing: border-box;
+}
+
+.heroSection {
+  margin-top: 0;
+}
+
+.featuredSection {
+  position: relative;
+  isolation: isolate;
+}
+
+.trailSection,
+.highlightsSection,
+.ctaSection {
+  position: relative;
+}
+
+.trailSection::before,
+.highlightsSection::before {
+  content: "";
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, 90%);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(70, 123, 91, 0) 0%, rgba(70, 123, 91, 0.35) 50%, rgba(70, 123, 91, 0) 100%);
+  opacity: 0.25;
+}
+
+.sectionHeader {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  text-align: center;
+  color: #1d3a26;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kicker {
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(66, 118, 86, 0.82);
+  font-weight: 600;
+}
+
+.sectionHeader h2 {
+  font-size: clamp(28px, 4vw, 46px);
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.sectionHeader p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(30, 61, 40, 0.64);
+}
+
+.timeline {
+  display: grid;
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  align-items: start;
+  gap: 20px;
+  padding: 26px 28px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(88, 143, 108, 0.14);
+  box-shadow: 0 18px 40px rgba(24, 55, 35, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.timelineItem::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(121, 178, 141, 0.08) 0%, rgba(226, 238, 232, 0.36) 100%);
+  pointer-events: none;
+}
+
+.timelineMarker {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(96, 148, 113, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: rgba(61, 114, 83, 0.9);
+  background: radial-gradient(circle at 50% 50%, rgba(190, 227, 203, 0.7), rgba(242, 249, 245, 0.95));
+  box-shadow: 0 12px 22px rgba(30, 69, 44, 0.12);
+}
+
+.timelineMarker span {
+  font-size: 16px;
+}
+
+.timelineContent h3 {
+  margin: 0 0 10px;
+  color: #1f3f29;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.timelineContent p {
+  margin: 0;
+  color: rgba(35, 72, 46, 0.68);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.timelineMeta {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(61, 114, 83, 0.85);
+  background: rgba(204, 230, 214, 0.9);
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.highlightCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid rgba(94, 149, 112, 0.14);
+  box-shadow: 0 18px 34px rgba(28, 58, 39, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.highlightCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 20% 15%, rgba(140, 199, 160, 0.14), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.cardAccent {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: rgba(96, 148, 113, 0.68);
+  text-transform: uppercase;
+}
+
+.highlightCard h3 {
+  margin: 0;
+  color: #21402a;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.highlightCard p {
+  margin: 0;
+  color: rgba(35, 72, 46, 0.66);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.modulesSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ctaSection {
+  padding-bottom: 88px;
+}
+
+.ctaCard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  padding: 48px clamp(24px, 5vw, 64px);
+  background: rgba(254, 255, 254, 0.96);
+  border-radius: 32px;
+  border: 1px solid rgba(108, 164, 125, 0.18);
+  box-shadow: 0 26px 50px rgba(30, 63, 40, 0.16);
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaCard::before {
+  content: "";
+  position: absolute;
+  inset: -40% 10% auto;
+  height: 140%;
+  background:
+    radial-gradient(80% 60% at 50% 50%, rgba(165, 210, 182, 0.16), rgba(255, 255, 255, 0));
+  opacity: 0.8;
+  filter: blur(18px);
+}
+
+.ctaContent {
+  flex: 1 1 380px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #1f3f29;
+  position: relative;
+  z-index: 2;
+}
+
+.ctaContent h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.15;
+}
+
+.ctaContent p {
+  margin: 0;
+  color: rgba(35, 72, 46, 0.66);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.resourceLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.resourceLink {
+  color: rgba(78, 128, 98, 0.85);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.resourceLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(78, 128, 98, 0.5);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.resourceLink:hover::after {
+  transform: scaleX(1);
+}
+
+.ctaActions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.secondaryButton {
+  background: transparent;
+  border: 1px solid rgba(108, 164, 125, 0.45);
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(66, 118, 86, 0.88);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+  background: rgba(149, 202, 167, 0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(30, 63, 40, 0.16);
+}
+
+@media (max-width: 1024px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .timelineItem {
+    grid-template-columns: 60px 1fr;
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .sectionHeader {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    gap: 48px;
+  }
+
+  .section {
+    padding: 0 clamp(18px, 4vw, 32px);
+  }
+
+  .timeline {
+    gap: 18px;
+  }
+
+  .timelineItem {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .timelineMarker {
+    margin-bottom: 8px;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .ctaCard {
+    padding: 36px clamp(20px, 4vw, 32px);
+    gap: 24px;
+  }
+
+  .ctaActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .secondaryButton {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sectionHeader p,
+  .highlightCard p,
+  .timelineContent p,
+  .ctaContent p {
+    font-size: 14px;
+  }
+
+  .timelineItem {
+    padding: 22px;
+  }
+
+  .highlightCard {
+    padding: 24px;
+  }
+
+  .resourceLinks {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

@@ -1,15 +1,21 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { TextField } from "@mui/material";
-import axios from "axios";
 import classes from "./UploadItem.module.css";
 import CustomButton from "../customButton/CustomButton";
 import DragAndDrop from "../dragAndDrop/DragAndDrop";
 import Select from "react-select";
-
-import { API_URL } from "../../API_URL";
+import categories from "../../data/marketplaceCategories";
+import translate from "../translate";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { createProduct } from "../../api/products";
+import { createMakerProduct } from "../../api/maker";
+import { getProfile } from "../../api/profile";
 
 const UploadItem = () => {
+  const navigate = useNavigate();
+  const { status: authStatus, user } = useSelector((state) => state.auth);
+
   const [item, setItem] = useState({
     name: "",
     category: "",
@@ -18,125 +24,210 @@ const UploadItem = () => {
     creator: "levani",
     subCategory: "",
     description: "",
+    colors: [],
   });
+  const [colorInput, setColorInput] = useState("");
 
-  const submitHandler = (e) => {
+  const [isMaker, setIsMaker] = useState(false);
+
+  useEffect(() => {
+    if (authStatus === "unauthenticated") {
+      navigate("/sign-in", { replace: true });
+    }
+  }, [authStatus, navigate]);
+
+  useEffect(() => {
+    const checkUserRole = async () => {
+      if (authStatus === "authenticated" && user) {
+        try {
+          const profile = await getProfile();
+          const userIsAdmin = profile.isAdmin === true;
+          const userIsMaker = profile.role === 'maker' && profile.makerStatus === 'approved';
+          
+          if (!userIsAdmin && !userIsMaker) {
+            navigate("/", { replace: true });
+            return;
+          }
+          
+          setIsMaker(userIsMaker);
+        } catch (err) {
+          console.error("[upload] profile check failed", err);
+        }
+      }
+    };
+    
+    checkUserRole();
+  }, [authStatus, user, navigate]);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(item);
-    axios.post(API_URL + "api/products", item).then((res) => {
-      console.log(res);
+    try {
+      if (isMaker) {
+        await createMakerProduct(item);
+      } else {
+        await createProduct(item);
+      }
       setItem({
         name: "",
         category: "",
-        images: "123456",
+        images: [],
         price: "",
         creator: "levani",
         subCategory: "",
+        description: "",
+        colors: [],
       });
-    });
+      setColorInput("");
+      navigate(isMaker ? "/maker/dashboard" : "/admin/listings");
+    } catch (error) {
+      console.error("[upload] create failed", error);
+    }
   };
-  const categories = [
-    { value: "household", label: "Household" },
-    { value: "cars", label: "Cars" },
-    { value: "office", label: "Office" },
-  ];
-  const subCategory = {
-    cars: [
-      { value: "keychains", label: "Keychains" },
-      { value: "accessories", label: "accessories" },
-      { value: "good-to-haves", label: "Good to have" },
-    ],
-    office: [
-      { value: "organizers", label: "Organizers" },
-      { value: "fidget", label: "Fidget" },
-      { value: "decoration", label: "Decoration Office" },
-    ],
-    household: [
-      { value: "plants", label: "Plants" },
-      { value: "decorations", label: "Decorations household" },
-      { value: "kitchen", label: "Kitchen" },
-    ],
-  };
+
+  const categoryOptions = useMemo(
+    () =>
+      categories.map((category) => ({
+        value: category.id,
+        label: translate(category.titleKey),
+      })),
+    []
+  );
+
+  const subcategoryOptions = useMemo(() => {
+    const activeCategory = categories.find((category) => category.id === item.category);
+    return activeCategory
+      ? activeCategory.subcategories.map((subcategory) => ({
+          value: subcategory.id,
+          label: translate(subcategory.labelKey),
+        }))
+      : [];
+  }, [item.category]);
 
   const customStyles = {
     control: (provided) => ({
       ...provided,
-      backgroundColor: "transparent", // Darker background color
+      backgroundColor: "transparent",
       zIndex: 2,
-      marginTop: "10px", // Adjust the top margin as needed
-      height: "50px",
+      marginTop: "10px",
+      minHeight: "50px",
+      borderColor: "rgba(0, 0, 0, 0.2)",
+      boxShadow: "none",
+      "&:hover": { borderColor: "rgba(0, 0, 0, 0.35)" },
     }),
     menu: (provided) => ({
       ...provided,
-      zIndex: 3, // Ensures the dropdown menu has a higher z-index
+      zIndex: 3,
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: "black", // Text color for better contrast with the darker background
+      color: "#0c210f",
       textAlign: "left",
+      fontWeight: 600,
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected ? "rgba(0.0.0.0.15)" : "transparent", // Darker background for options
-      color: "black", // Text color for options
+      backgroundColor: state.isSelected ? "rgba(28, 61, 39, 0.08)" : "transparent",
+      color: "#0c210f",
       textAlign: "left",
       "&:hover": {
-        backgroundColor: "rgba(0,0,0,0.2)", // Hover effect for options
+        backgroundColor: "rgba(28, 61, 39, 0.12)",
       },
     }),
   };
 
   return (
     <div className={classes.wrapper}>
-      <h2>UploadItem</h2>
+      <h2>Upload item</h2>
 
-      <form className={classes.uploadForm}>
+      <form className={classes.uploadForm} onSubmit={submitHandler}>
         <Select
-          options={categories}
-          onChange={(e) => {
-            setItem({ ...item, category: e.value });
+          options={categoryOptions}
+          onChange={(selected) => {
+            setItem({ ...item, category: selected?.value || "", subCategory: "" });
           }}
           placeholder="Category"
           styles={customStyles}
+          value={categoryOptions.find((option) => option.value === item.category) || null}
         />
         <Select
-          options={subCategory[item.category]}
-          onChange={(e) => {
-            setItem({ ...item, subCategory: e.value });
+          options={subcategoryOptions}
+          onChange={(selected) => {
+            setItem({ ...item, subCategory: selected?.value || "" });
           }}
-          placeholder="Sub Category"
+          placeholder="Subcategory"
           styles={customStyles}
+          value={subcategoryOptions.find((option) => option.value === item.subCategory) || null}
+          isDisabled={!item.category}
         />
+
+        <div className={classes.colorSection}>
+          <label htmlFor="colorInput">Available colors</label>
+          <div className={classes.colorInputRow}>
+            <input
+              id="colorInput"
+              type="text"
+              value={colorInput}
+              placeholder="Add color name or hex code"
+              onChange={(event) => setColorInput(event.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const value = colorInput.trim();
+                if (!value) return;
+                setItem((prev) => ({
+                  ...prev,
+                  colors: prev.colors.includes(value) ? prev.colors : [...prev.colors, value],
+                }));
+                setColorInput("");
+              }}
+            >
+              Add
+            </button>
+          </div>
+          {item.colors.length > 0 && (
+            <div className={classes.colorChips}>
+              {item.colors.map((color, index) => (
+                <span key={`${color}-${index}`} className={classes.colorChip}>
+                  <span
+                    className={classes.colorSwatch}
+                    style={{
+                      backgroundColor: color || "#1c3d27",
+                    }}
+                  />
+                  {color}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setItem((prev) => ({
+                        ...prev,
+                        colors: prev.colors.filter((_, idx) => idx !== index),
+                      }))
+                    }
+                    aria-label={`Remove ${color}`}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
 
         <TextField
           margin="dense"
           id="name"
-          label="name"
+          label="Name"
+          value={item.name}
           onChange={(e) => {
             setItem({ ...item, name: e.target.value });
           }}
         />
-        {/* <TextField
-          margin="dense"
-          id="category"
-          label="category"
-          onChange={(e) => {
-            setItem({ ...item, category: e.target.value });
-          }}
-        />
-
-        <TextField
-          margin="dense"
-          id="subCategory"
-          label="subCategory"
-          onChange={(e) => {
-            setItem({ ...item, subCategory: e.target.value });
-          }}
-        /> */}
         <TextField
           margin="dense"
           id="price"
-          label="price"
+          label="Price"
+          value={item.price}
           onChange={(e) => {
             setItem({ ...item, price: e.target.value });
           }}
@@ -144,17 +235,17 @@ const UploadItem = () => {
         <TextField
           margin="dense"
           id="description"
-          label="description"
+          label="Description"
+          value={item.description}
+          multiline
+          minRows={3}
           onChange={(e) => {
             setItem({ ...item, description: e.target.value });
           }}
         />
-        <DragAndDrop
-          onChange={(images, hasFiles) => setItem({ ...item, images })}
-          text="Choose images or drag them here:"
-        />
+        <DragAndDrop onChange={(images) => setItem({ ...item, images })} text="Choose images or drag them here:" />
 
-        <CustomButton onClick={submitHandler} text="submit" />
+        <CustomButton type="submit" text="Submit" />
       </form>
     </div>
   );

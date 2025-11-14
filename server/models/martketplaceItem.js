@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const marketplaceItemSchema = mongoose.Schema({
+const marketplaceItemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -25,8 +25,12 @@ const marketplaceItemSchema = mongoose.Schema({
   images: {
     type: Array,
     required: true,
-    minlength: 3,
+    minlength: 2,
     trim: true,
+  },
+  colors: {
+    type: [String],
+    default: [],
   },
 
   price: {
@@ -51,8 +55,20 @@ const marketplaceItemSchema = mongoose.Schema({
     trim: true,
     maxlength: 550,
   },
-  
-});
+  makerId: { type: String, ref: 'Profile' },
+  makerName: { type: String },
+  status: {
+    type: String,
+    enum: ['draft', 'pending_review', 'approved', 'rejected', 'live'],
+    default: 'draft',
+    index: true,
+  },
+  reviewedAt: { type: Date },
+  reviewedBy: { type: String }, // admin userId
+  rejectionReason: { type: String },
+  commission: { type: Number, default: 0 }, // calculated commission per unit
+  submittedForReviewAt: { type: Date },
+}, { timestamps: true });
 
 const marketplaceItem = mongoose.model("marketplaceItem", marketplaceItemSchema);
 

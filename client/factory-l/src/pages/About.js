@@ -1,46 +1,135 @@
 import React from "react";
-import TitleAndDescription from "../components/titleAndDescription/TitleAndDescription";
-import Statistics from "../components/statistics/Statistics";
+import { useSelector } from "react-redux";
+import classes from "./About.module.css";
+import translate from "../components/translate";
 
 const About = () => {
+  // Subscribe to language changes to trigger re-render
+  const currentLang = useSelector((state) => state.lang.lang);
+
   return (
-    <div>
+    <div className={classes.aboutPage}>
+      {/* Hero Section */}
+      <section className={classes.hero}>
+        <div className={classes.heroContent}>
+          <h1 className={classes.heroTitle}>{translate("about.hero.title")}</h1>
+          <p className={classes.heroSubtitle}>{translate("about.hero.subtitle")}</p>
+        </div>
+      </section>
 
-      
-      <TitleAndDescription
-        title="About Us"
-        description="Headquartered in NYC, Shapeways makes world-class 3D printing more accessible to everyone through automation, innovation and digitization, and also provides outsourced additive manufacturing services for OTTO. Developed as proprietary software by Shapeways engineers, OTTO is a comprehensive ordering system that manages the entire production process from secure uploading of 3D models to expedited delivery in customized packaging."
-      />
-      <img width="800" height="478" src="https://www.shapeways.com/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=800/wp-content/uploads/2021/02/basf-features-forwardam-@2x.jpg" class="attachment-large size-large" alt="" loading="lazy" lazyload="1"></img>
+      {/* Story Section */}
+      <section className={classes.section}>
+        <div className={classes.container}>
+          <div className={classes.contentWrapper}>
+            <div className={classes.textContent}>
+              <h2 className={classes.sectionTitle}>{translate("about.story.title")}</h2>
+              <p className={classes.paragraph}>{translate("about.story.paragraph1")}</p>
+              <p className={classes.paragraph}>{translate("about.story.paragraph2")}</p>
+            </div>
+            <div className={classes.imagePlaceholder}>
+              <div className={classes.iconWrapper}>🏭</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <TitleAndDescription
-        title="Quality Products"
-        description="Shapeways has developed purpose-built software and maintains a wide selection of materials and technologies to streamline the supply chain, lowering manufacturing barriers and expediting delivery of quality 3D printed products. Find out more about OTTO at ottosoftware.com."
-      />
-      <img
-        width="800"
-        height="533"
-        src="https://www.shapeways.com/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=800/wp-content/uploads/2021/03/about-features-20millionparts-@2x.jpg"
-        class="attachment-large size-large"
-        alt=""
-        loading="lazy"
-        lazyload="1"
-      ></img>
+      {/* Mission Section */}
+      <section className={`${classes.section} ${classes.sectionAlt}`}>
+        <div className={classes.container}>
+          <h2 className={classes.sectionTitle}>{translate("about.mission.title")}</h2>
+          <div className={classes.missionGrid}>
+            <div className={classes.missionCard}>
+              <div className={classes.cardIcon}>🤝</div>
+              <h3 className={classes.cardTitle}>{translate("about.mission.collaboration.title")}</h3>
+              <p className={classes.cardText}>{translate("about.mission.collaboration.text")}</p>
+            </div>
+            <div className={classes.missionCard}>
+              <div className={classes.cardIcon}>🏠</div>
+              <h3 className={classes.cardTitle}>{translate("about.mission.local.title")}</h3>
+              <p className={classes.cardText}>{translate("about.mission.local.text")}</p>
+            </div>
+            <div className={classes.missionCard}>
+              <div className={classes.cardIcon}>⚡</div>
+              <h3 className={classes.cardTitle}>{translate("about.mission.easy.title")}</h3>
+              <p className={classes.cardText}>{translate("about.mission.easy.text")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-<Statistics />
-      <TitleAndDescription
-        title="Certifications"
-        description="ISO 9001 Certified
-        
-        Headquartered in NYC, Shapeways has ISO 9001-compliant manufacturing facilities in Long Island City, NY, Eindhoven, the Netherlands, and Livonia, MI.
-        
-        IATF 16949 Certified​​
-        
-        Shapeways is one of a very few AM companies to receive IATF 16949 certification, meeting the requirements for quality management systems in automotive part manufacturing at our Eindhoven and Livonia facilities.
-        
-        ITAR Certified​​"
-      />
-      <img width="800" height="533" src="https://www.shapeways.com/cdn-cgi/image/quality=85,gravity=auto,format=auto,fit=scale-down,width=800/wp-content/uploads/2021/03/about-features-isocertified-@2x.jpg" class="attachment-large size-large" alt="" loading="lazy" lazyload="1"></img>
+      {/* Values Section */}
+      <section className={classes.section}>
+        <div className={classes.container}>
+          <h2 className={classes.sectionTitle}>{translate("about.values.title")}</h2>
+          <div className={classes.valuesGrid}>
+            <div className={classes.valueCard}>
+              <div className={classes.valueIcon}>🌱</div>
+              <h3 className={classes.valueTitle}>{translate("about.values.eco.title")}</h3>
+              <p className={classes.valueText}>{translate("about.values.eco.text")}</p>
+            </div>
+            <div className={classes.valueCard}>
+              <div className={classes.valueIcon}>💡</div>
+              <h3 className={classes.valueTitle}>{translate("about.values.innovation.title")}</h3>
+              <p className={classes.valueText}>{translate("about.values.innovation.text")}</p>
+            </div>
+            <div className={classes.valueCard}>
+              <div className={classes.valueIcon}>❤️</div>
+              <h3 className={classes.valueTitle}>{translate("about.values.quality.title")}</h3>
+              <p className={classes.valueText}>{translate("about.values.quality.text")}</p>
+            </div>
+            <div className={classes.valueCard}>
+              <div className={classes.valueIcon}>🌍</div>
+              <h3 className={classes.valueTitle}>{translate("about.values.community.title")}</h3>
+              <p className={classes.valueText}>{translate("about.values.community.text")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Impact Section */}
+      <section className={`${classes.section} ${classes.sectionAlt}`}>
+        <div className={classes.container}>
+          <h2 className={classes.sectionTitle}>{translate("about.impact.title")}</h2>
+          <div className={classes.impactList}>
+            <div className={classes.impactItem}>
+              <div className={classes.impactNumber}>01</div>
+              <div className={classes.impactContent}>
+                <h3 className={classes.impactTitle}>{translate("about.impact.daily.title")}</h3>
+                <p className={classes.impactText}>{translate("about.impact.daily.text")}</p>
+              </div>
+            </div>
+            <div className={classes.impactItem}>
+              <div className={classes.impactNumber}>02</div>
+              <div className={classes.impactContent}>
+                <h3 className={classes.impactTitle}>{translate("about.impact.customization.title")}</h3>
+                <p className={classes.impactText}>{translate("about.impact.customization.text")}</p>
+              </div>
+            </div>
+            <div className={classes.impactItem}>
+              <div className={classes.impactNumber}>03</div>
+              <div className={classes.impactContent}>
+                <h3 className={classes.impactTitle}>{translate("about.impact.accessibility.title")}</h3>
+                <p className={classes.impactText}>{translate("about.impact.accessibility.text")}</p>
+              </div>
+            </div>
+            <div className={classes.impactItem}>
+              <div className={classes.impactNumber}>04</div>
+              <div className={classes.impactContent}>
+                <h3 className={classes.impactTitle}>{translate("about.impact.sustainability.title")}</h3>
+                <p className={classes.impactText}>{translate("about.impact.sustainability.text")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className={classes.ctaSection}>
+        <div className={classes.container}>
+          <h2 className={classes.ctaTitle}>{translate("about.cta.title")}</h2>
+          <p className={classes.ctaText}>{translate("about.cta.text")}</p>
+        </div>
+      </section>
     </div>
   );
 };
