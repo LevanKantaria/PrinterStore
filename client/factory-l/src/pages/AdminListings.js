@@ -11,6 +11,7 @@ import {
   getAllProductsForAdmin,
   updateProduct,
 } from "../api/products";
+import { approveProduct, rejectProduct } from "../api/maker";
 
 const initialForm = {
   _id: "",
@@ -22,6 +23,7 @@ const initialForm = {
   creator: "levani",
   images: [],
   colors: [],
+  status: "live",
 };
 
 const AdminListings = () => {
@@ -36,6 +38,9 @@ const AdminListings = () => {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [colorInput, setColorInput] = useState("");
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [productToReject, setProductToReject] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -91,6 +96,7 @@ const AdminListings = () => {
     setEditingId(product._id);
     setForm({
       _id: product._id,
+      status: product.status || 'live',
       name: product.name || "",
       category: product.category || "",
       subCategory: product.subCategory || "",
@@ -208,6 +214,45 @@ const AdminListings = () => {
     }
   };
 
+  const handleApprove = async (productId) => {
+    setSaving(true);
+    setError("");
+    try {
+      await approveProduct(productId);
+      await fetchProducts();
+      setMessage("Product approved and is now live.");
+    } catch (err) {
+      console.error("[admin listings] approve failed", err);
+      setError(err.message || "Unable to approve product.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!productToReject) return;
+    setSaving(true);
+    setError("");
+    try {
+      await rejectProduct(productToReject._id, rejectionReason);
+      await fetchProducts();
+      setRejectDialogOpen(false);
+      setProductToReject(null);
+      setRejectionReason("");
+      setMessage("Product rejected.");
+    } catch (err) {
+      console.error("[admin listings] reject failed", err);
+      setError(err.message || "Unable to reject product.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const openRejectDialog = (product) => {
+    setProductToReject(product);
+    setRejectDialogOpen(true);
+  };
+
   if (status !== "authenticated") {
     return (
       <div className={classes.page}>
@@ -263,6 +308,7 @@ const AdminListings = () => {
                     <th>Category</th>
                     <th>Colors</th>
                     <th>Price</th>
+                    <th>Status</th>
                     <th>Updated</th>
                     <th />
                   </tr>
@@ -325,6 +371,16 @@ const AdminListings = () => {
                           <strong>₾{product.price}</strong>
                         </td>
                         <td>
+                          <span className={classes.statusBadge} data-status={product.status || 'live'}>
+                            {product.status === 'pending_review' ? 'Pending Review' :
+                             product.status === 'live' ? 'Live' :
+                             product.status === 'draft' ? 'Draft' :
+                             product.status === 'rejected' ? 'Rejected' :
+                             product.status === 'approved' ? 'Approved' :
+                             'Live'}
+                          </span>
+                        </td>
+                        <td>
                           <span className={classes.muted}>
                             {product.updatedAt
                               ? new Date(product.updatedAt).toLocaleString()
@@ -332,6 +388,28 @@ const AdminListings = () => {
                           </span>
                         </td>
                         <td className={classes.rowActions}>
+                          {(product.status === 'pending_review' || product.status === 'draft' || !product.status || product.status === 'rejected') && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleApprove(product._id)}
+                                className={classes.approve}
+                                disabled={saving}
+                              >
+                                Approve
+                              </button>
+                              {product.status === 'pending_review' && (
+                                <button
+                                  type="button"
+                                  onClick={() => openRejectDialog(product)}
+                                  className={classes.reject}
+                                  disabled={saving}
+                                >
+                                  Reject
+                                </button>
+                              )}
+                            </>
+                          )}
                           <button
                             type="button"
                             onClick={() => handleSelectProduct(product)}
@@ -515,6 +593,45 @@ const AdminListings = () => {
               />
             </div>
 
+            {editingId && (
+              <div>
+                <label>
+                  Status
+                  <select
+                    value={form.status || 'live'}
+                    onChange={(e) => handleChange("status", e.target.value)}
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="pending_review">Pending Review</option>
+                    <option value="live">Live</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </label>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+                  {(form.status === 'pending_review' || form.status === 'draft' || !form.status || form.status === 'rejected') && (
+                    <button
+                      type="button"
+                      onClick={() => handleApprove(form._id)}
+                      className={classes.approve}
+                      disabled={saving}
+                    >
+                      Approve & Make Live
+                    </button>
+                  )}
+                  {form.status === 'pending_review' && (
+                    <button
+                      type="button"
+                      onClick={() => openRejectDialog({ _id: form._id, name: form.name })}
+                      className={classes.reject}
+                      disabled={saving}
+                    >
+                      Reject
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className={classes.formActions}>
               <button type="submit" disabled={saving}>
                 {saving ? "Saving…" : editingId ? "Save changes" : "Create listing"}
@@ -532,6 +649,43 @@ const AdminListings = () => {
             </div>
           </form>
         </div>
+
+        {/* Reject Dialog */}
+        {rejectDialogOpen && (
+          <div className={classes.dialogOverlay} onClick={() => setRejectDialogOpen(false)}>
+            <div className={classes.dialog} onClick={(e) => e.stopPropagation()}>
+              <h3>Reject Product</h3>
+              <p>Please provide a reason for rejecting this product:</p>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Rejection reason..."
+                rows={4}
+                className={classes.textarea}
+              />
+              <div className={classes.dialogActions}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRejectDialogOpen(false);
+                    setProductToReject(null);
+                    setRejectionReason("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReject}
+                  className={classes.danger}
+                  disabled={!rejectionReason.trim() || saving}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

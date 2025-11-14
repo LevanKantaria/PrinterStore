@@ -14,7 +14,7 @@ const BANK_DETAILS = {
   swift: "MNBGGE22",
 };
 
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({ status = "" }) => {
   if (!status) return null;
   const normalized = status.toLowerCase().replace(/\s+/g, "-");
   const statusMap = {
@@ -35,11 +35,7 @@ StatusBadge.propTypes = {
   status: PropTypes.string,
 };
 
-StatusBadge.defaultProps = {
-  status: "",
-};
-
-const InfoRow = ({ label, value }) => {
+const InfoRow = ({ label, value = "" }) => {
   if (!value) return null;
   return (
     <div className={classes.infoRow}>
@@ -52,10 +48,6 @@ const InfoRow = ({ label, value }) => {
 InfoRow.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
-
-InfoRow.defaultProps = {
-  value: "",
 };
 
 const formatDateTime = (isoDate) => {
@@ -75,7 +67,7 @@ const formatCurrency = (value, currency = "GEL") => {
   return `${symbol} ${Number(value).toFixed(2)}`;
 };
 
-const OrderDetailsModal = ({ open, order, onClose }) => {
+const OrderDetailsModal = ({ open, order = null, onClose }) => {
   // Subscribe to language changes to trigger re-render
   const currentLang = useSelector((state) => state.lang.lang);
   
@@ -349,10 +341,6 @@ OrderDetailsModal.propTypes = {
     ).isRequired,
   }),
   onClose: PropTypes.func.isRequired,
-};
-
-OrderDetailsModal.defaultProps = {
-  order: null,
 };
 
 export default OrderDetailsModal;

@@ -19,7 +19,7 @@ const getStatusLabel = (status) => {
   return key ? translate(key) : status || "Unknown";
 };
 
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({ status = "awaiting_payment" }) => {
   const normalized = status?.toLowerCase() || "unknown";
   const label = getStatusLabel(status);
   return <span className={`${classes.status} ${classes[`status-${normalized}`]}`}>{label}</span>;
@@ -27,10 +27,6 @@ const StatusBadge = ({ status }) => {
 
 StatusBadge.propTypes = {
   status: PropTypes.string,
-};
-
-StatusBadge.defaultProps = {
-  status: "awaiting_payment",
 };
 
 const formatCurrency = (currency, amount) => {
@@ -63,7 +59,7 @@ const formatDate = (isoDate) => {
   }
 };
 
-const OrderHistory = ({ orders }) => {
+const OrderHistory = ({ orders = [] }) => {
   // Subscribe to language changes to trigger re-render
   const currentLang = useSelector((state) => state.lang.lang);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -196,10 +192,6 @@ OrderHistory.propTypes = {
       ).isRequired,
     })
   ),
-};
-
-OrderHistory.defaultProps = {
-  orders: [],
 };
 
 export default OrderHistory;

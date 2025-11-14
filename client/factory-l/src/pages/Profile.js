@@ -165,14 +165,46 @@ const Profile = () => {
           </div>
               <div>
                 <span className={classes.label}>{translate('profile.accessLevel')}</span>
-                <p>{profileData?.isAdmin ? translate('profile.administrator') : translate('profile.customer')}</p>
+                <p>
+                  {profileData?.isAdmin 
+                    ? translate('profile.administrator') 
+                    : profileData?.role === 'maker' 
+                    ? translate('profile.maker') 
+                    : translate('profile.customer')}
+                </p>
               </div>
+              {profileData?.makerStatus && profileData.makerStatus !== 'none' && (
+                <div>
+                  <span className={classes.label}>{translate('profile.makerStatus')}</span>
+                  <p>
+                    {profileData.makerStatus === 'pending' && translate('profile.makerStatusPending')}
+                    {profileData.makerStatus === 'approved' && translate('profile.makerStatusApproved')}
+                    {profileData.makerStatus === 'rejected' && translate('profile.makerStatusRejected')}
+                    {profileData.makerStatus === 'disqualified' && translate('profile.makerStatusDisqualified')}
+                  </p>
+                </div>
+              )}
         </div>
 
         <div className={classes.actions}>
           {profileData?.isAdmin && (
             <Button variant="contained" color="success" disableElevation onClick={() => navigate("/upload")}>
               {translate('profile.startProject')}
+            </Button>
+          )}
+          {profileData?.role === 'maker' && profileData?.makerStatus === 'approved' && (
+            <Button variant="contained" color="primary" disableElevation onClick={() => navigate("/maker/dashboard")}>
+              {translate('profile.makerDashboard')}
+            </Button>
+          )}
+          {(!profileData?.role || profileData.role === 'customer') && profileData?.makerStatus !== 'pending' && (
+            <Button variant="contained" color="primary" disableElevation onClick={() => navigate("/maker/apply")}>
+              {translate('profile.becomeMaker')}
+            </Button>
+          )}
+          {profileData?.makerStatus === 'pending' && (
+            <Button variant="outlined" color="primary" onClick={() => navigate("/maker/apply")}>
+              {translate('profile.viewApplication')}
             </Button>
           )}
           <Button variant="outlined" color="success" onClick={handleSignOut}>

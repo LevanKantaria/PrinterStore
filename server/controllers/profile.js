@@ -52,6 +52,8 @@ export const getProfile = async (req, res) => {
     return res.json({
       ...profile,
       isAdmin: req.user.isAdmin === true,
+      role: profileDoc.role || 'customer',
+      makerStatus: profileDoc.makerStatus || 'none',
     });
   } catch (error) {
     console.error("[profile] getProfile failed:", error);
@@ -80,6 +82,8 @@ export const updateProfile = async (req, res) => {
     return res.json({
       ...profile,
       isAdmin: req.user.isAdmin === true,
+      role: profileDoc.role || 'customer',
+      makerStatus: profileDoc.makerStatus || 'none',
     });
   } catch (error) {
     console.error("[profile] updateProfile failed:", error);

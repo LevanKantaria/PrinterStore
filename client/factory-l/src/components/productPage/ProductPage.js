@@ -25,7 +25,13 @@ const ProductPage = () => {
 
   const clickHandler = (e) => {
     e.preventDefault();
-    const itemWithQuantity = { ...item, quantity, color: selectedColor };
+    const itemWithQuantity = { 
+      ...item, 
+      quantity, 
+      color: selectedColor,
+      makerId: item.makerId,
+      makerName: item.makerName,
+    };
     dispatch(cartActions.addItem(itemWithQuantity));
     navigate(`/cart/${item._id}`);
   };

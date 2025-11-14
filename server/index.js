@@ -7,6 +7,11 @@ import Stripe from "stripe";
 import itemRoutes from "./routes/items.js";
 import profileRoutes from "./routes/profile.js";
 import orderRoutes from "./routes/orders.js";
+import makerApplicationRoutes from "./routes/makerApplication.js";
+import makerProductRoutes from "./routes/makerProducts.js";
+import adminProductRoutes from "./routes/adminProducts.js";
+import paymentRoutes from "./routes/payments.js";
+import reviewRoutes from "./routes/reviews.js";
 import { sendContactEmail, sendAutoReply } from "./utils/email.js";
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
@@ -30,6 +35,11 @@ if (!CONNECTION_URL) {
 app.use("/api/products", itemRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/maker/application", makerApplicationRoutes);
+app.use("/api/maker/products", makerProductRoutes);
+app.use("/api/admin/products", adminProductRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 app.post("/api/contact", async (req, res) => {
   try {
