@@ -13,9 +13,11 @@
   width: 100%;
   margin: 0;
   font-size: 28px;
-  padding-top: 20px;
+  padding: 0 30px;
   font-family: 'Archivo Black', sans-serif;
-
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .links p a {
@@ -30,20 +32,24 @@
 
 .close {
   position: absolute;
-  top: 24px;
-  left: 20px;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
 }
-.close button {
-  font-family: 'Archivo Black', sans-serif;
-
-  font-size: 28px;
-  border: none;
-  background-color: #ff4b5a;
-  border-radius: 10px;
-  color: #0b1636;
+.closeButton {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  padding: 4px !important;
+  transition: all 0.2s ease !important;
+  width: 32px !important;
+  height: 32px !important;
 }
-.close button:hover {
-  cursor: pointer;
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.1);
+}
+.closeButton svg {
+  font-size: 20px !important;
 }
 
 .iconButton {
@@ -53,7 +59,7 @@
 }
 
 .accountArea {
-  padding: 24px 30px 36px;
+  padding: 20px 30px 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -96,6 +102,7 @@
   gap: 14px;
   text-decoration: none;
   color: #1b2640;
+  width: 100%;
 }
 
 .profileAvatarImage,
@@ -139,7 +146,7 @@
 .languageSwitcher {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 4px;
   padding: 16px 30px;
   border-top: 1px solid rgba(57, 65, 87, 0.08);

@@ -239,12 +239,12 @@
   .itemCard {
     width: 100%;
     height: auto;
-    min-height: 300px;
+    min-height: 320px;
   }
 
   .imgWrapper {
     width: 100%;
-    height: 200px;
+    height: 240px;
   }
 
   .infoWrapper {
@@ -278,14 +278,14 @@
   .itemCard {
     width: 100%;
     height: auto;
-    min-height: 280px;
+    min-height: 320px;
     border: 1px solid #e9ecef;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
   .imgWrapper {
     width: 100%;
-    height: 180px;
+    height: 220px;
     border-bottom: 2px solid #f0f2f4;
   }
 

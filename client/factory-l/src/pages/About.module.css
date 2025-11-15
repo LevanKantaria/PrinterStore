@@ -319,6 +319,25 @@
     padding: 32px 24px;
   }
 
+  .valueCard {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .valueIcon {
+    margin-bottom: 0;
+  }
+
+  .valueTitle {
+    margin: 0 0 8px 0;
+  }
+
+  .valueText {
+    margin: 0;
+  }
+
   .cardTitle,
   .valueTitle,
   .impactTitle {
@@ -366,6 +385,22 @@
 
   .iconWrapper {
     font-size: 80px;
+  }
+
+  .valueCard {
+    padding: 24px 20px;
+  }
+
+  .valueIcon {
+    font-size: 36px;
+  }
+
+  .valueTitle {
+    font-size: 18px;
+  }
+
+  .valueText {
+    font-size: 15px;
   }
 }
 

@@ -108,6 +108,23 @@ app.get("/api/test", (req, res) => {
   res.send("hey");
 });
 
+// Health check endpoint for keeping service awake (can be pinged by external services)
+app.get("/health", (req, res) => {
+  res.status(200).json({ 
+    status: "ok", 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// Alternative ping endpoint (some services prefer /ping)
+app.get("/ping", (req, res) => {
+  res.status(200).json({ 
+    status: "pong", 
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello To Factory-l API");
 });
