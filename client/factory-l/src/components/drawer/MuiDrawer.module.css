@@ -1,10 +1,10 @@
 .links {
   text-align: left;
-  padding: 30px;
+  padding: 20px 30px;
   font-family: "Karla", sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 8px;
 }
 .header {
   color: white;
@@ -24,7 +24,8 @@
   font-size: 20px;
 }
 .links p {
-  margin-bottom: 35px;
+  margin: 0;
+  padding: 12px 0;
 }
 
 .close {
@@ -133,4 +134,40 @@
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.2px;
+}
+
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 30px;
+  border-top: 1px solid rgba(57, 65, 87, 0.08);
+  border-bottom: 1px solid rgba(57, 65, 87, 0.08);
+  background: rgba(57, 65, 87, 0.02);
+}
+
+.langButton {
+  background: transparent;
+  border: none;
+  color: rgba(57, 65, 87, 0.7);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-family: "Karla", sans-serif;
+  min-width: 44px;
+}
+
+.langButton:hover {
+  color: rgba(57, 65, 87, 0.9);
+  background: rgba(57, 65, 87, 0.1);
+}
+
+.langButtonActive {
+  background: rgba(57, 65, 87, 0.15);
+  color: rgba(57, 65, 87, 0.95);
+  font-weight: 700;
 }

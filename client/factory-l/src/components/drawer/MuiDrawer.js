@@ -2,16 +2,23 @@ import { Drawer, Box, Typography, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import classes from "./MuiDrawer.module.css";
 import translate from "../translate";
+import { langActions } from "../../features/lang/langSlice";
 
 const MuiDrawer = () => {
+  const dispatch = useDispatch();
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
   const { user, status } = useSelector((state) => state.auth);
   // Subscribe to language changes to trigger re-render
   const currentLang = useSelector((state) => state.lang.lang);
+
+  const handleLanguageChange = (lang) => {
+    dispatch(langActions.changeLang(lang));
+    localStorage.setItem("lang", lang);
+  };
 
   useEffect(() => {
     // Reset avatar error when user changes
@@ -82,6 +89,23 @@ const MuiDrawer = () => {
                   </p>
                 </>
               )}
+            </div>
+
+            <div className={classes.languageSwitcher}>
+              <button
+                className={`${classes.langButton} ${currentLang === "KA" ? classes.langButtonActive : ""}`}
+                onClick={() => handleLanguageChange("KA")}
+                aria-label="Switch to Georgian"
+              >
+                KA
+              </button>
+              <button
+                className={`${classes.langButton} ${currentLang === "EN" ? classes.langButtonActive : ""}`}
+                onClick={() => handleLanguageChange("EN")}
+                aria-label="Switch to English"
+              >
+                EN
+              </button>
             </div>
 
             <div className={classes.accountArea}>
