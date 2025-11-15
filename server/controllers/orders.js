@@ -209,8 +209,15 @@ export const getOrderById = async (req, res) => {
   const userId = req.user.uid;
 
   try {
-    // Try to find by _id first, then by orderId
-    let order = await Order.findById(id).lean();
+    // Try to find by _id first (only if valid ObjectId), then by orderId
+    let order = null;
+    
+    // Check if id is a valid MongoDB ObjectId
+    if (mongoose.Types.ObjectId.isValid(id) && id.length === 24) {
+      order = await Order.findById(id).lean();
+    }
+    
+    // If not found by _id or not a valid ObjectId, try by orderId
     if (!order) {
       order = await Order.findOne({ orderId: id }).lean();
     }
