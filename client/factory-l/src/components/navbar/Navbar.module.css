@@ -255,28 +255,9 @@ a:hover {
     gap: 8px;
   }
 
+  /* Hide language switcher on mobile - it's now in the drawer */
   .languageSwitcher {
-    gap: 1px;
-    padding: 2px;
-    border-radius: 5px;
-    background: rgba(14, 26, 65, 0.05);
-    border: 1px solid rgba(14, 26, 65, 0.1);
-  }
-
-  .langButton {
-    padding: 3px 6px;
-    font-size: 10px;
-    color: rgba(14, 26, 65, 0.7);
-  }
-
-  .langButton:hover {
-    color: rgba(14, 26, 65, 0.9);
-    background: rgba(14, 26, 65, 0.1);
-  }
-
-  .langButtonActive {
-    background: rgba(14, 26, 65, 0.15);
-    color: rgba(14, 26, 65, 0.95);
+    display: none;
   }
 
   .profileName {
