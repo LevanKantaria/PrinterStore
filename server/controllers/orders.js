@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import mongoose from "mongoose";
 import Order from "../models/order.js";
 import Profile from "../models/profile.js";
 import { sendOrderConfirmationEmail, sendNewOrderNotificationEmail, sendOrderStatusUpdateEmail, sendMakerOrderNotificationEmail } from "../utils/email.js";
@@ -268,11 +269,19 @@ export const updateOrderStatus = async (req, res) => {
   }
 
   try {
-    // Try to find by _id first, then by orderId
-    let order = await Order.findById(id);
+    // Try to find by _id first (only if valid ObjectId), then by orderId
+    let order = null;
+    
+    // Check if id is a valid MongoDB ObjectId
+    if (mongoose.Types.ObjectId.isValid(id) && id.length === 24) {
+      order = await Order.findById(id);
+    }
+    
+    // If not found by _id or not a valid ObjectId, try by orderId
     if (!order) {
       order = await Order.findOne({ orderId: id });
     }
+    
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
@@ -412,7 +421,11 @@ export const updateOrderStatus = async (req, res) => {
     return res.json(order);
   } catch (error) {
     console.error("[orders] updateOrderStatus failed:", error);
-    return res.status(500).json({ message: "Unable to update order." });
+    console.error("[orders] Error stack:", error.stack);
+    return res.status(500).json({ 
+      message: "Unable to update order.",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
