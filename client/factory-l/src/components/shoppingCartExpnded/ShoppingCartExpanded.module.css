@@ -175,6 +175,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 32px;
 }
 .newItemContent {
   font-family: "Karla", sans-serif;
@@ -302,5 +303,21 @@
 
   .emptyCartContent h2 {
     font-size: 24px;
+  }
+
+  @media screen and (max-width: 480px) {
+    .newItemContent {
+      margin-bottom: 0;
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    .newItem h3 {
+      margin-bottom: 0;
+    }
+
+    .itemDetails {
+      gap: 6px;
+    }
   }
 }

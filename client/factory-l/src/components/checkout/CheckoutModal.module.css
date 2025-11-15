@@ -18,7 +18,6 @@
   box-shadow: 0 40px 70px rgba(7, 25, 14, 0.25);
   border: 1px solid rgba(104, 161, 122, 0.2);
   padding: clamp(28px, 4vw, 48px);
-  padding-top: clamp(48px, 6vw, 56px);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -28,13 +27,9 @@
 }
 
 .closeButton {
-  position: sticky;
-  top: 16px;
-  right: 16px;
-  align-self: flex-end;
-  margin-left: auto;
-  margin-bottom: -36px;
-  z-index: 10;
+  position: absolute;
+  top: 20px;
+  right: 24px;
   border: none;
   background: rgba(33, 76, 51, 0.08);
   width: 36px;
@@ -44,9 +39,6 @@
   font-size: 20px;
   line-height: 1;
   color: #214c33;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .closeButton:hover {
@@ -132,7 +124,6 @@
 
 .fieldRow > .fieldGroup {
   flex: 1 1 200px;
-  margin-bottom: 0;
 }
 
 .summaryItems {
@@ -328,125 +319,34 @@
 }
 
 @media (max-width: 768px) {
-  .overlay {
-    padding: 0;
-    align-items: flex-start;
-    padding-top: env(safe-area-inset-top, 0);
-  }
-
   .modal {
-    width: 100%;
-    max-width: 100%;
-    border-radius: 0;
-    max-height: 100vh;
-    padding: 16px;
-    padding-top: max(48px, env(safe-area-inset-top, 0) + 16px);
-    gap: 20px;
-  }
-
-  .closeButton {
-    position: fixed;
-    top: max(16px, env(safe-area-inset-top, 0) + 8px);
-    right: 16px;
-    margin: 0;
-    margin-bottom: 0;
-    background: rgba(33, 76, 51, 0.15);
-    backdrop-filter: blur(8px);
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    z-index: 2001;
-  }
-
-  .header {
-    margin-top: 8px;
-    padding-right: 48px;
-  }
-
-  .header h2 {
-    font-size: 24px;
+    padding: 24px;
   }
 
   .form {
     grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .formSection,
-  .summarySection {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .fieldRow {
-    flex-direction: column;
-    gap: 0;
-    margin: 0;
-  }
-
-  .fieldRow > .fieldGroup {
-    margin-bottom: 0;
-    margin-top: 0;
-  }
-
-  .fieldRow > .fieldGroup:not(:last-child) {
-    margin-bottom: 8px;
   }
 
   .actions {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
   }
 
   .primaryButton,
   .secondaryButton {
     width: 100%;
-    min-width: auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .modal {
-    padding: 12px;
-    padding-top: max(44px, env(safe-area-inset-top, 0) + 12px);
-    gap: 16px;
-  }
-
-  .closeButton {
-    top: max(12px, env(safe-area-inset-top, 0) + 4px);
-    right: 12px;
-    width: 36px;
-    height: 36px;
-    font-size: 20px;
-  }
-
-  .header {
-    margin-top: 4px;
-    padding-right: 44px;
-  }
-
-  .header h2 {
-    font-size: 22px;
-  }
-
-  .formSection,
-  .summarySection {
-    padding: 14px;
-    gap: 10px;
   }
 
   .fieldRow {
-    gap: 0;
-    margin: 0;
+    flex-direction: column;
   }
+}
 
-  .fieldRow > .fieldGroup {
-    margin-top: 0;
-  }
-
-  .fieldRow > .fieldGroup:not(:last-child) {
-    margin-bottom: 8px;
+@media screen and (max-width: 480px) {
+  .fieldRow {
+    display: block;
+    gap: 6px;
+    height: fit-content;
   }
 }
 
