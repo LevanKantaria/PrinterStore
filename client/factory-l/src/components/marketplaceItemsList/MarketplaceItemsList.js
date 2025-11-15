@@ -89,9 +89,19 @@ const MarketplaceItemsList = () => {
         {category && <Link to={categoryLink}>{translate(`categories.${category}`)}</Link>}
         {subCategory && <Link to={`/marketplace/${category}/${subCategory}`}>{translate(`categories.${subCategory}`)}</Link>}
       </div>
-      {loading && <MarketplaceItemSkeleton/>
-}
-      <div className={classes.grid}>{marketplaceItems}</div>
+      {loading ? (
+        <MarketplaceItemSkeleton/>
+      ) : marketplaceItems.length > 0 ? (
+        <div className={classes.grid}>{marketplaceItems}</div>
+      ) : (
+        <div className={classes.emptyState}>
+          <div className={classes.emptyStateContent}>
+            <div className={classes.emptyStateIcon}>📦</div>
+            <h3 className={classes.emptyStateTitle}>{translate("marketplace.empty")}</h3>
+            <p className={classes.emptyStateText}>{translate("marketplace.emptyDesc")}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { Drawer, Box, Typography, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -139,7 +140,9 @@ const MuiDrawer = () => {
             </div>
 
             <div className={classes.close}>
-              <button onClick={closeDrawer}>x</button>
+              <IconButton onClick={closeDrawer} className={classes.closeButton} aria-label="Close menu" size="small">
+                <CloseIcon fontSize="small" />
+              </IconButton>
             </div>
           </Box>
         </Drawer>

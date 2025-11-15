@@ -91,8 +91,12 @@ const FeaturedItem = () => {
               <Skeleton name="marketplace-item" />
               <Skeleton name="marketplace-item" />
             </div>
-          ) : (
+          ) : marketplaceItems.length > 0 ? (
             <div className={classes.grid}>{marketplaceItems}</div>
+          ) : (
+            <div className={classes.emptyState}>
+              <p>{translate("featured.empty")}</p>
+            </div>
           )}
         </div>
     </div>
