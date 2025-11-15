@@ -15,9 +15,18 @@ const createTransporter = () => {
 
   return nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER, // Your Gmail address
       pass: process.env.EMAIL_PASS, // Your Gmail App Password (not regular password!)
+    },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000,
+    socketTimeout: 10000,
+    tls: {
+      rejectUnauthorized: false, // Allow self-signed certificates if needed
     },
   });
 };
@@ -473,7 +482,7 @@ export const sendNewOrderNotificationEmail = async ({ order, user, language = 'E
         <div style="margin: 20px 0;">
           <h3 style="color: #2d5016;">${t.shippingAddress}</h3>
           ${addressHtml}
-        </div>
+    </div>
 
         ${order.customerNotes ? `
           <div style="background: #ffffff; padding: 15px; border-left: 4px solid #2d5016; margin: 20px 0;">
@@ -489,7 +498,7 @@ export const sendNewOrderNotificationEmail = async ({ order, user, language = 'E
             <li>${t.review}</li>
             <li>${t.updateStatus}</li>
             <li>${t.processOrder}</li>
-          </ul>
+    </ul>
         </div>
       </div>
     `,
@@ -841,7 +850,7 @@ export const sendMakerOrderNotificationEmail = async ({
               </tr>
             </thead>
             <tbody>
-              ${itemsHtml}
+      ${itemsHtml}
             </tbody>
           </table>
         </div>
