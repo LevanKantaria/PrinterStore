@@ -12,6 +12,20 @@ import { createProduct } from "../../api/products";
 import { createMakerProduct } from "../../api/maker";
 import { getProfile } from "../../api/profile";
 
+// Predefined colors with hex values
+const PREDEFINED_COLORS = [
+  { name: 'white', hex: '#FFFFFF' },
+  { name: 'red', hex: '#FF0000' },
+  { name: 'green', hex: '#00FF00' },
+  { name: 'yellow', hex: '#FFFF00' },
+  { name: 'purple', hex: '#800080' },
+  { name: 'orange', hex: '#FFA500' },
+  { name: 'brown', hex: '#A52A2A' },
+  { name: 'blue', hex: '#0000FF' },
+  { name: 'pink', hex: '#FFC0CB' },
+  { name: 'violet', hex: '#8A2BE2' },
+];
+
 const UploadItem = () => {
   const navigate = useNavigate();
   const { status: authStatus, user } = useSelector((state) => state.auth);
@@ -26,7 +40,6 @@ const UploadItem = () => {
     description: "",
     colors: [],
   });
-  const [colorInput, setColorInput] = useState("");
 
   const [isMaker, setIsMaker] = useState(false);
 
@@ -77,7 +90,6 @@ const UploadItem = () => {
         description: "",
         colors: [],
       });
-      setColorInput("");
       navigate(isMaker ? "/maker/dashboard" : "/admin/listings");
     } catch (error) {
       console.error("[upload] create failed", error);
@@ -161,55 +173,63 @@ const UploadItem = () => {
         />
 
         <div className={classes.colorSection}>
-          <label htmlFor="colorInput">Available colors</label>
-          <div className={classes.colorInputRow}>
-            <input
-              id="colorInput"
-              type="text"
-              value={colorInput}
-              placeholder="Add color name or hex code"
-              onChange={(event) => setColorInput(event.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                const value = colorInput.trim();
-                if (!value) return;
-                setItem((prev) => ({
-                  ...prev,
-                  colors: prev.colors.includes(value) ? prev.colors : [...prev.colors, value],
-                }));
-                setColorInput("");
-              }}
-            >
-              Add
-            </button>
+          <label>{translate('upload.availableColors')}</label>
+          <div className={classes.colorPicker}>
+            {PREDEFINED_COLORS.map((colorObj) => {
+              const isSelected = item.colors.includes(colorObj.name);
+              return (
+                <button
+                  key={colorObj.name}
+                  type="button"
+                  className={`${classes.colorBall} ${isSelected ? classes.colorBallSelected : ''}`}
+                  onClick={() => {
+                    setItem((prev) => ({
+                      ...prev,
+                      colors: isSelected
+                        ? prev.colors.filter((c) => c !== colorObj.name)
+                        : [...prev.colors, colorObj.name],
+                    }));
+                  }}
+                  title={translate(`colors.${colorObj.name}`)}
+                  aria-label={translate(`colors.${colorObj.name}`)}
+                >
+                  <span
+                    className={classes.colorBallInner}
+                    style={{ backgroundColor: colorObj.hex }}
+                  />
+                  {isSelected && <span className={classes.checkmark}>✓</span>}
+                </button>
+              );
+            })}
           </div>
           {item.colors.length > 0 && (
             <div className={classes.colorChips}>
-              {item.colors.map((color, index) => (
-                <span key={`${color}-${index}`} className={classes.colorChip}>
-                  <span
-                    className={classes.colorSwatch}
-                    style={{
-                      backgroundColor: color || "#1c3d27",
-                    }}
-                  />
-                  {color}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setItem((prev) => ({
-                        ...prev,
-                        colors: prev.colors.filter((_, idx) => idx !== index),
-                      }))
-                    }
-                    aria-label={`Remove ${color}`}
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
+              {item.colors.map((colorName, index) => {
+                const colorObj = PREDEFINED_COLORS.find(c => c.name === colorName);
+                return (
+                  <span key={`${colorName}-${index}`} className={classes.colorChip}>
+                    <span
+                      className={classes.colorSwatch}
+                      style={{
+                        backgroundColor: colorObj?.hex || "#1c3d27",
+                      }}
+                    />
+                    {translate(`colors.${colorName}`)}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setItem((prev) => ({
+                          ...prev,
+                          colors: prev.colors.filter((_, idx) => idx !== index),
+                        }))
+                      }
+                      aria-label={`${translate('upload.remove')} ${translate(`colors.${colorName}`)}`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                );
+              })}
             </div>
           )}
         </div>

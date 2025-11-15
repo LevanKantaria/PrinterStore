@@ -204,7 +204,6 @@
   margin-top: 40px;
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1fr 2fr;
-  width: 100%;
 }
 
 .tableHeader {
@@ -371,51 +370,31 @@
     padding: 24px;
   }
 
-  .comparisonTable {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    min-width: 600px;
-  }
-
-  .comparisonTable::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  .comparisonTable::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-
-  .comparisonTable::-webkit-scrollbar-thumb {
-    background: #0f3a1f;
-    border-radius: 4px;
-  }
-
-  .comparisonTable::-webkit-scrollbar-thumb:hover {
-    background: #1a4d2e;
-  }
-
-  .tableHeader {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 2fr;
-    min-width: 600px;
-  }
-
+  .tableHeader,
   .tableRow {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 2fr;
-    min-width: 600px;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
   }
 
   .tableCell {
-    font-size: 13px;
-    padding: 16px 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
   }
 
-  .tableHeader > .tableCell {
-    font-size: 13px;
-    padding: 16px 12px;
+  .tableCell:last-child {
+    border-bottom: none;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .tableRow::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #1a4d2e;
+    margin-bottom: 4px;
   }
 }
 
@@ -434,34 +413,5 @@
 
   .materialName {
     font-size: 20px;
-  }
-
-  .comparisonSection {
-    padding: 40px 16px;
-  }
-
-  .comparisonTable {
-    min-width: 500px;
-    border-radius: 8px;
-  }
-
-  .tableHeader {
-    grid-template-columns: 1.2fr 0.9fr 0.9fr 0.9fr 1.8fr;
-    min-width: 500px;
-  }
-
-  .tableRow {
-    grid-template-columns: 1.2fr 0.9fr 0.9fr 0.9fr 1.8fr;
-    min-width: 500px;
-  }
-
-  .tableCell {
-    font-size: 12px;
-    padding: 12px 8px;
-  }
-
-  .tableHeader > .tableCell {
-    font-size: 12px;
-    padding: 12px 8px;
   }
 }

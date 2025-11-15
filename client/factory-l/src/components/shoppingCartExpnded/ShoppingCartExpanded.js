@@ -5,11 +5,9 @@ import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import classes from "./ShoppingCartExpanded.module.css";
 import translate from "../translate";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CheckoutModal from "../checkout/CheckoutModal";
 import { cartActions } from "../../features/cart/cartSlice";
-import axios from "axios";
-import { API_URL } from "../../API_URL";
 
 
 const ShoppingCartExpanded = () => {
@@ -22,72 +20,6 @@ const ShoppingCartExpanded = () => {
   const currentLang = useSelector((state) => state.lang.lang);
   const dispatch = useDispatch();
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
-  const [loadingProducts, setLoadingProducts] = useState(false);
-
-  // Fetch product data for cart items to ensure we have latest images
-  useEffect(() => {
-    if (cartItems.length === 0) return;
-
-    const fetchProductData = async () => {
-      setLoadingProducts(true);
-      try {
-        // Fetch all product IDs from cart
-        const productIds = cartItems.map(item => item._id || item.id).filter(Boolean);
-        
-        if (productIds.length === 0) {
-          setLoadingProducts(false);
-          return;
-        }
-
-        // Fetch products in parallel using the id query parameter
-        const productPromises = productIds.map(id => 
-          axios.get(`${API_URL}/api/products`, { params: { id } }).catch(err => {
-            console.warn(`Failed to fetch product ${id}:`, err);
-            return null;
-          })
-        );
-
-        const productResponses = await Promise.all(productPromises);
-        const productsMap = new Map();
-        
-        productResponses.forEach((response, index) => {
-          if (response?.data && Array.isArray(response.data) && response.data.length > 0) {
-            const product = response.data[0]; // getItems returns an array, take first item
-            productsMap.set(productIds[index], {
-              images: Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []),
-              image: Array.isArray(product.images) ? product.images[0] : (product.image || ""),
-            });
-          }
-        });
-
-        // Update cart items with fetched product data (images)
-        const updatedCartItems = cartItems.map(item => {
-          const productId = item._id || item.id;
-          const productData = productsMap.get(productId);
-          
-          if (productData) {
-            return {
-              ...item,
-              images: productData.images,
-              image: productData.image || item.image || "",
-            };
-          }
-          return item;
-        });
-
-        // Only update if we got new data
-        if (productsMap.size > 0) {
-          dispatch(cartActions.setItemsFromCart(updatedCartItems));
-        }
-      } catch (error) {
-        console.error("Error fetching product data for cart:", error);
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
-
-    fetchProductData();
-  }, []); // Only run once on mount
 
   const sum = cartItems.reduce(
     (total, item) => total + Number(item.price || 0) * Number(item.quantity || 0),
@@ -96,18 +28,15 @@ const ShoppingCartExpanded = () => {
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   let cartItemsExpanded = cartItems.map((item) => {
-    // Use image from item (optimized storage) or first from images array if available
-    const imageUrl = item.image || (Array.isArray(item.images) ? item.images[0] : null) || "";
-    
     return (
       <ShoppingCartItem
-        id={item._id || item.id}
+        id={item._id}
         color={item.color}
-        image={imageUrl}
+        image={item.images?.[0]}
         name={item.name}
         quantity={item.quantity}
         price={item.price}
-        key={`${item._id || item.id}-${item.color || "default"}`}
+        key={`${item._id}-${item.color || "default"}`}
       />
     );
   });
@@ -135,13 +64,13 @@ const ShoppingCartExpanded = () => {
             </div>
           </div>
           <ShoppingCartItem
-            id={lastItem._id || lastItem.id}
+            id={lastItem._id}
             color={lastItem.color}
-            image={lastItem.image || (Array.isArray(lastItem.images) ? lastItem.images[0] : null) || ""}
+            image={lastItem.images?.[0]}
             name={lastItem.name}
             quantity={lastItem.quantity}
             price={lastItem.price}
-            key={`${lastItem._id || lastItem.id}-${lastItem.color || "default"}-recent`}
+            key={`${lastItem._id}-${lastItem.color || "default"}-recent`}
           />
         </div>
       );

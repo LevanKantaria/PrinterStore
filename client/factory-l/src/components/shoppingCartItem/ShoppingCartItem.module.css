@@ -168,14 +168,15 @@
     .itemDetails{
         flex-direction: column;
         align-items: flex-start;
-        padding: 16px;
+        padding: 12px;
+        gap: 12px;
         width: 100%;
     }
 
     .itemDetails img {
         width: 100%;
-        height: 200px;
-        margin: 0 auto 16px auto;
+        height: 180px;
+        margin: 0 auto 0 auto;
     }
 
     .name{
@@ -184,13 +185,24 @@
 
     .name h3 {
         font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    .quantity {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+    }
+
+    .color {
+        margin: 0 0 8px 0;
     }
 
     .price {
         width: 100%;
         align-items: flex-start;
-        padding-top: 12px;
+        padding-top: 10px;
         border-top: 1px solid #e9ecef;
+        margin-top: 8px;
         min-width: auto;
     }
 
@@ -217,4 +229,25 @@
     .removeButton button {
         width: 100%;
     }
+}
+
+@media screen and (max-width: 480px) {
+  .priceTotal {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .removeButton {
+    padding-top: 0;
+  }
+
+  .wrapper {
+    margin-bottom: 24px;
+  }
+
+  .priceSmall {
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
 }

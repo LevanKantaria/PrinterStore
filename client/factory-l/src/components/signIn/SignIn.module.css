@@ -73,17 +73,7 @@
 
 .rememberMe {
   margin-left: 0;
-  margin-top: 0;
-  margin-bottom: 0;
   color: rgba(31, 68, 44, 0.72);
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-}
-
-.rememberMe > span {
-  display: flex;
-  align-items: center;
 }
 
 .primaryButton {
