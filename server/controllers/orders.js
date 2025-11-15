@@ -357,6 +357,7 @@ export const updateOrderStatus = async (req, res) => {
       try {
         const profile = await Profile.findOne({ userId: order.userId });
         if (profile?.email) {
+          // Send email asynchronously, don't wait for it
           sendOrderStatusUpdateEmail({
             to: profile.email,
             order: order.toObject(),
@@ -367,7 +368,16 @@ export const updateOrderStatus = async (req, res) => {
             language: 'KA', // Default language, can be made dynamic
           }).catch((emailError) => {
             console.error("[orders] Failed to send status update email:", emailError);
+            // Log more details for debugging
+            if (emailError.code) {
+              console.error("[orders] Email error code:", emailError.code);
+            }
+            if (emailError.command) {
+              console.error("[orders] Email error command:", emailError.command);
+            }
           });
+        } else {
+          console.warn(`[orders] No email found for user ${order.userId}, skipping status update email`);
         }
       } catch (profileError) {
         console.error("[orders] Failed to fetch profile for status update email:", profileError);
