@@ -1,34 +1,33 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 import { emailTranslations } from './emailTranslations.js';
 import { formatCodeForDisplay } from './deliveryCode.js';
 
 dotenv.config();
 
-// Create reusable transporter object using Gmail SMTP
-const createTransporter = () => {
-  // Check if email is configured
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn('Email credentials not configured. Emails will not be sent.');
-    return null;
+// Initialize SendGrid
+const initializeSendGrid = () => {
+  // Check if SendGrid API key is configured
+  if (!process.env.SENDGRID_API_KEY) {
+    console.warn('SendGrid API key not configured. Emails will not be sent.');
+    return false;
   }
 
-  return nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.EMAIL_USER, // Your Gmail address
-      pass: process.env.EMAIL_PASS, // Your Gmail App Password (not regular password!)
-    },
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
-    tls: {
-      rejectUnauthorized: false, // Allow self-signed certificates if needed
-    },
-  });
+  // Set SendGrid API key
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  return true;
+};
+
+// Get sender email from environment variable
+// Note: The sender email must be verified in your SendGrid account
+const getSenderEmail = (name = 'Makers Hub') => {
+  const email = process.env.SENDGRID_FROM_EMAIL || process.env.EMAIL_USER;
+  if (!email) {
+    console.warn('No sender email configured. Using default.');
+    return `"${name}" <noreply@makershub.com>`;
+  }
+  // SendGrid accepts email with name format: "Name" <email@example.com>
+  return `"${name}" <${email}>`;
 };
 
 /**
@@ -40,15 +39,13 @@ const createTransporter = () => {
  * @returns {Promise<Object>} - Result of email sending
  */
 export const sendContactEmail = async (fromEmail, fromName, subject, message) => {
-  const transporter = createTransporter();
-  
-  if (!transporter) {
+  if (!initializeSendGrid()) {
     throw new Error('Email service not configured');
   }
 
   // Email to you (the business owner)
-  const mailOptions = {
-    from: `"${fromName}" <${process.env.EMAIL_USER}>`,
+  const msg = {
+    from: getSenderEmail(),
     replyTo: fromEmail, // So you can reply directly
     to: process.env.CONTACT_EMAIL || process.env.EMAIL_USER, // Where to send contact form submissions
     subject: `Contact Form: ${subject}`,
@@ -80,11 +77,14 @@ ${message}
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Contact email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const [response] = await sgMail.send(msg);
+    console.log('Contact email sent successfully:', response.statusCode);
+    return { success: true, messageId: response.headers['x-message-id'] };
   } catch (error) {
     console.error('Error sending contact email:', error);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
     throw error;
   }
 };
@@ -96,16 +96,14 @@ ${message}
  * @returns {Promise<Object>} - Result of email sending
  */
 export const sendAutoReply = async (toEmail, toName) => {
-  const transporter = createTransporter();
-  
-  if (!transporter) {
+  if (!initializeSendGrid()) {
     // Don't throw error for auto-reply, just log
     console.warn('Email service not configured, skipping auto-reply');
     return { success: false, skipped: true };
   }
 
-  const mailOptions = {
-    from: `"Makers Hub" <${process.env.EMAIL_USER}>`,
+  const msg = {
+    from: getSenderEmail(),
     to: toEmail,
     subject: 'Thank you for contacting Makers Hub',
     html: `
@@ -136,12 +134,15 @@ Makers Hub Team
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Auto-reply sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const [response] = await sgMail.send(msg);
+    console.log('Auto-reply sent successfully:', response.statusCode);
+    return { success: true, messageId: response.headers['x-message-id'] };
   } catch (error) {
     // Don't fail the whole request if auto-reply fails
     console.error('Error sending auto-reply (non-critical):', error);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
     return { success: false, error: error.message };
   }
 };
@@ -156,9 +157,7 @@ Makers Hub Team
  * @returns {Promise<Object>} - Result of email sending
  */
 export const sendOrderConfirmationEmail = async ({ to, order, user, language = 'KA' }) => {
-  const transporter = createTransporter();
-  
-  if (!transporter) {
+  if (!initializeSendGrid()) {
     console.warn('Email service not configured, skipping order confirmation email');
     return { success: false, skipped: true };
   }
@@ -210,8 +209,8 @@ export const sendOrderConfirmationEmail = async ({ to, order, user, language = '
   ` : `<p>${t.noAddress}</p>`;
 
   const userName = user?.displayName || user?.name || 'Customer';
-  const mailOptions = {
-    from: `"Makers Hub" <${process.env.EMAIL_USER}>`,
+  const msg = {
+    from: getSenderEmail(),
     to: to,
     subject: t.subject.replace('{orderId}', order.orderId || 'N/A'),
     html: `
@@ -329,11 +328,14 @@ ${t.team}
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Order confirmation email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const [response] = await sgMail.send(msg);
+    console.log('Order confirmation email sent successfully:', response.statusCode);
+    return { success: true, messageId: response.headers['x-message-id'] };
   } catch (error) {
     console.error('Error sending order confirmation email:', error);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
     throw error;
   }
 };
@@ -347,9 +349,7 @@ ${t.team}
  * @returns {Promise<Object>} - Result of email sending
  */
 export const sendNewOrderNotificationEmail = async ({ order, user, language = 'EN' }) => {
-  const transporter = createTransporter();
-  
-  if (!transporter) {
+  if (!initializeSendGrid()) {
     console.warn('Email service not configured, skipping admin order notification');
     return { success: false, skipped: true };
   }
@@ -422,9 +422,9 @@ export const sendNewOrderNotificationEmail = async ({ order, user, language = 'E
     </p>
   ` : `<p>${t.noAddress}</p>`;
 
-  const mailOptions = {
-    from: `"Makers Hub Orders" <${process.env.EMAIL_USER}>`,
-    to: adminEmails.join(', '), // Send to all admin/power user emails
+  const msg = {
+    from: getSenderEmail(),
+    to: adminEmails, // SendGrid accepts array of emails
     subject: t.subject.replace('{orderId}', order.orderId || 'N/A'),
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -555,11 +555,14 @@ ${order.status === 'awaiting_payment' ? '- Wait for payment confirmation' : ''}
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Admin order notification email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const [response] = await sgMail.send(msg);
+    console.log('Admin order notification email sent successfully:', response.statusCode);
+    return { success: true, messageId: response.headers['x-message-id'] };
   } catch (error) {
     console.error('Error sending admin order notification email:', error);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
     throw error;
   }
 };
@@ -577,9 +580,7 @@ ${order.status === 'awaiting_payment' ? '- Wait for payment confirmation' : ''}
  * @returns {Promise<Object>} - Result of email sending
  */
 export const sendOrderStatusUpdateEmail = async ({ to, order, oldStatus, newStatus, note, deliveryCode, language = 'KA' }) => {
-  const transporter = createTransporter();
-  
-  if (!transporter) {
+  if (!initializeSendGrid()) {
     console.warn('Email service not configured, skipping order status update email');
     return { success: false, skipped: true };
   }
@@ -631,8 +632,8 @@ export const sendOrderStatusUpdateEmail = async ({ to, order, oldStatus, newStat
 
   const statusInfo = getStatusMessage(newStatus);
 
-  const mailOptions = {
-    from: `"Makers Hub" <${process.env.EMAIL_USER}>`,
+  const msg = {
+    from: getSenderEmail(),
     to: to,
     subject: t.subject.replace('{orderId}', order.orderId || 'N/A').replace('{title}', statusInfo.title),
     html: `
@@ -732,11 +733,14 @@ ${t.team}
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Order status update email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const [response] = await sgMail.send(msg);
+    console.log('Order status update email sent successfully:', response.statusCode);
+    return { success: true, messageId: response.headers['x-message-id'] };
   } catch (error) {
     console.error('Error sending order status update email:', error);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
     throw error;
   }
 };
@@ -764,9 +768,7 @@ export const sendMakerOrderNotificationEmail = async ({
   deliveryCode,
   language = 'KA' 
 }) => {
-  const transporter = createTransporter();
-  
-  if (!transporter) {
+  if (!initializeSendGrid()) {
     console.warn('Email service not configured, skipping maker order notification');
     return { success: false, skipped: true };
   }
@@ -816,8 +818,8 @@ export const sendMakerOrderNotificationEmail = async ({
     </p>
   ` : `<p>${t.noAddress || 'No shipping address provided'}</p>`;
 
-  const mailOptions = {
-    from: `"Makers Hub" <${process.env.EMAIL_USER}>`,
+  const msg = {
+    from: getSenderEmail(),
     to: to,
     subject: t.subject.replace('{orderId}', order.orderId || 'N/A'),
     html: `
@@ -949,11 +951,14 @@ ${t.team}
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Maker order notification email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const [response] = await sgMail.send(msg);
+    console.log('Maker order notification email sent successfully:', response.statusCode);
+    return { success: true, messageId: response.headers['x-message-id'] };
   } catch (error) {
     console.error('Error sending maker order notification email:', error);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
     throw error;
   }
 };
@@ -967,9 +972,7 @@ ${t.team}
  * @returns {Promise<Object>} - Result of email sending
  */
 export const sendProductReviewNotificationEmail = async ({ product, makerProfile, language = 'EN' }) => {
-  const transporter = createTransporter();
-  
-  if (!transporter) {
+  if (!initializeSendGrid()) {
     console.warn('Email service not configured, skipping product review notification');
     return { success: false, skipped: true };
   }
@@ -1030,9 +1033,9 @@ export const sendProductReviewNotificationEmail = async ({ product, makerProfile
       `).join('')
     : '<p>No colors specified</p>';
 
-  const mailOptions = {
-    from: `"Makers Hub Products" <${process.env.EMAIL_USER}>`,
-    to: adminEmails.join(', '),
+  const msg = {
+    from: getSenderEmail(),
+    to: adminEmails, // SendGrid accepts array of emails
     subject: t.subject.replace('{productName}', product.name || 'N/A'),
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -1130,11 +1133,14 @@ ${t.nextSteps}:
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Product review notification email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const [response] = await sgMail.send(msg);
+    console.log('Product review notification email sent successfully:', response.statusCode);
+    return { success: true, messageId: response.headers['x-message-id'] };
   } catch (error) {
     console.error('Error sending product review notification email:', error);
+    if (error.response) {
+      console.error('SendGrid error details:', error.response.body);
+    }
     throw error;
   }
 };
