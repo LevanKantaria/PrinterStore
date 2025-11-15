@@ -5,26 +5,14 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
-import { FronteggProvider } from '@frontegg/react';
-
-
-const contextOptions = {
-  baseUrl: 'https://app-904mzrhn44ln.frontegg.com',
-  clientId: '301f8626-f317-4196-b938-60370590432b',
-  appId: '[YOUR_APP_ID]' 
-};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-      <FronteggProvider 
-    contextOptions={contextOptions} 
-    hostedLoginBox={false}
-    >
         <App />
-    </FronteggProvider>      </Provider>
+      </Provider>
     </BrowserRouter>
   </React.StrictMode>
 );
