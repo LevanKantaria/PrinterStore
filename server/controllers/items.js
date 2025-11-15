@@ -59,8 +59,48 @@ export const listAllItems = async (_req, res) => {
   }
 };
 
+// Maximum image size: 5MB (base64 encoded will be ~6.67MB)
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const MAX_BASE64_SIZE_BYTES = Math.floor(MAX_IMAGE_SIZE_BYTES * 1.34); // ~6.7MB for base64
+
+const validateImageSizes = (images) => {
+  if (!Array.isArray(images)) {
+    return { valid: false, message: "Images must be an array." };
+  }
+
+  for (let i = 0; i < images.length; i++) {
+    const image = images[i];
+    if (typeof image !== 'string') {
+      return { valid: false, message: `Image ${i + 1} must be a string (base64).` };
+    }
+
+    // Base64 strings start with data:image/...;base64,...
+    // Calculate approximate original size from base64
+    // Base64 encoding increases size by ~33%, so we check the base64 string size
+    const base64Size = Buffer.byteLength(image, 'utf8');
+    
+    if (base64Size > MAX_BASE64_SIZE_BYTES) {
+      const sizeMB = (base64Size / (1024 * 1024)).toFixed(2);
+      return { 
+        valid: false, 
+        message: `Image ${i + 1} is too large (${sizeMB}MB). Maximum size is 5MB per image.` 
+      };
+    }
+  }
+
+  return { valid: true };
+};
+
 export const uploadItem = async (req, res) => {
   try {
+    // Validate image sizes
+    if (req.body.images) {
+      const validation = validateImageSizes(req.body.images);
+      if (!validation.valid) {
+        return res.status(400).json({ message: validation.message });
+      }
+    }
+
     // Admin-created products should be live by default
     const itemData = {
       ...req.body,
@@ -82,6 +122,14 @@ export const updateItem = async (req, res) => {
   delete updates.updatedAt;
 
   try {
+    // Validate image sizes if images are being updated
+    if (updates.images) {
+      const validation = validateImageSizes(updates.images);
+      if (!validation.valid) {
+        return res.status(400).json({ message: validation.message });
+      }
+    }
+
     const updatedItem = await marketplaceItem.findByIdAndUpdate(id, updates, {
       new: true,
       runValidators: true,
