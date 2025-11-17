@@ -22,6 +22,7 @@
   box-sizing: border-box;
 }
 
+
 .itemDetails img {
   border: 1px solid #e9ecef;
   border-radius: 8px;
@@ -232,6 +233,12 @@
 }
 
 @media screen and (max-width: 480px) {
+
+
+  .imageSection {
+    width: 100%;  
+  }
+
   .priceTotal {
     font-size: 18px;
     margin: 0;

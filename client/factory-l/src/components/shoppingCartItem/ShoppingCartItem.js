@@ -38,7 +38,7 @@ const ShoppingCartItem = (props) => {
     <div className={classes.wrapper} >
 
       <div className={classes.itemDetails}>
-        <section>
+        <section className={classes.imageSection}>
           {props.image ? (
             <img src={props.image} height="100px" alt={props.name} />
           ) : (

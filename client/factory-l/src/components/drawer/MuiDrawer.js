@@ -83,11 +83,9 @@ const MuiDrawer = () => {
               {status === "authenticated" && user?.isAdmin && (
                 <>
                   <p onClick={closeDrawer}>
-                    <Link to="/admin/orders">{translate("navbar.admin.orders")}</Link>
+                    <Link to="/admin">{translate("drawer.admin")}</Link>
                   </p>
-                  <p onClick={closeDrawer}>
-                    <Link to="/admin/listings">{translate("navbar.admin.listings")}</Link>
-                  </p>
+              
                 </>
               )}
             </div>

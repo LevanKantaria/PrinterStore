@@ -115,6 +115,7 @@ const ShoppingCartExpanded = () => {
   }
 
   return (
+    <div>
     <div className={classes.main}>
       <div className={classes.items}>
         {id && newItem}
@@ -125,11 +126,7 @@ const ShoppingCartExpanded = () => {
         <div className={classes.cartItemsList}>
           {cartItemsExpanded}
         </div>
-        <div className={classes.continueShopping}>
-          <Link to="/marketplace" className={classes.continueShoppingLink}>
-            {translate('cart.continueShopping')}
-          </Link>
-        </div>
+       
       </div>
       <div className={classes.checkout}>
         <div className={classes.checkoutContent}>
@@ -157,6 +154,12 @@ const ShoppingCartExpanded = () => {
         cartItems={cartItems}
         onOrderPlaced={handleOrderPlaced}
       />
+    </div>
+    <div className={classes.continueShopping}>
+          <Link to="/marketplace" className={classes.continueShoppingLink}>
+            {translate('cart.continueShopping')}
+          </Link>
+        </div>
     </div>
   );
 };
