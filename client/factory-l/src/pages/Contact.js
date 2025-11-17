@@ -4,9 +4,11 @@ import classes from "./Contact.module.css";
 import translate from "../components/translate";
 import { API_URL } from "../API_URL";
 import axios from "axios";
+import SEO from "../components/seo/SEO";
 
 const Contact = () => {
   const currentLang = useSelector((state) => state.lang.lang);
+  const lang = currentLang === 'EN' ? 'EN' : 'KA';
   const { user } = useSelector((state) => state.auth);
   
   const [formData, setFormData] = useState({
@@ -63,6 +65,17 @@ const Contact = () => {
 
   return (
     <div className={classes.contactPage}>
+      <SEO 
+        title={translate('contact.hero.title')}
+        description={lang === 'EN'
+          ? 'Contact Makers Hub for 3D printing services, custom orders, or any questions. We are here to help bring your ideas to life.'
+          : 'დაუკავშირდით Makers Hub-ს 3D ბეჭდვის სერვისების, ინდივიდუალური შეკვეთების ან ნებისმიერი კითხვისთვის. ჩვენ აქ ვართ, რათა დავეხმაროთ თქვენი იდეების რეალობად გადაქცევაში.'
+        }
+        keywords={lang === 'EN'
+          ? 'contact us, 3D printing support, customer service, Georgia'
+          : 'დაგვიკავშირდით, 3D ბეჭდვის მხარდაჭერა, მომხმარებლის სერვისი, საქართველო'
+        }
+      />
       {/* Hero Section */}
       <section className={classes.hero}>
         <div className={classes.heroContent}>

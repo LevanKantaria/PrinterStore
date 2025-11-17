@@ -2,13 +2,28 @@ import React from "react";
 import { useSelector } from "react-redux";
 import classes from "./About.module.css";
 import translate from "../components/translate";
+import SEO from "../components/seo/SEO";
+import { OrganizationStructuredData } from "../components/seo/StructuredData";
 
 const About = () => {
   // Subscribe to language changes to trigger re-render
   const currentLang = useSelector((state) => state.lang.lang);
+  const lang = currentLang === 'EN' ? 'EN' : 'KA';
 
   return (
     <div className={classes.aboutPage}>
+      <SEO 
+        title={translate('about.hero.title')}
+        description={lang === 'EN'
+          ? 'Learn about Makers Hub - your trusted 3D printing partner in Georgia. Discover our story, values, and commitment to quality.'
+          : 'გაეცანით Makers Hub-ს - თქვენს საიმედო 3D ბეჭდვის პარტნიორს საქართველოში. გაიგეთ ჩვენი ისტორია, ღირებულებები და ხარისხისადმი მოთხოვნილება.'
+        }
+        keywords={lang === 'EN'
+          ? 'about us, 3D printing company, Georgia, our story, values'
+          : 'ჩვენს შესახებ, 3D ბეჭდვის კომპანია, საქართველო, ჩვენი ისტორია, ღირებულებები'
+        }
+      />
+      <OrganizationStructuredData />
       {/* Hero Section */}
       <section className={classes.hero}>
         <div className={classes.heroContent}>

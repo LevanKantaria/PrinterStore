@@ -10,6 +10,8 @@ import Skeleton from "../skeleton/Skeleton";
 import SimpleSlider from "./SimpleSlider";
 import translate from "../translate";
 import { API_URL } from "../../API_URL";
+import SEO from "../seo/SEO";
+import { ProductStructuredData, BreadcrumbStructuredData } from "../seo/StructuredData";
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -58,8 +60,39 @@ const ProductPage = () => {
     }
   }, [item.colors]);
 
+  // Build breadcrumb items for structured data
+  const breadcrumbItems = [
+    { name: translate('landing.marketplace'), url: '/marketplace' },
+    ...(item.category ? [{ name: translate(`categories.${item.category}`), url: `/marketplace/${item.category}` }] : []),
+    ...(item.subCategory ? [{ name: translate(`categories.${item.subCategory}`), url: `/marketplace/${item.category}/${item.subCategory}` }] : []),
+    ...(item.name ? [{ name: item.name, url: `/products/${item._id}` }] : []),
+  ];
+
+  const lang = currentLang === 'EN' ? 'EN' : 'KA';
+  const productImage = item.images?.[0] || '';
+
   return (
     <div className={classes.main}>
+      {item._id && (
+        <>
+          <SEO 
+            title={item.name}
+            description={item.description || (lang === 'EN' 
+              ? `Buy ${item.name} - 3D printed product from Makers Hub marketplace. Price: ₾${item.price}`
+              : `იყიდეთ ${item.name} - 3D დაბეჭდილი პროდუქტი Makers Hub მარკეტპლეისიდან. ფასი: ₾${item.price}`
+            )}
+            keywords={lang === 'EN'
+              ? `${item.name}, 3D printing, ${item.category}, custom product, Georgia`
+              : `${item.name}, 3D ბეჭდვა, ${item.category}, ინდივიდუალური პროდუქტი, საქართველო`
+            }
+            image={productImage}
+            type="product"
+            canonical={`${process.env.REACT_APP_SITE_URL || 'https://makershub.ge'}/products/${item._id}`}
+          />
+          <ProductStructuredData product={item} />
+          <BreadcrumbStructuredData items={breadcrumbItems} />
+        </>
+      )}
       <div className={classes.breadCrumbs}>
         <Link to='/marketplace'>{translate('landing.marketplace')}</Link>
         {item.category && <Link to={`/marketplace/${item.category}`}>{translate(`categories.${item.category}`)}</Link>}
@@ -68,7 +101,7 @@ const ProductPage = () => {
       {loading && (
         <div className={classes.skeletonContainer}>
           <div className={classes.imageSkeleton}>
-            <Skeleton component="image" width="100%" height="470px" rounded={true} />
+            <Skeleton component="image" width="100%" height="500px" rounded={true} />
           </div>
           <div className={classes.contentSkeleton}>
             <Skeleton name="text-single" width="80%" height="30px" />

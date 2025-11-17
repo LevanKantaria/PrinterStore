@@ -31,40 +31,30 @@ const SimpleSlider = ({ images }) => {
 
   if (images.length === 1) {
     return (
-      <div style={{ borderRadius: "12px" }}>
+      <div className={classes.singleImageContainer}>
         <img
           src={images[0]}
           alt="single-slide"
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "12px",
-            objectFit: "contain",
-            objectPosition: "center center",
-          }}
+          className={classes.sliderImage}
         />
       </div>
     );
   }
 
   return (
-    <Slider {...settings} style={{ borderRadius: "12px" }}>
-      {images.map((image, index) => (
-        <div key={index}>
-          <img
-            src={image}
-            alt={`slide-${index}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "12px",
-              objectFit: "contain",
-              objectPosition: "center center",
-            }}
-          />
-        </div>
-      ))}
-    </Slider>
+    <div className={classes.sliderContainer}>
+      <Slider {...settings} className={classes.slider}>
+        {images.map((image, index) => (
+          <div key={index} className={classes.slideWrapper}>
+            <img
+              src={image}
+              alt={`slide-${index}`}
+              className={classes.sliderImage}
+            />
+          </div>
+        ))}
+      </Slider>
+    </div>
   );
 };
 

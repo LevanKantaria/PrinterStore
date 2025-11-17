@@ -1,3 +1,13 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /maker/
+Disallow: /profile
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /cart
+Disallow: /upload
+
+# Sitemap
+Sitemap: https://makershub.ge/sitemap.xml

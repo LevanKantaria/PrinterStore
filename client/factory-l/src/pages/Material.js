@@ -2,12 +2,25 @@ import React from "react";
 import { useSelector } from "react-redux";
 import classes from "./Material.module.css";
 import translate from "../components/translate";
+import SEO from "../components/seo/SEO";
 
 const Material = () => {
   const currentLang = useSelector((state) => state.lang.lang);
+  const lang = currentLang === 'EN' ? 'EN' : 'KA';
 
   return (
     <div className={classes.materialsPage}>
+      <SEO 
+        title={translate('materials.hero.title')}
+        description={lang === 'EN'
+          ? 'Compare 3D printing materials: PLA, ABS, PETG, TPU, and more. Learn about properties, applications, and choose the right material for your project.'
+          : 'შეადარეთ 3D ბეჭდვის მასალები: PLA, ABS, PETG, TPU და სხვა. გაეცანით თვისებებს, გამოყენებას და აირჩიეთ სწორი მასალა თქვენი პროექტისთვის.'
+        }
+        keywords={lang === 'EN'
+          ? '3D printing materials, PLA, ABS, PETG, TPU, material comparison, filament guide'
+          : '3D ბეჭდვის მასალები, PLA, ABS, PETG, TPU, მასალების შედარება, ფილამენტის გზამკვლევი'
+        }
+      />
       {/* Hero Section */}
       <section className={classes.hero}>
         <div className={classes.heroContainer}>
